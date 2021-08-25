@@ -19,5 +19,8 @@
   "homepage": "https://github.com/Covik/vfm-system#readme",
   "dependencies": {
     "typescript": "^4.3.5"
+  },
+  "devDependencies": {
+    "@tsconfig/recommended": "^1.0.1"
   }
 }
