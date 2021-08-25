@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/Covik/vfm-system/issues"
   },
-  "homepage": "https://github.com/Covik/vfm-system#readme"
+  "homepage": "https://github.com/Covik/vfm-system#readme",
+  "dependencies": {
+    "typescript": "^4.3.5"
+  }
 }
