@@ -8,3 +8,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Local environment support (using Docker and Makefile)
 - TypeScript
+- Hot reload in local environment

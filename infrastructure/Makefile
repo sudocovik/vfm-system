@@ -5,4 +5,4 @@ dev:
 		--user $$(id -u):$$(id -g) \
 		-v $$(pwd):/app \
 	  $$(docker build --rm -q .) \
-	  /bin/sh
+	  npm run dev
