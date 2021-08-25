@@ -5,5 +5,7 @@
     "noImplicitAny": true,
     "noImplicitOverride": true,
     "noImplicitReturns": true
-  }
+  },
+  "files": ["./src/main.ts"],
+  "exclude": ["./node_modules"]
 }
