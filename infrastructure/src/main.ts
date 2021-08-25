@@ -1,3 +1,3 @@
-const title: string = "Should spit out infrastructure"
+import provisionResources from './pulumi/provision'
 
-console.log(title)
+provisionResources().then(() => console.log('Provisio1ned all resources')).catch(error => console.log(error))
