@@ -5,6 +5,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc -w & nodemon dist/main.js",
+    "production": "node dist/main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
