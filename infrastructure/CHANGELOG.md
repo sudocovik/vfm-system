@@ -10,3 +10,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - TypeScript
 - Hot reload in local environment
 - GitHub Action for deploying production infrastructure
+- DigitalOcean Project & Domain
