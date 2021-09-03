@@ -7,6 +7,18 @@ WORKDIR /app
 RUN chown node:node /app
 
 
+FROM base AS development
+
+ENV NODE_ENV='local'
+
+RUN apk update && apk add curl bash
+SHELL ["/bin/bash", "-c"]
+
+COPY --from=docker:20.10.8 /usr/local/bin/docker /usr/local/bin/docker
+
+RUN curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | sh
+
+
 FROM base AS production-artifact
 
 COPY . .
@@ -29,15 +41,3 @@ COPY --from=production-artifact /app/node_modules /app/node_modules
 COPY package.json package.json
 
 CMD ["npm", "run", "production"]
-
-
-FROM base AS development
-
-ENV NODE_ENV='local'
-
-RUN apk update && apk add curl bash
-SHELL ["/bin/bash", "-c"]
-
-COPY --from=docker:20.10.8 /usr/local/bin/docker /usr/local/bin/docker
-
-RUN curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | sh
