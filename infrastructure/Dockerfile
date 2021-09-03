@@ -34,3 +34,6 @@ CMD ["npm", "run", "production"]
 FROM base AS development
 
 ENV NODE_ENV='local'
+
+RUN apk update && apk add curl bash
+SHELL ["/bin/bash", "-c"]
