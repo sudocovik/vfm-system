@@ -4,6 +4,7 @@ dev:
 		--rm \
 		--user $$(id -u):$$(id -g) \
 		-v $$(pwd):/app \
+		-v /var/run/docker.sock:/var/run/docker.sock:ro \
 	  $$(docker build --target=development --rm -q .) \
 	  npm run dev
 
