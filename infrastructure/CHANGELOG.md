@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- LocalCluster interface
+
+### Changed
+- Docker build target "development" to "base"
+
 ## [0.0.1] - 2021-09-03
 ### Added
 - Local environment support (using Docker and Makefile)
