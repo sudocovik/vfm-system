@@ -37,3 +37,5 @@ ENV NODE_ENV='local'
 
 RUN apk update && apk add curl bash
 SHELL ["/bin/bash", "-c"]
+
+COPY --from=docker:20.10.8 /usr/local/bin/docker /usr/local/bin/docker
