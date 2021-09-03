@@ -18,6 +18,8 @@ RUN npm run build
 
 FROM base AS production
 
+ENV NODE_ENV='production'
+
 # These variables should be set in runtime
 ENV PULUMI_ACCESS_TOKEN=''
 ENV DIGITALOCEAN_TOKEN=''
@@ -31,3 +33,4 @@ CMD ["npm", "run", "production"]
 
 FROM base AS development
 
+ENV NODE_ENV='local'
