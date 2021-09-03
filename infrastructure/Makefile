@@ -5,7 +5,7 @@ dev:
 		--user $$(id -u):$$(id -g) \
 		-v $$(pwd):/app \
 	  $$(docker build --target=development --rm -q .) \
-	  env
+	  npm run dev
 
 .PHONY: production
 production:
