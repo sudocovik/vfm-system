@@ -7,7 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- LocalCluster interface
 - NODE_ENV - depending on environment
 - Bash, Docker and k3d binaries in local environment
 
