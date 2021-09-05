@@ -11,6 +11,11 @@ FROM base AS development
 
 ENV NODE_ENV='local'
 
+ARG HOST_DOCKER_GROUP_ID
+
+RUN addgroup -g $HOST_DOCKER_GROUP_ID docker && \
+    adduser node docker
+
 RUN apk update && apk add curl bash
 SHELL ["/bin/bash", "-c"]
 
@@ -18,6 +23,7 @@ COPY --from=docker:20.10.8 /usr/local/bin/docker /usr/local/bin/docker
 
 RUN curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
 
+USER node
 
 FROM base AS production-artifact
 

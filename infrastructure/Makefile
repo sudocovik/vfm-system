@@ -1,12 +1,13 @@
+DOCKER_GROUP_ID=$$(getent group docker | cut -d: -f3)
+
 .PHONY: dev
 dev:
 	docker run -it \
 		--rm \
-		--user $$(id -u):$$(id -g) \
 		-v $$(pwd):/app \
-		-v /var/run/docker.sock:/var/run/docker.sock:ro \
-	  $$(docker build --target=development --rm -q .) \
-	  npm run dev
+		-v /var/run/docker.sock:/var/run/docker.sock \
+	  $$(docker build --target=development --build-arg HOST_DOCKER_GROUP_ID=$(DOCKER_GROUP_ID) --rm -q .) \
+	  /bin/sh
 
 .PHONY: production
 production:
