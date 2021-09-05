@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Docker build target "development" to "base"
+- Building production image uses Docker BuildKit
 
 ## [0.0.1] - 2021-09-03
 ### Added
