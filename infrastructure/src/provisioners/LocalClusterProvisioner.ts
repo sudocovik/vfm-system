@@ -3,7 +3,7 @@ import { Cluster } from '../types/Cluster'
 import { exec } from 'child_process'
 import { K3DCluster } from '../resources/local/K3DCluster'
 
-export class LocalProvisioner implements BackboneProvisioner {
+export class LocalClusterProvisioner implements BackboneProvisioner {
     private clusterName: string = 'vfm'
     private clusterVersion: string = '1.21.2'
 
