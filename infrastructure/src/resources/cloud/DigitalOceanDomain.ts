@@ -1,4 +1,4 @@
-import { Domain } from '../../types/Domain'
+import type { Domain } from '../../types/Domain'
 
 export class DigitalOceanDomain implements Domain {
     name(): string {
