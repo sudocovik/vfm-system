@@ -2,13 +2,13 @@ import { DigitalOceanDomain, DigitalOceanCluster, DigitalOceanProject } from '..
 import { Domain, DropletSlug, KubernetesCluster, Project } from '@pulumi/digitalocean'
 
 function createPulumiDomain(domain: DigitalOceanDomain): Domain {
-    return new Domain('vfm-domain', {
+    return new Domain('main-domain', {
         name: domain.name()
     })
 }
 
 function createPulumiCluster(cluster: DigitalOceanCluster): KubernetesCluster {
-    return new KubernetesCluster('vfm-cluster', {
+    return new KubernetesCluster('main-cluster', {
         name: cluster.name(),
         version: cluster.version(),
         region: 'fra1',
