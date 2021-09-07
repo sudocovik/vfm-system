@@ -1,11 +1,10 @@
 import { InlineProgramArgs, LocalWorkspace, Stack } from '@pulumi/pulumi/automation'
-import provisionResources from '../resources/index'
 
-export default async function () {
+export default async function (program: () => Promise<any>) {
   const stackArguments: InlineProgramArgs = {
     projectName: 'vfm',
     stackName: 'production',
-    program: provisionResources
+    program
   }
 
   const stack: Stack = await LocalWorkspace.createOrSelectStack(stackArguments)
