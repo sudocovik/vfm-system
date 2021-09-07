@@ -1,5 +1,6 @@
 import { Domain, Project, KubernetesCluster, DropletSlug } from '@pulumi/digitalocean'
 import { DigitalOceanCluster } from './DigitalOceanCluster'
+import { DigitalOceanDomain } from './DigitalOceanDomain'
 
 export default class {
     public provisionAll(): void {
@@ -9,8 +10,10 @@ export default class {
     }
 
     private provisionDomain(): Domain {
+        const domain = new DigitalOceanDomain()
+
         return new Domain('main-domain', {
-            name: 'zarafleet.com'
+            name: domain.name()
         })
     }
 
