@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - NODE_ENV - depending on environment
 - Bash, Docker and k3d binaries in local environment
 - K3D cluster provisioning in local environment
+- DigitalOcean Kubernetes cluster
 
 ### Changed
 - Docker build target "development" to "base"
