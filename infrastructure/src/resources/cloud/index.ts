@@ -1,6 +1,7 @@
 import { Domain, Project, KubernetesCluster, DropletSlug } from '@pulumi/digitalocean'
 import { DigitalOceanCluster } from './DigitalOceanCluster'
 import { DigitalOceanDomain } from './DigitalOceanDomain'
+import { DigitalOceanProject } from './DigitalOceanProject'
 
 export default class {
     public provisionAll(): void {
@@ -35,11 +36,13 @@ export default class {
     }
 
     private provisionProject(domain: Domain, cluster: KubernetesCluster): Project {
+        const project = new DigitalOceanProject()
+
         return new Project('main-project', {
-            name: 'VFM',
-            environment: 'Production',
-            description: 'Vehicle Fleet Management infrastructure',
-            purpose: 'Web Application',
+            name: project.name(),
+            environment: project.environment(),
+            description: project.description(),
+            purpose: project.purpose(),
             resources: [
                 domain.domainUrn,
                 cluster.clusterUrn
