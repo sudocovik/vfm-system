@@ -24,7 +24,7 @@ export default class {
             autoUpgrade: false,
             nodePool: {
                 name: 'worker',
-                size: DropletSlug.DropletS1VCPU1GB,
+                size: DropletSlug.DropletS1VCPU2GB,
                 autoScale: false,
                 nodeCount: 1
             }
