@@ -7,7 +7,7 @@ dev:
 		-v $$(pwd):/app \
 		-v /var/run/docker.sock:/var/run/docker.sock \
 	  $$(docker build --target=development --build-arg HOST_DOCKER_GROUP_ID=$(DOCKER_GROUP_ID) --rm -q .) \
-	  /bin/sh
+	  /bin/bash
 
 .PHONY: production
 production:
