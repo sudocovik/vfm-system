@@ -46,10 +46,6 @@ ENV NODE_ENV='production'
 ENV PULUMI_ACCESS_TOKEN=''
 ENV DIGITALOCEAN_TOKEN=''
 
-RUN mkdir /helm
-
-ENV HELM_HOME='/helm'
-
 COPY --from=production-artifact /app/dist /app/dist
 COPY --from=production-artifact /app/node_modules /app/node_modules
 COPY package.json package.json
