@@ -40,8 +40,6 @@ export function createKubernetesManifests(kubeconfig: string): void {
         },
     }, { provider })
 
-    console.log('HELM_HOME=' + process.env.HELM_HOME)
-
     const traefik = new k8s.helm.v3.Chart('traefik-ingress', {
         chart: 'traefik',
         version: '10.3.2',
