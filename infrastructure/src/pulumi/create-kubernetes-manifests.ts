@@ -27,7 +27,7 @@ export function createKubernetesManifests(kubeconfig: string): void {
         }
     }, { provider })
 
-    new k8s.core.v1.Service('nginx-test', {
+    const service = new k8s.core.v1.Service('nginx-test', {
         metadata: { labels: deployment.spec.template.metadata.labels },
         spec: {
             type: 'ClusterIP',
@@ -39,4 +39,48 @@ export function createKubernetesManifests(kubeconfig: string): void {
             selector: deployment.spec.template.metadata.labels,
         },
     }, { provider })
+
+    const traefik = new k8s.helm.v3.Chart('traefik-ingress', {
+        chart: 'traefik',
+        version: '10.3.2',
+        fetchOpts: {
+            repo: 'https://helm.traefik.io/traefik',
+        },
+        values: {
+            ingressRoute: {
+                dashboard: {
+                    enabled: false
+                }
+            },
+            service: {
+                type: 'NodePort'
+            },
+            ports: {
+                web: {
+                    nodePort: 32080
+                }
+            }
+        }
+    }, { provider })
+
+    new k8s.networking.v1.Ingress('default-ingress', {
+        spec: {
+            rules: [{
+                http: {
+                    paths: [{
+                        path: '/',
+                        pathType: 'Prefix',
+                        backend: {
+                            service: {
+                                name: service.metadata.name,
+                                port: {
+                                    number: service.spec.ports[0].port
+                                }
+                            }
+                        }
+                    }]
+                }
+            }]
+        }
+    }, { provider, dependsOn: [ traefik ] })
 }
