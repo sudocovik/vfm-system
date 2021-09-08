@@ -30,9 +30,9 @@ export function createKubernetesManifests(kubeconfig: string): void {
     new k8s.core.v1.Service('nginx-test', {
         metadata: { labels: deployment.spec.template.metadata.labels },
         spec: {
-            type: 'NodePort',
+            type: 'ClusterIP',
             ports: [{
-                port: 30080,
+                port: 8080,
                 targetPort: 80,
                 protocol: 'TCP'
             }],
