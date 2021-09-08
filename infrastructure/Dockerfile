@@ -2,6 +2,8 @@ FROM node:16.7-alpine3.14 AS base
 
 COPY --from=pulumi/pulumi-base:3.11.0 /pulumi/bin/pulumi /usr/bin/pulumi
 
+COPY --from=alpine/helm:3.6.3 /usr/bin/helm /usr/bin/helm
+
 WORKDIR /app
 
 RUN chown node:node /app
