@@ -4,6 +4,7 @@ DOCKER_GROUP_ID=$$(getent group docker | cut -d: -f3)
 dev:
 	docker run -it \
 		--rm \
+		--network host \
 		-v $$(pwd):/app \
 		-v /var/run/docker.sock:/var/run/docker.sock \
 	  $$(docker build --target=development --build-arg HOST_DOCKER_GROUP_ID=$(DOCKER_GROUP_ID) --rm -q .) \
