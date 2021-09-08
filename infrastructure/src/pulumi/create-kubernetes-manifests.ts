@@ -43,7 +43,9 @@ export function createKubernetesManifests(kubeconfig: string): void {
     const traefik = new k8s.helm.v3.Chart('traefik-ingress', {
         chart: 'traefik',
         version: '10.3.2',
-        repo: 'https://helm.traefik.io/traefik',
+        fetchOpts: {
+            repo: 'https://helm.traefik.io/traefik',
+        },
         values: {
             ingressRoute: {
                 dashboard: {
