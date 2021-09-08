@@ -47,7 +47,6 @@ export function createKubernetesManifests(kubeconfig: string): void {
         version: '10.3.2',
         fetchOpts: {
             repo: 'https://helm.traefik.io/traefik',
-            home: process.env.HELM_HOME
         },
         values: {
             ingressRoute: {
