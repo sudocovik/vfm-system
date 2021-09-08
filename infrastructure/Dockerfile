@@ -54,4 +54,6 @@ COPY --from=production-artifact /app/dist /app/dist
 COPY --from=production-artifact /app/node_modules /app/node_modules
 COPY package.json package.json
 
+USER node
+
 CMD ["npm", "run", "production"]
