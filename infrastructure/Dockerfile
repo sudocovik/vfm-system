@@ -4,7 +4,9 @@ COPY --from=pulumi/pulumi-base:3.11.0 /pulumi/bin/pulumi /usr/bin/pulumi
 
 COPY --from=alpine/helm:3.6.3 /usr/bin/helm /usr/bin/helm
 
-WORKDIR /app
+ENV PROJECT_ROOT='/app'
+
+WORKDIR $PROJECT_ROOT
 
 RUN chown node:node /app
 
