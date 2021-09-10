@@ -13,9 +13,9 @@ function createPulumiLoadBalancer(): LoadBalancer {
         region: 'fra1',
         forwardingRules: [{
             entryPort: 80,
-            entryProtocol: 'HTTP',
+            entryProtocol: 'http',
             targetPort: 32080,
-            targetProtocol: 'HTTP'
+            targetProtocol: 'http'
         }]
     })
 }
