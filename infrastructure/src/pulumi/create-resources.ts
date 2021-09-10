@@ -1,9 +1,22 @@
 import { DigitalOceanDomain, DigitalOceanCluster, DigitalOceanProject } from '../resources/cloud'
-import { Domain, DropletSlug, KubernetesCluster, Project } from '@pulumi/digitalocean'
+import { Domain, DropletSlug, KubernetesCluster, LoadBalancer, Project } from '@pulumi/digitalocean'
 
 function createPulumiDomain(domain: DigitalOceanDomain): Domain {
     return new Domain('main-domain', {
         name: domain.name()
+    })
+}
+
+function createPulumiLoadBalancer(): LoadBalancer {
+    return new LoadBalancer('main-load-balancer', {
+        size: 'lb-small',
+        region: 'fra1',
+        forwardingRules: [{
+            entryPort: 80,
+            entryProtocol: 'HTTP',
+            targetPort: 32080,
+            targetProtocol: 'HTTP'
+        }]
     })
 }
 
@@ -36,6 +49,7 @@ function createPulumiProject(project: DigitalOceanProject, domain: Domain, clust
 }
 
 export async function createCloudResources(): Promise<string> {
+    createPulumiLoadBalancer()
     const domain = createPulumiDomain(new DigitalOceanDomain())
     const cluster = createPulumiCluster(new DigitalOceanCluster())
     createPulumiProject(new DigitalOceanProject(), domain, cluster)
