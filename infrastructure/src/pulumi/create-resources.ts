@@ -35,7 +35,7 @@ function createPulumiCluster(cluster: DigitalOceanCluster): KubernetesCluster {
     })
 }
 
-function createPulumiProject(project: DigitalOceanProject, domain: Domain, cluster: KubernetesCluster): Project {
+function createPulumiProject(project: DigitalOceanProject, domain: Domain, cluster: KubernetesCluster, loadbalancer: LoadBalancer): Project {
     return new Project('main-project', {
         name: project.name(),
         environment: project.environment(),
@@ -43,16 +43,17 @@ function createPulumiProject(project: DigitalOceanProject, domain: Domain, clust
         purpose: project.purpose(),
         resources: [
             domain.domainUrn,
-            cluster.clusterUrn
+            cluster.clusterUrn,
+            loadbalancer.loadBalancerUrn
         ]
     })
 }
 
 export async function createCloudResources(): Promise<string> {
-    createPulumiLoadBalancer()
+    const loadbalancer = createPulumiLoadBalancer()
     const domain = createPulumiDomain(new DigitalOceanDomain())
     const cluster = createPulumiCluster(new DigitalOceanCluster())
-    createPulumiProject(new DigitalOceanProject(), domain, cluster)
+    createPulumiProject(new DigitalOceanProject(), domain, cluster, loadbalancer)
 
     return cluster.kubeConfigs[0].rawConfig.apply(config => config) as string
 }
