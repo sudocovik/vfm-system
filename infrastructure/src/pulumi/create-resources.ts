@@ -1,5 +1,13 @@
 import { DigitalOceanDomain, DigitalOceanCluster, DigitalOceanProject } from '../resources/cloud'
-import { DnsRecord, Domain, DropletSlug, KubernetesCluster, LoadBalancer, Project } from '@pulumi/digitalocean'
+import {
+    Certificate,
+    DnsRecord,
+    Domain,
+    DropletSlug,
+    KubernetesCluster,
+    LoadBalancer,
+    Project,
+} from '@pulumi/digitalocean'
 
 const workerNodeTagName = 'vfm-worker'
 
@@ -15,6 +23,16 @@ function createPulumiDnsRecordConnectingDomainWithLoadBalancer(domain: Domain, l
         name: 'app',
         type: 'A',
         value: loadbalancer.ip
+    })
+}
+
+function createPulumiCertificate(domain: Domain, subdomain: DnsRecord): Certificate {
+    return new Certificate('main-certificate', {
+        type: 'lets_encrypt',
+        domains: [
+            domain.name,
+            subdomain.fqdn
+        ]
     })
 }
 
@@ -74,7 +92,8 @@ function createPulumiProject(project: DigitalOceanProject, domain: Domain, clust
 export async function createCloudResources(): Promise<string> {
     const loadbalancer = createPulumiLoadBalancer()
     const domain = createPulumiDomain(new DigitalOceanDomain())
-    createPulumiDnsRecordConnectingDomainWithLoadBalancer(domain, loadbalancer)
+    const subdomain = createPulumiDnsRecordConnectingDomainWithLoadBalancer(domain, loadbalancer)
+    createPulumiCertificate(domain, subdomain)
     const cluster = createPulumiCluster(new DigitalOceanCluster())
     createPulumiProject(new DigitalOceanProject(), domain, cluster, loadbalancer)
 
