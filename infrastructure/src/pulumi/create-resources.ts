@@ -19,7 +19,16 @@ function createPulumiLoadBalancer(): LoadBalancer {
             entryProtocol: 'http',
             targetPort: 32080,
             targetProtocol: 'http'
-        }]
+        }],
+        healthcheck: {
+            path: '/',
+            port: 32080,
+            protocol: 'http',
+            checkIntervalSeconds: 10,
+            responseTimeoutSeconds: 5,
+            unhealthyThreshold: 3,
+            healthyThreshold: 5
+        }
     })
 }
 
