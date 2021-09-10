@@ -26,17 +26,17 @@ function createPulumiDnsRecordConnectingDomainWithLoadBalancer(domain: Domain, l
     })
 }
 
-function createPulumiCertificate(domain: Domain, subdomain: DnsRecord): Certificate {
+function createPulumiCertificate(domain: Domain, subdomain: string): Certificate {
     return new Certificate('main-certificate', {
         type: 'lets_encrypt',
         domains: [
             domain.name,
-            subdomain.fqdn
+            domain.name.apply(domainName => `${subdomain}.${domainName}`)
         ]
     })
 }
 
-function createPulumiLoadBalancer(): LoadBalancer {
+function createPulumiLoadBalancer(certificate: Certificate): LoadBalancer {
     return new LoadBalancer('main-load-balancer', {
         size: 'lb-small',
         region: 'fra1',
@@ -46,6 +46,12 @@ function createPulumiLoadBalancer(): LoadBalancer {
             entryProtocol: 'http',
             targetPort: 32080,
             targetProtocol: 'http'
+        }, {
+            entryPort: 443,
+            entryProtocol: 'https',
+            targetPort: 32080,
+            targetProtocol: 'http',
+            certificateName: certificate.name,
         }],
         healthcheck: {
             path: '/',
@@ -90,10 +96,10 @@ function createPulumiProject(project: DigitalOceanProject, domain: Domain, clust
 }
 
 export async function createCloudResources(): Promise<string> {
-    const loadbalancer = createPulumiLoadBalancer()
     const domain = createPulumiDomain(new DigitalOceanDomain())
-    const subdomain = createPulumiDnsRecordConnectingDomainWithLoadBalancer(domain, loadbalancer)
-    createPulumiCertificate(domain, subdomain)
+    const certificate = createPulumiCertificate(domain, 'app')
+    const loadbalancer = createPulumiLoadBalancer(certificate)
+    createPulumiDnsRecordConnectingDomainWithLoadBalancer(domain, loadbalancer)
     const cluster = createPulumiCluster(new DigitalOceanCluster())
     createPulumiProject(new DigitalOceanProject(), domain, cluster, loadbalancer)
 
