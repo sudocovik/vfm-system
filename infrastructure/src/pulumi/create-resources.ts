@@ -1,6 +1,8 @@
 import { DigitalOceanDomain, DigitalOceanCluster, DigitalOceanProject } from '../resources/cloud'
 import { Domain, DropletSlug, KubernetesCluster, LoadBalancer, Project } from '@pulumi/digitalocean'
 
+const workerNodeTagName = 'vfm-worker'
+
 function createPulumiDomain(domain: DigitalOceanDomain): Domain {
     return new Domain('main-domain', {
         name: domain.name()
@@ -11,6 +13,7 @@ function createPulumiLoadBalancer(): LoadBalancer {
     return new LoadBalancer('main-load-balancer', {
         size: 'lb-small',
         region: 'fra1',
+        dropletTag: workerNodeTagName,
         forwardingRules: [{
             entryPort: 80,
             entryProtocol: 'http',
@@ -30,7 +33,8 @@ function createPulumiCluster(cluster: DigitalOceanCluster): KubernetesCluster {
             name: 'worker',
             size: DropletSlug.DropletS1VCPU2GB,
             autoScale: false,
-            nodeCount: 1
+            nodeCount: 1,
+            tags: [workerNodeTagName]
         }
     })
 }
