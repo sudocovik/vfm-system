@@ -12,7 +12,7 @@ function createPulumiDomain(domain: DigitalOceanDomain): Domain {
 function createPulumiDnsRecordConnectingDomainWithLoadBalancer(domain: Domain, loadbalancer: LoadBalancer): DnsRecord {
     return new DnsRecord('app-subdomain', {
         domain: domain.name,
-        name: domain.name.apply(domainName => `app.${domainName}`),
+        name: 'app',
         type: 'A',
         value: loadbalancer.ip
     })
