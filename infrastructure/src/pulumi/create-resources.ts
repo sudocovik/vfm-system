@@ -41,6 +41,7 @@ function createPulumiLoadBalancer(certificate: Certificate): LoadBalancer {
         size: 'lb-small',
         region: 'fra1',
         dropletTag: workerNodeTagName,
+        redirectHttpToHttps: true,
         forwardingRules: [{
             entryPort: 80,
             entryProtocol: 'http',
