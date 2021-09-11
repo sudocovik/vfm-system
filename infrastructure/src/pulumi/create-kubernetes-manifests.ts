@@ -78,6 +78,11 @@ export function createKubernetesManifests(kubeconfig: string): void {
                 web: {
                     nodePort: 32080
                 }
+            },
+            providers: {
+                kubernetesCRD: {
+                    namespaces: [testNamespace.metadata.name, namespace]
+                }
             }
         }
     }, { provider })
