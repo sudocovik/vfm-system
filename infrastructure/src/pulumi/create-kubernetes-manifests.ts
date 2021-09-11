@@ -1,9 +1,15 @@
 import * as k8s from '@pulumi/kubernetes'
 
+function createNamespace(): k8s.core.v1.Namespace {
+    return new k8s.core.v1.Namespace('vfm')
+}
+
 export function createKubernetesManifests(kubeconfig: string): void {
     const provider: k8s.Provider = new k8s.Provider('main-kubernetes-provider', {
         kubeconfig
     })
+
+    createNamespace()
 
     const labels = { app: 'nginx' }
 
