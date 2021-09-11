@@ -54,13 +54,17 @@ export function createKubernetesManifests(kubeconfig: string): void {
         },
     }, { provider })
 
+    const testNamespace = new k8s.core.v1.Namespace('traefik', {}, {
+        provider
+    })
+
     const traefik = new k8s.helm.v3.Chart('traefik-ingress', {
         chart: 'traefik',
         version: '10.3.2',
         fetchOpts: {
             repo: 'https://helm.traefik.io/traefik',
         },
-        namespace: 'traefik',
+        namespace: testNamespace.metadata.name,
         values: {
             ingressRoute: {
                 dashboard: {
