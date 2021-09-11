@@ -60,7 +60,7 @@ export function createKubernetesManifests(kubeconfig: string): void {
         fetchOpts: {
             repo: 'https://helm.traefik.io/traefik',
         },
-        namespace,
+        namespace: 'traefik',
         values: {
             ingressRoute: {
                 dashboard: {
