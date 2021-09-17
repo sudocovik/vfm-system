@@ -104,5 +104,5 @@ export async function createCloudResources(): Promise<string> {
     const cluster = createPulumiCluster(new DigitalOceanCluster())
     createPulumiProject(new DigitalOceanProject(), domain, cluster, loadbalancer)
 
-    return cluster.kubeConfigs[0].rawConfig.apply(config => config) as string
+    return cluster.kubeConfigs[0].rawConfig as string
 }
