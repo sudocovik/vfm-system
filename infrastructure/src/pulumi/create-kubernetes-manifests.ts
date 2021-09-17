@@ -54,7 +54,7 @@ export function createKubernetesManifests(kubeconfig: string): void {
         },
     }, { provider })
 
-    const testNamespace = new k8s.core.v1.Namespace('traefik', {}, {
+    /* const testNamespace = new k8s.core.v1.Namespace('traefik', {}, {
         provider
     })
 
@@ -85,7 +85,7 @@ export function createKubernetesManifests(kubeconfig: string): void {
                 }
             }
         }
-    }, { provider })
+    }, { provider }) */
 
     new k8s.networking.v1.Ingress('default-ingress', {
         metadata: {
@@ -109,5 +109,5 @@ export function createKubernetesManifests(kubeconfig: string): void {
                 }
             }]
         }
-    }, { provider, dependsOn: [ traefik ] })
+    }, { provider, dependsOn: [  ] })
 }
