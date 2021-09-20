@@ -8,6 +8,7 @@ import {
     LoadBalancer,
     Project,
 } from '@pulumi/digitalocean'
+import * as pulumi from '@pulumi/pulumi'
 
 const workerNodeTagName = 'vfm-worker'
 
@@ -66,6 +67,33 @@ function createPulumiLoadBalancer(certificate: Certificate): LoadBalancer {
     })
 }
 
+export function createTokenKubeconfig(
+    cluster: KubernetesCluster,
+    user: pulumi.Input<string>,
+    apiToken: pulumi.Input<string>,
+): pulumi.Output<string> {
+    const clusterName = pulumi.interpolate`do-${cluster.region}-${cluster.name}`
+
+    return pulumi.interpolate`apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: ${cluster.kubeConfigs[0].clusterCaCertificate}
+    server: ${cluster.endpoint}
+  name: ${clusterName}
+contexts:
+- context:
+    cluster: ${clusterName}
+    user: ${clusterName}-${user}
+  name: ${clusterName}
+current-context: ${clusterName}
+kind: Config
+users:
+- name: ${clusterName}-${user}
+  user:
+    token: ${apiToken}
+`;
+}
+
 function createPulumiCluster(cluster: DigitalOceanCluster): KubernetesCluster {
     return new KubernetesCluster('main-cluster', {
         name: cluster.name(),
@@ -96,7 +124,7 @@ function createPulumiProject(project: DigitalOceanProject, domain: Domain, clust
     })
 }
 
-export async function createCloudResources(): Promise<string> {
+export async function createCloudResources(clusterToken: string): Promise<string> {
     const domain = createPulumiDomain(new DigitalOceanDomain())
     const certificate = createPulumiCertificate(domain, 'app')
     const loadbalancer = createPulumiLoadBalancer(certificate)
@@ -104,5 +132,5 @@ export async function createCloudResources(): Promise<string> {
     const cluster = createPulumiCluster(new DigitalOceanCluster())
     createPulumiProject(new DigitalOceanProject(), domain, cluster, loadbalancer)
 
-    return cluster.kubeConfigs[0].rawConfig as string
+    return createTokenKubeconfig(cluster, 'admin', clusterToken) as string
 }

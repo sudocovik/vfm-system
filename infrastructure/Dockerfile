@@ -45,6 +45,7 @@ ENV NODE_ENV='production'
 # These variables should be set in runtime
 ENV PULUMI_ACCESS_TOKEN=''
 ENV DIGITALOCEAN_TOKEN=''
+ENV CLUSTER_TOKEN=''
 
 COPY --from=production-artifact /app/dist /app/dist
 COPY --from=production-artifact /app/node_modules /app/node_modules

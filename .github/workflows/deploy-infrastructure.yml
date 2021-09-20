@@ -20,4 +20,5 @@ jobs:
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
           DIGITALOCEAN_TOKEN: ${{ secrets.DIGITALOCEAN_TOKEN }}
+          CLUSTER_TOKEN: ${{ secrets.CLUSTER_TOKEN }}
         run: make production
