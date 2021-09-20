@@ -58,17 +58,13 @@ export function createKubernetesManifests(kubeconfig: string): void {
         },
     }, { provider })
 
-    /* const testNamespace = new k8s.core.v1.Namespace('traefik', {}, {
-        provider
-    })
-
-    const traefik = new k8s.helm.v3.Chart('traefik-ingress', {
+    const traefik = new k8s.helm.v3.Chart('default-ingress-controller', {
         chart: 'traefik',
         version: '10.3.2',
         fetchOpts: {
             repo: 'https://helm.traefik.io/traefik',
         },
-        namespace: testNamespace.metadata.name,
+        namespace: namespace,
         values: {
             ingressRoute: {
                 dashboard: {
@@ -82,14 +78,16 @@ export function createKubernetesManifests(kubeconfig: string): void {
                 web: {
                     nodePort: 32080
                 }
-            },
-            providers: {
-                kubernetesCRD: {
-                    namespaces: [testNamespace.metadata.name, namespace]
-                }
             }
-        }
-    }, { provider }) */
+        },
+        transformations: [
+            (obj: any) => {
+                if (obj.kind === 'Service') {
+                    obj.metadata.namespace = namespace
+                }
+            },
+        ]
+    }, { provider })
 
     new k8s.networking.v1.Ingress('default-ingress', {
         metadata: {
@@ -113,5 +111,5 @@ export function createKubernetesManifests(kubeconfig: string): void {
                 }
             }]
         }
-    }, { provider, dependsOn: [  ] })
+    }, { provider, dependsOn: [ traefik ] })
 }
