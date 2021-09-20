@@ -34,7 +34,7 @@ export function createKubernetesManifests(kubeconfig: string): void {
                 spec: {
                     containers: [{
                         name: 'backend',
-                        image: 'traccar:4.13-alpine',
+                        image: 'traccar/traccar:4.13-alpine',
                         imagePullPolicy: 'IfNotPresent',
                         ports: [{
                             name: 'http',
