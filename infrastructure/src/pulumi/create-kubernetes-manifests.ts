@@ -11,7 +11,7 @@ function createNamespace(provider: k8s.Provider): k8s.core.v1.Namespace {
 }
 
 export function createKubernetesManifests(kubeconfig: string): void {
-    const provider: k8s.Provider = new k8s.Provider('main-kubernetes-provider1', {
+    const provider: k8s.Provider = new k8s.Provider('main-kubernetes-provider', {
         kubeconfig
     })
 
