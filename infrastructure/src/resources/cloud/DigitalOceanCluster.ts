@@ -6,6 +6,6 @@ export class DigitalOceanCluster implements Cluster {
     }
 
     version(): string {
-        return '1.21.2-do.2'
+        return '1.21.3-do.0'
     }
 }
