@@ -17,23 +17,28 @@ export function createKubernetesManifests(kubeconfig: string): void {
 
     const namespace = createNamespace(provider).metadata.name
 
-    const labels = { app: 'nginx' }
+    const traccarLabels = { app: 'traccar' }
 
-    const deployment = new k8s.apps.v1.Deployment('nginx-test', {
+    const traccarDeployment: k8s.apps.v1.Deployment = new k8s.apps.v1.Deployment('traccar-deployment', {
         metadata: {
             namespace
         },
         spec: {
-            selector: { matchLabels: labels },
-            replicas: 1,
+            selector: {
+                matchLabels: traccarLabels
+            },
             template: {
-                metadata: { labels: labels },
+                metadata: {
+                    labels:  traccarLabels
+                },
                 spec: {
                     containers: [{
-                        name: 'nginx',
-                        image: 'nginx:1.21-alpine',
+                        name: 'backend',
+                        image: 'traccar:4.13-alpine',
+                        imagePullPolicy: 'IfNotPresent',
                         ports: [{
-                            containerPort: 80,
+                            name: 'http',
+                            containerPort: 8082,
                             protocol: 'TCP'
                         }]
                     }]
@@ -42,20 +47,19 @@ export function createKubernetesManifests(kubeconfig: string): void {
         }
     }, { provider })
 
-    const service = new k8s.core.v1.Service('nginx-test', {
+    const traccarService: k8s.core.v1.Service = new k8s.core.v1.Service('traccar-service', {
         metadata: {
-            namespace,
-            labels: deployment.spec.template.metadata.labels
+            namespace
         },
         spec: {
-            type: 'ClusterIP',
+            selector: traccarLabels,
             ports: [{
-                port: 8080,
-                targetPort: 80,
+                name: 'api',
+                port: 80,
+                targetPort: traccarDeployment.spec.template.spec.containers[0].ports[0].name,
                 protocol: 'TCP'
-            }],
-            selector: deployment.spec.template.metadata.labels,
-        },
+            }]
+        }
     }, { provider })
 
     const traefik = new k8s.helm.v3.Chart('default-ingress-controller', {
@@ -101,9 +105,9 @@ export function createKubernetesManifests(kubeconfig: string): void {
                         pathType: 'Prefix',
                         backend: {
                             service: {
-                                name: service.metadata.name,
+                                name: traccarService.metadata.name,
                                 port: {
-                                    number: service.spec.ports[0].port
+                                    name: traccarService.spec.ports[0].name
                                 }
                             }
                         }
