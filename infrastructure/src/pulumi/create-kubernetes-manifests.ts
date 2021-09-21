@@ -81,6 +81,7 @@ export function createKubernetesManifests(kubeconfig: string): void {
             namespace
         },
         spec: {
+            type: 'NodePort',
             selector: traccarLabels,
             ports: [{
                 name: 'teltonika',
