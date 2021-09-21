@@ -32,6 +32,7 @@ export function createKubernetesManifests(kubeconfig: string): void {
                     labels:  traccarLabels
                 },
                 spec: {
+                    restartPolicy: 'Always',
                     containers: [{
                         name: 'backend',
                         image: 'traccar/traccar:4.13-alpine',
