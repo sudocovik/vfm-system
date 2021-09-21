@@ -57,7 +57,7 @@ export function createKubernetesManifests(kubeconfig: string): void {
         }
     }, { provider })
 
-    const traccarService: k8s.core.v1.Service = new k8s.core.v1.Service('traccar-service', {
+    const traccarApiService: k8s.core.v1.Service = new k8s.core.v1.Service('traccar-service', {
         metadata: {
             namespace
         },
@@ -115,9 +115,9 @@ export function createKubernetesManifests(kubeconfig: string): void {
                         pathType: 'Prefix',
                         backend: {
                             service: {
-                                name: traccarService.metadata.name,
+                                name: traccarApiService.metadata.name,
                                 port: {
-                                    name: traccarService.spec.ports[0].name
+                                    name: traccarApiService.spec.ports[0].name
                                 }
                             }
                         }
