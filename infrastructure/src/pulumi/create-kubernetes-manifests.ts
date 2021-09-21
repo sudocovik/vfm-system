@@ -41,6 +41,10 @@ export function createKubernetesManifests(kubeconfig: string): void {
                             name: 'api',
                             containerPort: 8082,
                             protocol: 'TCP'
+                        }, {
+                            name: 'teltonika',
+                            containerPort: 5027,
+                            protocol: 'TCP'
                         }],
                         startupProbe: {
                             httpGet: {
@@ -67,6 +71,22 @@ export function createKubernetesManifests(kubeconfig: string): void {
                 name: 'api',
                 port: 80,
                 targetPort: traccarDeployment.spec.template.spec.containers[0].ports[0].name,
+                protocol: 'TCP'
+            }]
+        }
+    }, { provider })
+
+    new k8s.core.v1.Service('traccar-teltonika-service', {
+        metadata: {
+            namespace
+        },
+        spec: {
+            selector: traccarLabels,
+            ports: [{
+                name: 'teltonika',
+                port: 5027,
+                nodePort: 32027,
+                targetPort: traccarDeployment.spec.template.spec.containers[0].ports[1].name,
                 protocol: 'TCP'
             }]
         }
