@@ -61,7 +61,7 @@ export function createKubernetesManifests(kubeconfig: string): void {
         }
     }, { provider })
 
-    const traccarApiService: k8s.core.v1.Service = new k8s.core.v1.Service('traccar-service', {
+    const traccarApiService: k8s.core.v1.Service = new k8s.core.v1.Service('traccar-api-service', {
         metadata: {
             namespace
         },
