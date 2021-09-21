@@ -46,7 +46,7 @@ export function createKubernetesManifests(kubeconfig: string): void {
                             httpGet: {
                                 path: '/',
                                 port: 'http',
-                                scheme: 'http'
+                                scheme: 'HTTP'
                             },
                             failureThreshold: 30,
                             periodSeconds: 30,
