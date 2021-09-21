@@ -41,7 +41,16 @@ export function createKubernetesManifests(kubeconfig: string): void {
                             name: 'http',
                             containerPort: 8082,
                             protocol: 'TCP'
-                        }]
+                        }],
+                        startupProbe: {
+                            httpGet: {
+                                path: '/',
+                                port: 'http',
+                                scheme: 'http'
+                            },
+                            failureThreshold: 30,
+                            periodSeconds: 30,
+                        }
                     }]
                 }
             }
