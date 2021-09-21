@@ -38,14 +38,14 @@ export function createKubernetesManifests(kubeconfig: string): void {
                         image: 'traccar/traccar:4.13-alpine',
                         imagePullPolicy: 'IfNotPresent',
                         ports: [{
-                            name: 'http',
+                            name: 'api',
                             containerPort: 8082,
                             protocol: 'TCP'
                         }],
                         startupProbe: {
                             httpGet: {
                                 path: '/',
-                                port: 'http',
+                                port: 'api',
                                 scheme: 'HTTP'
                             },
                             failureThreshold: 30,
