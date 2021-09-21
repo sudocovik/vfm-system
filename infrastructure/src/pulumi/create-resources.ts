@@ -54,6 +54,11 @@ function createPulumiLoadBalancer(certificate: Certificate): LoadBalancer {
             targetPort: 32080,
             targetProtocol: 'http',
             certificateName: certificate.name,
+        }, {
+            entryPort: 5027,
+            entryProtocol: 'tcp',
+            targetPort: 32027,
+            targetProtocol: 'tcp'
         }],
         healthcheck: {
             path: '/',
