@@ -34,12 +34,12 @@ class ClusterSpy implements LocalCluster {
 }
 
 describe('#local cluster', () => {
-    let runner: ClusterSpy
+    let clusterSpy: ClusterSpy
     let cluster: LocalClusterManager
 
     beforeEach(() => {
-        runner = new ClusterSpy()
-        cluster = new LocalClusterManager(runner)
+        clusterSpy = new ClusterSpy()
+        cluster = new LocalClusterManager(clusterSpy)
     })
 
     describe('- launch()', () => {
@@ -53,16 +53,16 @@ describe('#local cluster', () => {
         })
 
         test('launching non-existent cluster should not try to start it (already started)', async () => {
-            expect(runner.started).toBe(false)
+            expect(clusterSpy.started).toBe(false)
             await cluster.launch()
-            expect(runner.started).toBe(false)
+            expect(clusterSpy.started).toBe(false)
         })
 
         test('launching existing cluster should only start it', async () => {
             await cluster.launch()
-            expect(runner.started).toBe(false)
+            expect(clusterSpy.started).toBe(false)
             await cluster.launch()
-            expect(runner.started).toBe(true)
+            expect(clusterSpy.started).toBe(true)
         })
     })
 
@@ -73,10 +73,10 @@ describe('#local cluster', () => {
 
         test('existing cluster should be destroyable', async () => {
             await cluster.launch()
-            expect(await runner.exists()).toBe(true)
+            expect(await clusterSpy.exists()).toBe(true)
 
             await cluster.destroy()
-            expect(await runner.exists()).toBe(false)
+            expect(await clusterSpy.exists()).toBe(false)
         })
     })
 
@@ -87,9 +87,9 @@ describe('#local cluster', () => {
 
         test('a running cluster should be stoppable', async () => {
             await cluster.launch()
-            runner.started = true
+            clusterSpy.started = true
             await cluster.stop()
-            expect(runner.started).toBe(false)
+            expect(clusterSpy.started).toBe(false)
         })
     })
 
