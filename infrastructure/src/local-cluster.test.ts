@@ -27,6 +27,10 @@ class UnitTestClusterManager implements LocalClusterManager {
     public async stop(): Promise<void> {
         this.started = false
     }
+
+    public async kubeconfig(): Promise<string> {
+        return '<<imagine-valid-kubeconfig>>'
+    }
 }
 
 describe('#local cluster', () => {
@@ -93,5 +97,20 @@ describe('#local cluster', () => {
         runner.started = true
         await cluster.stop()
         expect(runner.started).toBe(false)
+    })
+
+    test('getting kubeconfig from non-existent cluster should throw exception', async () => {
+        const runner = new UnitTestClusterManager()
+        const cluster = new LocalCluster(runner)
+
+        await expect(cluster.kubeconfig()).rejects.toBeInstanceOf(LocalClusterIsMissingException)
+    })
+
+    test('existing cluster should return kubeconfig', async () => {
+        const runner = new UnitTestClusterManager()
+        const cluster = new LocalCluster(runner)
+
+        await cluster.launch()
+        expect(await cluster.kubeconfig()).toBe('<<imagine-valid-kubeconfig>>')
     })
 })

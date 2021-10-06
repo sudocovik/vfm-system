@@ -8,6 +8,8 @@ export interface LocalClusterManager {
     stop(): Promise<void>
 
     destroy(): Promise<void>
+
+    kubeconfig(): Promise<string>
 }
 
 export class LocalClusterIsMissingException extends Error {}
@@ -36,6 +38,14 @@ export class LocalCluster {
 
     public async stop(): Promise<void> {
         await this.cluster.stop()
+    }
+
+    public async kubeconfig(): Promise<string> {
+        if (await this.cluster.exists() === false) {
+            throw new LocalClusterIsMissingException()
+        }
+
+        return await this.cluster.kubeconfig()
     }
 }
 
