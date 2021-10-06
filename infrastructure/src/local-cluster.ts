@@ -18,7 +18,10 @@ export class LocalCluster {
     public async launch(): Promise<void> {
         if (await this.cluster.exists() === false) {
             await this.cluster.create()
+            return
         }
+
+        await this.cluster.start()
     }
 
     public async destroy(): Promise<void> {

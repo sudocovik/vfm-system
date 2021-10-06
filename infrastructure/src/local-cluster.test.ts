@@ -5,6 +5,8 @@ class UnitTestClusterManager implements LocalClusterManager {
 
     private created: boolean = false
 
+    public started: boolean = false
+
     public async create(): Promise<void> {
         this.created = true
         UnitTestClusterManager.createdCount ++
@@ -19,6 +21,7 @@ class UnitTestClusterManager implements LocalClusterManager {
     }
 
     public async start(): Promise<void> {
+        this.started = true
     }
 }
 
@@ -50,5 +53,24 @@ describe('#local cluster', () => {
 
         await cluster.destroy()
         expect(await runner.exists()).toBe(false)
+    })
+
+    test('creating a cluster should not try to start it (should be already started)', async () => {
+        const runner = new UnitTestClusterManager()
+        const cluster = new LocalCluster(runner)
+
+        expect(runner.started).toBe(false)
+        await cluster.launch()
+        expect(runner.started).toBe(false)
+    })
+
+    test('launching existing cluster should only start it', async () => {
+        const runner = new UnitTestClusterManager()
+        const cluster = new LocalCluster(runner)
+
+        await cluster.launch()
+        expect(runner.started).toBe(false)
+        await cluster.launch()
+        expect(runner.started).toBe(true)
     })
 })
