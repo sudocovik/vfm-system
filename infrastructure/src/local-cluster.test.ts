@@ -28,7 +28,7 @@ class UnitTestClusterManager implements LocalClusterManager {
 describe('#local cluster', () => {
     test('creating existing cluster should be idempotent', async () => {
         const runner = new UnitTestClusterManager()
-        const cluster: LocalCluster = new LocalCluster(runner)
+        const cluster = new LocalCluster(runner)
 
         expect(UnitTestClusterManager.createdCount).toBe(0)
         await cluster.launch()
@@ -39,7 +39,7 @@ describe('#local cluster', () => {
     })
 
     test('destroying non-existent cluster should throw exception', async () => {
-        const cluster: LocalCluster = new LocalCluster(new UnitTestClusterManager())
+        const cluster = new LocalCluster(new UnitTestClusterManager())
 
         await expect(cluster.destroy()).rejects.toBeInstanceOf(LocalClusterIsMissingException)
     })
