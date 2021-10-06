@@ -3,7 +3,10 @@ import { LocalCluster, LocalClusterRunner } from './local-cluster'
 class UnitTestCluster implements LocalClusterRunner {
     static createdCount: number = 0
 
+    private created: boolean = false
+
     public async create(): Promise<void> {
+        this.created = true
         UnitTestCluster.createdCount ++
     }
 
@@ -12,7 +15,7 @@ class UnitTestCluster implements LocalClusterRunner {
     }
 
     public async exists(): Promise<boolean> {
-        return false
+        return this.created
     }
 
     public async start(): Promise<void> {

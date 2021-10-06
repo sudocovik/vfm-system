@@ -14,7 +14,10 @@ export class LocalCluster {
     ) {}
 
     public async launch(): Promise<string> {
-        await this.runner.create()
+        if (await this.runner.exists() === false) {
+            await this.runner.create()
+        }
+
         return ''
     }
 }
