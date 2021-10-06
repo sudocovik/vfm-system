@@ -1,6 +1,6 @@
-import { LocalCluster, LocalClusterIsMissingException, LocalClusterManager } from './local-cluster'
+import { LocalClusterManager, LocalClusterIsMissingException, LocalCluster } from './local-cluster-manager'
 
-class ClusterSpy implements LocalClusterManager {
+class ClusterSpy implements LocalCluster {
     static createdCount: number = 0
 
     private created: boolean = false
@@ -35,11 +35,11 @@ class ClusterSpy implements LocalClusterManager {
 
 describe('#local cluster', () => {
     let runner: ClusterSpy
-    let cluster: LocalCluster
+    let cluster: LocalClusterManager
 
     beforeEach(() => {
         runner = new ClusterSpy()
-        cluster = new LocalCluster(runner)
+        cluster = new LocalClusterManager(runner)
     })
 
     describe('- launch()', () => {

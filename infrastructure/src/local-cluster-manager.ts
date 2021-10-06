@@ -1,4 +1,4 @@
-export interface LocalClusterManager {
+export interface LocalCluster {
     create(): Promise<void>
 
     exists(): Promise<boolean>
@@ -14,9 +14,9 @@ export interface LocalClusterManager {
 
 export class LocalClusterIsMissingException extends Error {}
 
-export class LocalCluster {
+export class LocalClusterManager {
     public constructor(
-        private cluster: LocalClusterManager
+        private cluster: LocalCluster
     ) {}
 
     public async launch(): Promise<void> {
