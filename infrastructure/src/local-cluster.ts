@@ -12,7 +12,7 @@ export class LocalClusterIsMissingException extends Error {}
 
 export class LocalCluster {
     public constructor(
-        public cluster: LocalClusterRunner
+        private cluster: LocalClusterRunner
     ) {}
 
     public async launch(): Promise<string> {
