@@ -34,12 +34,16 @@ class ClusterSpy implements LocalClusterManager {
 }
 
 describe('#local cluster', () => {
+    let runner: ClusterSpy
+    let cluster: LocalCluster
+
+    beforeEach(() => {
+        runner = new ClusterSpy()
+        cluster = new LocalCluster(runner)
+    })
 
     describe('- launch()', () => {
         test('creating existing cluster should be idempotent', async () => {
-            const runner = new ClusterSpy()
-            const cluster = new LocalCluster(runner)
-
             expect(ClusterSpy.createdCount).toBe(0)
             await cluster.launch()
             expect(ClusterSpy.createdCount).toBe(1)
@@ -49,18 +53,12 @@ describe('#local cluster', () => {
         })
 
         test('launching non-existent cluster should not try to start it (already started)', async () => {
-            const runner = new ClusterSpy()
-            const cluster = new LocalCluster(runner)
-
             expect(runner.started).toBe(false)
             await cluster.launch()
             expect(runner.started).toBe(false)
         })
 
         test('launching existing cluster should only start it', async () => {
-            const runner = new ClusterSpy()
-            const cluster = new LocalCluster(runner)
-
             await cluster.launch()
             expect(runner.started).toBe(false)
             await cluster.launch()
@@ -70,15 +68,10 @@ describe('#local cluster', () => {
 
     describe('- destroy()', () => {
         test('destroying non-existent cluster should throw exception', async () => {
-            const cluster = new LocalCluster(new ClusterSpy())
-
             await expect(cluster.destroy()).rejects.toBeInstanceOf(LocalClusterIsMissingException)
         })
 
         test('existing cluster should be destroyable', async () => {
-            const runner = new ClusterSpy()
-            const cluster = new LocalCluster(runner)
-
             await cluster.launch()
             expect(await runner.exists()).toBe(true)
 
@@ -89,16 +82,10 @@ describe('#local cluster', () => {
 
     describe('- stop()', () => {
         test('stopping a non-running cluster should fail silently', async () => {
-            const runner = new ClusterSpy()
-            const cluster = new LocalCluster(runner)
-
             await expect(cluster.stop()).resolves.not.toThrow()
         })
 
         test('a running cluster should be stoppable', async () => {
-            const runner = new ClusterSpy()
-            const cluster = new LocalCluster(runner)
-
             await cluster.launch()
             runner.started = true
             await cluster.stop()
@@ -108,16 +95,10 @@ describe('#local cluster', () => {
 
     describe('- kubeconfig()', () => {
         test('getting kubeconfig from non-existent cluster should throw exception', async () => {
-            const runner = new ClusterSpy()
-            const cluster = new LocalCluster(runner)
-
             await expect(cluster.kubeconfig()).rejects.toBeInstanceOf(LocalClusterIsMissingException)
         })
 
         test('existing cluster should return kubeconfig', async () => {
-            const runner = new ClusterSpy()
-            const cluster = new LocalCluster(runner)
-
             await cluster.launch()
             expect(await cluster.kubeconfig()).toBe('<<imagine-valid-kubeconfig>>')
         })
