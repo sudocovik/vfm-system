@@ -55,7 +55,7 @@ describe('#local cluster', () => {
         expect(await runner.exists()).toBe(false)
     })
 
-    test('creating a cluster should not try to start it (should be already started)', async () => {
+    test('launching non-existent cluster should not try to start it (should be already started)', async () => {
         const runner = new UnitTestClusterManager()
         const cluster = new LocalCluster(runner)
 
