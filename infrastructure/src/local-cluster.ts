@@ -12,23 +12,23 @@ export class LocalClusterIsMissingException extends Error {}
 
 export class LocalCluster {
     public constructor(
-        public runner: LocalClusterRunner
+        public cluster: LocalClusterRunner
     ) {}
 
     public async launch(): Promise<string> {
-        if (await this.runner.exists() === false) {
-            await this.runner.create()
+        if (await this.cluster.exists() === false) {
+            await this.cluster.create()
         }
 
         return ''
     }
 
     public async destroy(): Promise<void> {
-        if (await this.runner.exists() === false) {
+        if (await this.cluster.exists() === false) {
             throw new LocalClusterIsMissingException()
         }
 
-        await this.runner.destroy()
+        await this.cluster.destroy()
     }
 }
 
