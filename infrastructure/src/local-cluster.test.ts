@@ -1,6 +1,6 @@
 import { LocalCluster, LocalClusterIsMissingException, LocalClusterManager } from './local-cluster'
 
-class UnitTestClusterManager implements LocalClusterManager {
+class ClusterSpy implements LocalClusterManager {
     static createdCount: number = 0
 
     private created: boolean = false
@@ -9,7 +9,7 @@ class UnitTestClusterManager implements LocalClusterManager {
 
     public async create(): Promise<void> {
         this.created = true
-        UnitTestClusterManager.createdCount ++
+        ClusterSpy.createdCount ++
     }
 
     public async destroy(): Promise<void> {
@@ -37,19 +37,19 @@ describe('#local cluster', () => {
 
     describe('- launch()', () => {
         test('creating existing cluster should be idempotent', async () => {
-            const runner = new UnitTestClusterManager()
+            const runner = new ClusterSpy()
             const cluster = new LocalCluster(runner)
 
-            expect(UnitTestClusterManager.createdCount).toBe(0)
+            expect(ClusterSpy.createdCount).toBe(0)
             await cluster.launch()
-            expect(UnitTestClusterManager.createdCount).toBe(1)
+            expect(ClusterSpy.createdCount).toBe(1)
 
             await cluster.launch()
-            expect(UnitTestClusterManager.createdCount).toBe(1)
+            expect(ClusterSpy.createdCount).toBe(1)
         })
 
         test('launching non-existent cluster should not try to start it (already started)', async () => {
-            const runner = new UnitTestClusterManager()
+            const runner = new ClusterSpy()
             const cluster = new LocalCluster(runner)
 
             expect(runner.started).toBe(false)
@@ -58,7 +58,7 @@ describe('#local cluster', () => {
         })
 
         test('launching existing cluster should only start it', async () => {
-            const runner = new UnitTestClusterManager()
+            const runner = new ClusterSpy()
             const cluster = new LocalCluster(runner)
 
             await cluster.launch()
@@ -70,13 +70,13 @@ describe('#local cluster', () => {
 
     describe('- destroy()', () => {
         test('destroying non-existent cluster should throw exception', async () => {
-            const cluster = new LocalCluster(new UnitTestClusterManager())
+            const cluster = new LocalCluster(new ClusterSpy())
 
             await expect(cluster.destroy()).rejects.toBeInstanceOf(LocalClusterIsMissingException)
         })
 
         test('existing cluster should be destroyable', async () => {
-            const runner = new UnitTestClusterManager()
+            const runner = new ClusterSpy()
             const cluster = new LocalCluster(runner)
 
             await cluster.launch()
@@ -89,14 +89,14 @@ describe('#local cluster', () => {
 
     describe('- stop()', () => {
         test('stopping a non-running cluster should fail silently', async () => {
-            const runner = new UnitTestClusterManager()
+            const runner = new ClusterSpy()
             const cluster = new LocalCluster(runner)
 
             await expect(cluster.stop()).resolves.not.toThrow()
         })
 
         test('a running cluster should be stoppable', async () => {
-            const runner = new UnitTestClusterManager()
+            const runner = new ClusterSpy()
             const cluster = new LocalCluster(runner)
 
             await cluster.launch()
@@ -108,14 +108,14 @@ describe('#local cluster', () => {
 
     describe('- kubeconfig()', () => {
         test('getting kubeconfig from non-existent cluster should throw exception', async () => {
-            const runner = new UnitTestClusterManager()
+            const runner = new ClusterSpy()
             const cluster = new LocalCluster(runner)
 
             await expect(cluster.kubeconfig()).rejects.toBeInstanceOf(LocalClusterIsMissingException)
         })
 
         test('existing cluster should return kubeconfig', async () => {
-            const runner = new UnitTestClusterManager()
+            const runner = new ClusterSpy()
             const cluster = new LocalCluster(runner)
 
             await cluster.launch()
