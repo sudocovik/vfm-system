@@ -34,83 +34,92 @@ class UnitTestClusterManager implements LocalClusterManager {
 }
 
 describe('#local cluster', () => {
-    test('creating existing cluster should be idempotent', async () => {
-        const runner = new UnitTestClusterManager()
-        const cluster = new LocalCluster(runner)
 
-        expect(UnitTestClusterManager.createdCount).toBe(0)
-        await cluster.launch()
-        expect(UnitTestClusterManager.createdCount).toBe(1)
+    describe('- launch()', () => {
+        test('creating existing cluster should be idempotent', async () => {
+            const runner = new UnitTestClusterManager()
+            const cluster = new LocalCluster(runner)
 
-        await cluster.launch()
-        expect(UnitTestClusterManager.createdCount).toBe(1)
+            expect(UnitTestClusterManager.createdCount).toBe(0)
+            await cluster.launch()
+            expect(UnitTestClusterManager.createdCount).toBe(1)
+
+            await cluster.launch()
+            expect(UnitTestClusterManager.createdCount).toBe(1)
+        })
+
+        test('launching non-existent cluster should not try to start it (already started)', async () => {
+            const runner = new UnitTestClusterManager()
+            const cluster = new LocalCluster(runner)
+
+            expect(runner.started).toBe(false)
+            await cluster.launch()
+            expect(runner.started).toBe(false)
+        })
+
+        test('launching existing cluster should only start it', async () => {
+            const runner = new UnitTestClusterManager()
+            const cluster = new LocalCluster(runner)
+
+            await cluster.launch()
+            expect(runner.started).toBe(false)
+            await cluster.launch()
+            expect(runner.started).toBe(true)
+        })
     })
 
-    test('destroying non-existent cluster should throw exception', async () => {
-        const cluster = new LocalCluster(new UnitTestClusterManager())
+    describe('- destroy()', () => {
+        test('destroying non-existent cluster should throw exception', async () => {
+            const cluster = new LocalCluster(new UnitTestClusterManager())
 
-        await expect(cluster.destroy()).rejects.toBeInstanceOf(LocalClusterIsMissingException)
+            await expect(cluster.destroy()).rejects.toBeInstanceOf(LocalClusterIsMissingException)
+        })
+
+        test('existing cluster should be destroyable', async () => {
+            const runner = new UnitTestClusterManager()
+            const cluster = new LocalCluster(runner)
+
+            await cluster.launch()
+            expect(await runner.exists()).toBe(true)
+
+            await cluster.destroy()
+            expect(await runner.exists()).toBe(false)
+        })
     })
 
-    test('existing cluster should be destroyable', async () => {
-        const runner = new UnitTestClusterManager()
-        const cluster = new LocalCluster(runner)
+    describe('- stop()', () => {
+        test('stopping a non-running cluster should fail silently', async () => {
+            const runner = new UnitTestClusterManager()
+            const cluster = new LocalCluster(runner)
 
-        await cluster.launch()
-        expect(await runner.exists()).toBe(true)
+            await expect(cluster.stop()).resolves.not.toThrow()
+        })
 
-        await cluster.destroy()
-        expect(await runner.exists()).toBe(false)
+        test('a running cluster should be stoppable', async () => {
+            const runner = new UnitTestClusterManager()
+            const cluster = new LocalCluster(runner)
+
+            await cluster.launch()
+            runner.started = true
+            await cluster.stop()
+            expect(runner.started).toBe(false)
+        })
     })
 
-    test('launching non-existent cluster should not try to start it (should be already started)', async () => {
-        const runner = new UnitTestClusterManager()
-        const cluster = new LocalCluster(runner)
+    describe('- kubeconfig()', () => {
+        test('getting kubeconfig from non-existent cluster should throw exception', async () => {
+            const runner = new UnitTestClusterManager()
+            const cluster = new LocalCluster(runner)
 
-        expect(runner.started).toBe(false)
-        await cluster.launch()
-        expect(runner.started).toBe(false)
-    })
+            await expect(cluster.kubeconfig()).rejects.toBeInstanceOf(LocalClusterIsMissingException)
+        })
 
-    test('launching existing cluster should only start it', async () => {
-        const runner = new UnitTestClusterManager()
-        const cluster = new LocalCluster(runner)
+        test('existing cluster should return kubeconfig', async () => {
+            const runner = new UnitTestClusterManager()
+            const cluster = new LocalCluster(runner)
 
-        await cluster.launch()
-        expect(runner.started).toBe(false)
-        await cluster.launch()
-        expect(runner.started).toBe(true)
-    })
-
-    test('stopping a non-running cluster should fail silently', async () => {
-        const runner = new UnitTestClusterManager()
-        const cluster = new LocalCluster(runner)
-
-        await expect(cluster.stop()).resolves.not.toThrow()
-    })
-
-    test('a running cluster should be stoppable', async () => {
-        const runner = new UnitTestClusterManager()
-        const cluster = new LocalCluster(runner)
-
-        await cluster.launch()
-        runner.started = true
-        await cluster.stop()
-        expect(runner.started).toBe(false)
-    })
-
-    test('getting kubeconfig from non-existent cluster should throw exception', async () => {
-        const runner = new UnitTestClusterManager()
-        const cluster = new LocalCluster(runner)
-
-        await expect(cluster.kubeconfig()).rejects.toBeInstanceOf(LocalClusterIsMissingException)
-    })
-
-    test('existing cluster should return kubeconfig', async () => {
-        const runner = new UnitTestClusterManager()
-        const cluster = new LocalCluster(runner)
-
-        await cluster.launch()
-        expect(await cluster.kubeconfig()).toBe('<<imagine-valid-kubeconfig>>')
+            await cluster.launch()
+            expect(await cluster.kubeconfig()).toBe('<<imagine-valid-kubeconfig>>')
+        })
     })
 })
