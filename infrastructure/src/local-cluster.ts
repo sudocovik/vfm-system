@@ -8,6 +8,8 @@ export interface LocalClusterRunner {
     destroy(): Promise<void>
 }
 
+export class LocalClusterIsMissingException extends Error {}
+
 export class LocalCluster {
     public constructor(
         public runner: LocalClusterRunner
@@ -20,4 +22,9 @@ export class LocalCluster {
 
         return ''
     }
+
+    public async destroy(): Promise<void> {
+        throw new LocalClusterIsMissingException()
+    }
 }
+

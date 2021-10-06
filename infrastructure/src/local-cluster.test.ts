@@ -1,4 +1,4 @@
-import { LocalCluster, LocalClusterRunner } from './local-cluster'
+import { LocalCluster, LocalClusterIsMissingException, LocalClusterRunner } from './local-cluster'
 
 class UnitTestCluster implements LocalClusterRunner {
     static createdCount: number = 0
@@ -32,5 +32,11 @@ describe('#local cluster', () => {
 
         await cluster.launch()
         expect(UnitTestCluster.createdCount).toBe(1)
+    })
+
+    test('destroying non-existent cluster should throw exception', async () => {
+        const cluster: LocalCluster = new LocalCluster(new UnitTestCluster())
+
+        await expect(cluster.destroy()).rejects.toBeInstanceOf(LocalClusterIsMissingException)
     })
 })
