@@ -5,6 +5,8 @@ export interface LocalClusterManager {
 
     start(): Promise<void>
 
+    stop(): Promise<void>
+
     destroy(): Promise<void>
 }
 
@@ -30,6 +32,10 @@ export class LocalCluster {
         }
 
         await this.cluster.destroy()
+    }
+
+    public async stop(): Promise<void> {
+        await this.cluster.stop()
     }
 }
 

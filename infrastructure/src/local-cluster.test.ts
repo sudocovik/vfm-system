@@ -23,6 +23,10 @@ class UnitTestClusterManager implements LocalClusterManager {
     public async start(): Promise<void> {
         this.started = true
     }
+
+    public async stop(): Promise<void> {
+        this.started = false
+    }
 }
 
 describe('#local cluster', () => {
@@ -72,5 +76,22 @@ describe('#local cluster', () => {
         expect(runner.started).toBe(false)
         await cluster.launch()
         expect(runner.started).toBe(true)
+    })
+
+    test('stopping a non-running cluster should fail silently', async () => {
+        const runner = new UnitTestClusterManager()
+        const cluster = new LocalCluster(runner)
+
+        await expect(cluster.stop()).resolves.not.toThrow()
+    })
+
+    test('a running cluster should be stoppable', async () => {
+        const runner = new UnitTestClusterManager()
+        const cluster = new LocalCluster(runner)
+
+        await cluster.launch()
+        runner.started = true
+        await cluster.stop()
+        expect(runner.started).toBe(false)
     })
 })
