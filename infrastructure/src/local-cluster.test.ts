@@ -11,10 +11,11 @@ class UnitTestCluster implements LocalClusterRunner {
     }
 
     public async destroy(): Promise<void> {
+        this.created = false
     }
 
     public async exists(): Promise<boolean> {
-        return this.created
+        return this.created === true
     }
 
     public async start(): Promise<void> {
@@ -38,5 +39,16 @@ describe('#local cluster', () => {
         const cluster: LocalCluster = new LocalCluster(new UnitTestCluster())
 
         await expect(cluster.destroy()).rejects.toBeInstanceOf(LocalClusterIsMissingException)
+    })
+
+    test('existing cluster should be destroyable', async () => {
+        const runner = new UnitTestCluster()
+        const cluster = new LocalCluster(runner)
+
+        await cluster.launch()
+        expect(await runner.exists()).toBe(true)
+
+        await cluster.destroy()
+        expect(await runner.exists()).toBe(false)
     })
 })

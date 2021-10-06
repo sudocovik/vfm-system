@@ -24,7 +24,11 @@ export class LocalCluster {
     }
 
     public async destroy(): Promise<void> {
-        throw new LocalClusterIsMissingException()
+        if (await this.runner.exists() === false) {
+            throw new LocalClusterIsMissingException()
+        }
+
+        await this.runner.destroy()
     }
 }
 
