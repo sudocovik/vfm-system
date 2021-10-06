@@ -11,7 +11,6 @@ class UnitTestCluster implements LocalClusterRunner {
     }
 
     public async destroy(): Promise<void> {
-        UnitTestCluster.createdCount --
     }
 
     public async exists(): Promise<boolean> {
