@@ -1,13 +1,13 @@
-import { LocalCluster, LocalClusterIsMissingException, LocalClusterRunner } from './local-cluster'
+import { LocalCluster, LocalClusterIsMissingException, LocalClusterManager } from './local-cluster'
 
-class UnitTestCluster implements LocalClusterRunner {
+class UnitTestClusterManager implements LocalClusterManager {
     static createdCount: number = 0
 
     private created: boolean = false
 
     public async create(): Promise<void> {
         this.created = true
-        UnitTestCluster.createdCount ++
+        UnitTestClusterManager.createdCount ++
     }
 
     public async destroy(): Promise<void> {
@@ -24,25 +24,25 @@ class UnitTestCluster implements LocalClusterRunner {
 
 describe('#local cluster', () => {
     test('creating existing cluster should be idempotent', async () => {
-        const runner = new UnitTestCluster()
+        const runner = new UnitTestClusterManager()
         const cluster: LocalCluster = new LocalCluster(runner)
 
-        expect(UnitTestCluster.createdCount).toBe(0)
+        expect(UnitTestClusterManager.createdCount).toBe(0)
         await cluster.launch()
-        expect(UnitTestCluster.createdCount).toBe(1)
+        expect(UnitTestClusterManager.createdCount).toBe(1)
 
         await cluster.launch()
-        expect(UnitTestCluster.createdCount).toBe(1)
+        expect(UnitTestClusterManager.createdCount).toBe(1)
     })
 
     test('destroying non-existent cluster should throw exception', async () => {
-        const cluster: LocalCluster = new LocalCluster(new UnitTestCluster())
+        const cluster: LocalCluster = new LocalCluster(new UnitTestClusterManager())
 
         await expect(cluster.destroy()).rejects.toBeInstanceOf(LocalClusterIsMissingException)
     })
 
     test('existing cluster should be destroyable', async () => {
-        const runner = new UnitTestCluster()
+        const runner = new UnitTestClusterManager()
         const cluster = new LocalCluster(runner)
 
         await cluster.launch()
