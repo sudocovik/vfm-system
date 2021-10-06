@@ -1,17 +1,20 @@
-import { promisify } from 'util'
-const exec = promisify(require('child_process').exec)
+export interface LocalClusterRunner {
+    create(): Promise<void>
 
-export class k3dCluster {
-    public async create() {
-        if (await k3dCluster.exists()) {
-            return
-        }
+    exists(): Promise<boolean>
 
-        await exec('k3d cluster create vfm')
-    }
+    start(): Promise<void>
 
-    private static async exists(): Promise<boolean> {
-        const { stdout: result } = await exec('k3d cluster list')
-        return result.indexOf('vfm') !== -1
+    destroy(): Promise<void>
+}
+
+export class LocalCluster {
+    public constructor(
+        public runner: LocalClusterRunner
+    ) {}
+
+    public async launch(): Promise<string> {
+        await this.runner.create()
+        return ''
     }
 }
