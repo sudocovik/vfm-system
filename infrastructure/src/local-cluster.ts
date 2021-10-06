@@ -15,12 +15,10 @@ export class LocalCluster {
         private cluster: LocalClusterManager
     ) {}
 
-    public async launch(): Promise<string> {
+    public async launch(): Promise<void> {
         if (await this.cluster.exists() === false) {
             await this.cluster.create()
         }
-
-        return ''
     }
 
     public async destroy(): Promise<void> {
