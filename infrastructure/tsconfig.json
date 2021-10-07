@@ -11,6 +11,8 @@
     "noImplicitOverride": true,
     "noImplicitReturns": true
   },
-  "files": ["./src/main.ts", "./src/local.ts"],
+  "files": ["./src/main.ts",
+    "./src/local-environment/index.ts"
+  ],
   "exclude": ["./node_modules"]
 }

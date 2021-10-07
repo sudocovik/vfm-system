@@ -1,5 +1,5 @@
-import { LocalClusterManager } from './local-environment/local-cluster-manager'
-import { k3dCluster } from './local-environment/k3d-cluster'
+import { LocalClusterManager } from './local-cluster-manager'
+import { k3dCluster } from './k3d-cluster'
 
 const clusterManager = new LocalClusterManager(new k3dCluster())
 
