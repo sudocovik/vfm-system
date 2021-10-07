@@ -28,4 +28,4 @@ local-launch:
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-e PULUMI_CONFIG_PASSPHRASE='' \
 	  $$(docker build --target=development --build-arg HOST_DOCKER_GROUP_ID=$(DOCKER_GROUP_ID) --rm -q .) \
-	  npm run local:launch
+	  /bin/bash -c 'tsc && node dist/local-environment/index.js'

@@ -6,8 +6,7 @@
     "build": "tsc",
     "dev": "tsc -w & nodemon dist/main.js",
     "production": "node dist/main.js",
-    "test": "jest",
-    "local:launch": "tsc && node dist/local-environment/index.js"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
