@@ -4,7 +4,6 @@
   "description": "Infrastructure provisioning for VFM project",
   "scripts": {
     "build": "tsc",
-    "dev": "tsc -w & nodemon dist/main.js",
     "production": "node dist/main.js",
     "test": "jest"
   },
@@ -22,7 +21,6 @@
     "@tsconfig/recommended": "^1.0.1",
     "@types/jest": "^27.0.2",
     "jest": "^27.2.4",
-    "nodemon": "^2.0.12",
     "ts-jest": "^27.0.5",
     "typescript": "^4.3.5"
   },
