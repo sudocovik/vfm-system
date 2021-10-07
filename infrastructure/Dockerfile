@@ -14,6 +14,7 @@ RUN chown node:node /app
 FROM base AS development
 
 ENV NODE_ENV='local'
+ENV PATH="${PROJECT_ROOT}/node_modules/.bin:${PATH}"
 
 ARG HOST_DOCKER_GROUP_ID
 
