@@ -4,6 +4,10 @@ import { CustomProcess } from './index'
 class TestProcess extends SimpleProcess {
   public override async run(callback: () => Promise<any>): Promise<void> {
     await callback()
+    await this.simulateGracefulShutdown()
+  }
+
+  private async simulateGracefulShutdown(): Promise<void> {
     await this.gracefulShutdownHandler()
   }
 }
@@ -35,5 +39,9 @@ describe('#process', () => {
 
       expect(hasRun).toBe(true)
     })
+
+    // can handle undefined handler
+
+    // throws on multiple invocations of onGracefulShutdown
   })
 })
