@@ -1,4 +1,4 @@
-import { SimpleProcess } from './process'
+import { MultipleGracefulShutdownHandlersPermittedException, SimpleProcess } from './process'
 import { CustomProcess } from './index'
 
 class TestProcess extends SimpleProcess {
@@ -40,8 +40,24 @@ describe('#process', () => {
       expect(hasRun).toBe(true)
     })
 
-    // can handle undefined handler
+    it('should do nothing if no callback is given', async () => {
+      const process: CustomProcess = new TestProcess()
 
-    // throws on multiple invocations of onGracefulShutdown
+      await expect(process.run(async () => {})).resolves.not.toThrow()
+    })
+
+    it('should throw on multiple calls of onGracefulShutdown', async () => {
+      const process: CustomProcess = new TestProcess()
+
+      try {
+        process.onGracefulShutdownRequest(async () => {})
+        process.onGracefulShutdownRequest(async () => {})
+      }
+      catch (e) {
+        expect(e).toBeInstanceOf(MultipleGracefulShutdownHandlersPermittedException)
+      }
+
+      expect.assertions(1)
+    })
   })
 })
