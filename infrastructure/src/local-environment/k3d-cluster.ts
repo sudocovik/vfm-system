@@ -4,7 +4,7 @@ const exec = promisify(require('child_process').exec)
 
 export class k3dCluster implements LocalCluster {
     public async create(): Promise<void> {
-        await exec('k3d cluster create vfm')
+        await exec('k3d cluster create vfm --wait --timeout=60s --k3s-arg=\'--no-deploy=traefik\'@server:*')
     }
 
     public async destroy(): Promise<void> {
