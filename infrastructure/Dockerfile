@@ -11,6 +11,15 @@ WORKDIR $PROJECT_ROOT
 RUN chown node:node /app
 
 
+FROM base AS production-artifact
+
+COPY . .
+
+RUN npm install
+RUN npm run build
+# /app/dist and /app/node_modules is where all the final JS files live
+
+
 FROM base AS development
 
 ENV NODE_ENV='local'
@@ -29,15 +38,9 @@ COPY --from=docker:20.10.8 /usr/local/bin/docker /usr/local/bin/docker
 
 RUN curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
 
+COPY --from=production-artifact /app/node_modules /app/node_modules
+
 USER node
-
-FROM base AS production-artifact
-
-COPY . .
-
-RUN npm install
-RUN npm run build
-# /app/dist and /app/node_modules is where all the final JS files live
 
 
 FROM base AS production
