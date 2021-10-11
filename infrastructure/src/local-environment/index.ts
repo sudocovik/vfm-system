@@ -1,21 +1,30 @@
+import { COLORS, Stdout, UNICODE } from '../utilities/terminal'
+import { InfiniteProcess } from '../utilities/process/process'
 import { LocalClusterManager } from './local-cluster-manager'
 import { k3dCluster } from './k3d-cluster'
+import pulumiProgram from './pulumi-program'
+import { createKubernetesManifests } from '../pulumi/create-kubernetes-manifests'
 
+const script = new InfiniteProcess()
 const clusterManager = new LocalClusterManager(new k3dCluster())
 
-process.stdout.write('\x1b[33m' + 'Starting cluster...' + '\x1b[0m')
-clusterManager.launch().then(() => {
-    process.stdout.moveCursor(0, -1)
-    process.stdout.clearScreenDown()
-    process.stdout.write('\n' + '\x1b[32m' + 'Cluster running' + '\x1b[0m')
-})
+script.onGracefulShutdownRequest(async () => {
+    Stdout.clearLastLine() // hide ^C produced by hitting Control+C
+    Stdout.write(Stdout.colorize(COLORS.YELLOW, UNICODE.FULL_CIRCLE) + ' Stopping cluster')
 
-process.on('SIGINT', () => {
-    console.log("\nstopping cluster...")
     clusterManager.stop().then(() => {
-        console.log('cluster stopped!')
+        Stdout.clearLastLine()
+        Stdout.writeLine(Stdout.colorize(COLORS.GREEN, UNICODE.CHECK_MARK) + ' Cluster stopped')
         process.exit(0)
     })
 })
 
-setInterval(() => {}, 30000)
+script.run(async () => {
+    Stdout.clearAll()
+
+    Stdout.write(Stdout.colorize(COLORS.YELLOW, UNICODE.FULL_CIRCLE) + ' Starting cluster...')
+    await clusterManager.launch().then(() => {
+        Stdout.clearLastLine()
+        Stdout.writeLine(Stdout.colorize(COLORS.GREEN, UNICODE.CHECK_MARK) + ' Cluster running')
+    })
+}).then()
