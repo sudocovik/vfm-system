@@ -27,4 +27,12 @@ script.run(async () => {
         Stdout.clearLastLine()
         Stdout.writeLine(Stdout.colorize(COLORS.GREEN, UNICODE.CHECK_MARK) + ' Cluster running')
     })
+
+    Stdout.write(Stdout.colorize(COLORS.YELLOW, UNICODE.FULL_CIRCLE) + ' Deploying apps...')
+    await pulumiProgram(async () => {
+        createKubernetesManifests(await clusterManager.kubeconfig())
+    }).then(() => {
+        Stdout.clearLastLine()
+        Stdout.writeLine(Stdout.colorize(COLORS.GREEN, UNICODE.CHECK_MARK) + ' Apps deployed')
+    })
 }).then()
