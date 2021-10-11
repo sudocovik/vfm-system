@@ -15,6 +15,7 @@ FROM base AS development
 
 ENV NODE_ENV='local'
 ENV PATH="${PROJECT_ROOT}/node_modules/.bin:${PATH}"
+ENV PULUMI_CONFIG_PASSPHRASE=''
 
 ARG HOST_DOCKER_GROUP_ID
 
