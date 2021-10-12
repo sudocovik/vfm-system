@@ -1,4 +1,5 @@
 IMAGE_NAME=covik/vfm-infrastructure:local
+CONTAINER_NAME=vfm-infrastructure
 
 .PHONY: build
 build:
@@ -14,6 +15,7 @@ dev:
 	docker run -it \
 			--rm \
 			--network host \
+			--name $(CONTAINER_NAME) \
 			-v $$(pwd)/infrastructure:/app \
 			-v /var/run/docker.sock:/var/run/docker.sock \
 		$(IMAGE_NAME) \
