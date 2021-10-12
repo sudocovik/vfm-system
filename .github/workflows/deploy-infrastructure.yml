@@ -15,10 +15,14 @@ jobs:
       - name: "Checkout repository"
         uses: actions/checkout@v2
 
+      - name: "Build image"
+        working-directory: "./infrastructure"
+        run: make
+
       - name: "Deploy production infrastructure"
         working-directory: "./infrastructure"
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
           DIGITALOCEAN_TOKEN: ${{ secrets.DIGITALOCEAN_TOKEN }}
           CLUSTER_TOKEN: ${{ secrets.CLUSTER_TOKEN }}
-        run: make production
+        run: make deploy
