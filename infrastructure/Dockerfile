@@ -43,6 +43,16 @@ COPY --from=production-artifact /app/node_modules /app/node_modules
 USER node
 
 
+FROM base AS test
+
+COPY --from=production-artifact /app/node_modules /app/node_modules
+COPY ./src ./src
+COPY package.json .
+COPY jest.config.js .
+
+CMD ["npm", "run", "test"]
+
+
 FROM base AS production
 
 ENV NODE_ENV='production'
