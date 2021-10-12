@@ -1,6 +1,5 @@
 {
   "name": "vfm-infrastructure",
-  "version": "0.0.1",
   "description": "Infrastructure provisioning for VFM project",
   "scripts": {
     "build": "tsc",
