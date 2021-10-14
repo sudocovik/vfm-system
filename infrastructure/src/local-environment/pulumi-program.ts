@@ -19,5 +19,6 @@ export default async function (program: () => Promise<any>) {
 
     await stack.workspace.installPlugin('digitalocean', '4.6.0')
     await stack.workspace.installPlugin('kubernetes', '3.7.0')
+    await stack.workspace.installPlugin('docker', '3.1.0')
     await stack.up()
 }
