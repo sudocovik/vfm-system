@@ -17,6 +17,8 @@ CMD ["exit", "-1"]
 
 FROM nginx:1.21.3-alpine AS production-server
 
+LABEL org.opencontainers.image.source=https://github.com/Covik/vfm-system
+
 COPY --from=production-artifact --chown=root:root /app/artifact /usr/share/nginx/html
 
 
