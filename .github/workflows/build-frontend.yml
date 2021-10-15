@@ -22,3 +22,9 @@ jobs:
       - name: "Unit test"
         working-directory: "./frontend"
         run: make test
+
+      - name: "Build"
+        working-directory: "./frontend"
+        env:
+          IMAGE_VERSION: ${{ github.sha }}
+        run: make

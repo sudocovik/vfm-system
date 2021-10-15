@@ -8,6 +8,18 @@ RUN npm ci
 CMD ["exit", "-1"]
 
 
+FROM source AS production-artifact
+
+RUN npm run production -- --dest=./artifact --modern
+
+# should not be runnable, use only as part of multi-stage build
+CMD ["exit", "-1"]
+
+FROM nginx:1.21.3-alpine AS production-server
+
+COPY --from=production-artifact --chown=root:root /app/artifact /usr/share/nginx/html
+
+
 FROM node:16.11-alpine3.14 AS development-environment
 
 RUN apk update && apk add bash
