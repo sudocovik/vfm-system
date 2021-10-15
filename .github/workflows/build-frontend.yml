@@ -18,3 +18,7 @@ jobs:
       - name: "Lint"
         working-directory: "./frontend"
         run: make lint
+
+      - name: "Unit test"
+        working-directory: "./frontend"
+        run: make test
