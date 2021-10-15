@@ -10,7 +10,7 @@ CMD ["exit", "-1"]
 
 FROM source AS production-artifact
 
-RUN npm run production -- --dest=./artifact --modern
+RUN npm run build -- --dest=./artifact --modern
 
 # should not be runnable, use only as part of multi-stage build
 CMD ["exit", "-1"]
