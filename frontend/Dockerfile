@@ -1,3 +1,13 @@
+FROM node:16.11-alpine3.14 AS source
+
+WORKDIR /app
+COPY . .
+RUN npm ci
+
+# should not be runnable without explicitly defined command
+CMD ["exit", "-1"]
+
+
 FROM node:16.11-alpine3.14 AS development-environment
 
 RUN apk update && apk add bash
