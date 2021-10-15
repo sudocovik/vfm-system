@@ -28,3 +28,10 @@ jobs:
         env:
           IMAGE_VERSION: ${{ github.sha }}
         run: make
+
+      - name: "Push image to GitHub Container Registry"
+        working-directory: "./frontend"
+        env:
+          IMAGE_VERSION: ${{ github.sha }}
+        run:
+          make push

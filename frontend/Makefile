@@ -12,3 +12,7 @@ lint:
 .PHONY: test
 test:
 	docker run --rm $$(docker build . --target=source -q) /bin/sh -c "npm run test:unit -- --colors"
+
+.PHONY: push
+push:
+	docker push $(IMAGE_NAME)
