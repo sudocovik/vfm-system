@@ -3,7 +3,7 @@ IMAGE_NAME=ghcr.io/covik/vfm-frontend:$(IMAGE_VERSION)
 
 .PHONY: build
 build:
-	DOCKER_BUILDKIT=1 docker build . --tag=$(IMAGE_NAME)
+	DOCKER_BUILDKIT=1 docker build . --target=production-server --tag=$(IMAGE_NAME)
 
 .PHONY: lint
 lint:
