@@ -23,7 +23,7 @@ jobs:
         working-directory: "./frontend"
         run: make test
 
-      - name: "Build"
+      - name: "Build container image"
         working-directory: "./frontend"
         env:
           IMAGE_VERSION: ${{ github.sha }}
