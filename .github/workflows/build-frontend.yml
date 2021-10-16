@@ -16,18 +16,30 @@ defaults:
     working-directory: "./frontend"
 
 jobs:
-  build:
+  lint:
     runs-on: ubuntu-latest
-
     steps:
       - name: "Checkout repository"
         uses: actions/checkout@v2
 
-      - name: "Lint"
+      - name: "Run linter"
         run: make lint
 
-      - name: "Unit test"
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout repository"
+        uses: actions/checkout@v2
+
+      - name: "Run unit tests"
         run: make test
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    steps:
+      - name: "Checkout repository"
+        uses: actions/checkout@v2
 
       - name: "Build container image"
         run: make
