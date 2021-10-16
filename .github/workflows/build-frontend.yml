@@ -7,10 +7,6 @@ on:
       - "frontend/**"
       - "!frontend/**.md"
 
-env:
-  # used by build & push Makefile targets
-  IMAGE_VERSION: ${{ github.sha }}
-
 defaults:
   run:
     working-directory: "./frontend"
@@ -37,6 +33,9 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     needs: [lint, test]
+    env:
+      # used by build & push Makefile targets
+      IMAGE_VERSION: ${{ github.sha }}
     steps:
       - name: "Checkout repository"
         uses: actions/checkout@v2
