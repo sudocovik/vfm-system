@@ -16,16 +16,16 @@ const errorMessageShouldEndWith = (error: Error, substring: string) => {
 
 describe('#ProductionStack', () => {
     const forbiddenTypes = [
-        { type: 'null', value: null },
+        { type: 'null',      value: null },
         { type: 'undefined', value: undefined },
-        { type: 'object', value: {} },
-        { type: 'array', value: [] },
-        { type: 'integer', value: 1234 },
-        { type: 'float', value: 3.14 },
-        { type: 'true', value: true },
-        { type: 'false', value: false },
-        { type: 'bigint', value: 22n ** 53n },
-        { type: 'symbol', value: Symbol('test') }
+        { type: 'object',    value: {} },
+        { type: 'array',     value: [] },
+        { type: 'integer',   value: 1234 },
+        { type: 'float',     value: 3.14 },
+        { type: 'true',      value: true },
+        { type: 'false',     value: false },
+        { type: 'bigint',    value: 22n ** 53n },
+        { type: 'symbol',    value: Symbol('test') }
     ]
 
     forbiddenTypes.forEach(({ type, value }) => {
