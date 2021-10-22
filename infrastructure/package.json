@@ -4,7 +4,7 @@
   "scripts": {
     "build": "tsc",
     "production": "node dist/main.js",
-    "test": "jest"
+    "test": "jest --colors"
   },
   "repository": {
     "type": "git",

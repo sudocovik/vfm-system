@@ -11,7 +11,7 @@ lint:
 
 .PHONY: test
 test:
-	docker run --rm $$(docker build . --target=source -q) /bin/sh -c "npm run test:unit -- --colors"
+	docker run --rm $$(docker build . --target=source -q) /bin/sh -c "npm run test:unit"
 
 .PHONY: push
 push:
