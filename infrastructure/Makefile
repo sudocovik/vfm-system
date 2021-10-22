@@ -2,12 +2,12 @@ IMAGE_NAME=covik/vfm-infrastructure:latest
 
 .PHONY: build
 build:
-	@DOCKER_BUILDKIT=1 docker build --target=production --tag=$(IMAGE_NAME) .
+	@docker buildx build --target=production --tag=$(IMAGE_NAME) .
 
 .PHONY: test
 test:
 	@docker run \
-	  $$(DOCKER_BUILDKIT=1 docker build --target=test -q .)
+	  $$(docker buildx build --target=test -q .)
 
 .PHONY: deploy
 deploy:
