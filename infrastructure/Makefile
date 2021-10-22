@@ -7,7 +7,7 @@ build:
 .PHONY: test
 test:
 	@docker run \
-	  $$(docker buildx build --target=test -q .)
+	  $$(DOCKER_BUILDKIT=1 docker build --target=test --quiet .)
 
 .PHONY: deploy
 deploy:
