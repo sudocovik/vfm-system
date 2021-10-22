@@ -11,7 +11,7 @@ export class ProductionStack {
         if (typeof name !== 'string')
             throw new TypeError('Stack name should be string, got ' + stringRepresentationOfVariableType(name))
 
-        if (name === '')
+        if (name === '' || name === ' ')
             throw new EmptyValueError('Stack name should not be empty string')
     }
 }

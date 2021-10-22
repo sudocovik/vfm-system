@@ -53,6 +53,16 @@ describe('#ProductionStack', () => {
         }
     })
 
+    it('should not accept string with a single whitespace', () => {
+        expect.assertions(1)
+        try {
+            new ProductionStack(' ')
+        }
+        catch (e) {
+            errorShouldBeInstanceOfEmptyValueError(e)
+        }
+    })
+
     it('should accept string', () => {
         expect(new ProductionStack('test').name).toBe('test')
     })
