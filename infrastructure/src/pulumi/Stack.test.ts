@@ -1,7 +1,11 @@
-import { LocalStack, ProductionStack } from './Stack'
+import { EmptyValueError, LocalStack, ProductionStack } from './Stack'
 
 const errorShouldBeInstanceOfTypeError = (error: Error) => {
     expect(error).toBeInstanceOf(TypeError)
+}
+
+const errorShouldBeInstanceOfEmptyValueError = (error: Error) => {
+    expect(error).toBeInstanceOf(EmptyValueError)
 }
 
 const errorMessageShouldEndWith = (error: Error, substring: string) => {
@@ -37,6 +41,16 @@ describe('#ProductionStack', () => {
                 errorMessageShouldEndWith(e, stringRepresentationOfVariableType)
             }
         })
+    })
+
+    it('should not accept empty string', () => {
+        expect.assertions(1)
+        try {
+            new ProductionStack('')
+        }
+        catch (e) {
+            errorShouldBeInstanceOfEmptyValueError(e)
+        }
     })
 
     it('should accept string', () => {
