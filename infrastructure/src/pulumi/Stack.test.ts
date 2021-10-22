@@ -52,7 +52,7 @@ describe('#ProductionStack', () => {
     ]
 
     forbiddenStringValues.forEach(({ name, value }) => {
-        it('should not accept ' + name, () => {
+        it(`should not accept ${name}`, () => {
             expect.assertions(1)
             try {
                 new ProductionStack(value)
