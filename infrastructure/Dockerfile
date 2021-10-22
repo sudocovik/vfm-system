@@ -49,6 +49,7 @@ COPY --from=production-artifact /app/node_modules /app/node_modules
 COPY ./src ./src
 COPY package.json .
 COPY jest.config.js .
+COPY tsconfig.json .
 
 CMD ["npm", "run", "test"]
 
