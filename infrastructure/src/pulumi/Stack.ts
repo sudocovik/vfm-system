@@ -13,7 +13,7 @@ export class ProductionStack {
             throw new TypeError('Stack name should be string, got object')
 
         if (typeof name === 'boolean')
-            throw new TypeError('Stack name should be string, got true')
+            throw new TypeError('Stack name should be string, got boolean')
 
         if (typeof name === 'bigint')
             throw new TypeError('Stack name should be string, got bigint')
