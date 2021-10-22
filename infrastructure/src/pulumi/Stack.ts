@@ -13,6 +13,8 @@ export class ProductionStack {
 
         if (name === '' || name === ' ' || name === '   ')
             throw new EmptyValueError('Stack name should not be empty string')
+
+        this.name = name.trim()
     }
 }
 
