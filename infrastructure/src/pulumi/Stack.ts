@@ -12,13 +12,8 @@ export class ProductionStack {
         if (typeof name === 'object')
             throw new TypeError('Stack name should be string, got object')
 
-        // @ts-ignore
-        if (name === true)
+        if (typeof name === 'boolean')
             throw new TypeError('Stack name should be string, got true')
-
-        // @ts-ignore
-        if (name === false)
-            throw new TypeError('Stack name should be string, got false')
 
         if (typeof name === 'bigint')
             throw new TypeError('Stack name should be string, got bigint')
