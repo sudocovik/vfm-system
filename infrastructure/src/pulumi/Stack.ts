@@ -11,10 +11,10 @@ export class ProductionStack {
         if (typeof name !== 'string')
             throw new TypeError('Stack name should be string, got ' + stringRepresentationOfVariableType(name))
 
-        if (name === '' || name === ' ' || name === '   ')
-            throw new EmptyValueError('Stack name should not be empty string')
-
         this.name = name.trim()
+
+        if (this.name === '')
+            throw new EmptyValueError('Stack name should not be empty string')
     }
 }
 
