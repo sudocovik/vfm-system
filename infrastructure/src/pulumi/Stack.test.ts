@@ -63,7 +63,6 @@ describe('#ProductionStack', () => {
         })
     })
 
-
     it('should trim all front and back whitespaces', () => {
         expect(new ProductionStack('  test  ').name).toBe('test')
     })
