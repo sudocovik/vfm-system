@@ -1,5 +1,15 @@
 import { ProductionStack } from './Stack'
 
+const errorShouldBeInstanceOfTypeError = (error: Error) => {
+    expect(error).toBeInstanceOf(TypeError)
+}
+
+const errorMessageShouldEndWith = (error: Error, substring: string) => {
+    const endsWith = (value: string): RegExp => new RegExp(''+ value +'$')
+
+    expect(error.message).toMatch(endsWith(substring))
+}
+
 describe('#ProductionStack', () => {
     const forbiddenTypes = [
         { type: 'null', value: null },
@@ -16,12 +26,15 @@ describe('#ProductionStack', () => {
 
     forbiddenTypes.forEach(({ type, value }) => {
         it(`should not accept '${type}'`, () => {
-            expect.assertions(1)
+            expect.assertions(2)
             try {
                 new ProductionStack(value as any)
             }
             catch (e) {
-                expect(e).toBeInstanceOf(TypeError)
+                const stringRepresentationOfVariableType: string = value === null ? 'null' : typeof value
+
+                errorShouldBeInstanceOfTypeError(e)
+                errorMessageShouldEndWith(e, stringRepresentationOfVariableType)
             }
         })
     })
