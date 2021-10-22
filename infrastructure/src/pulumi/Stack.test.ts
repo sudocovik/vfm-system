@@ -53,10 +53,20 @@ describe('#ProductionStack', () => {
         }
     })
 
-    it('should not accept string with a single whitespace', () => {
+    it('should not accept string with only a single whitespace', () => {
         expect.assertions(1)
         try {
             new ProductionStack(' ')
+        }
+        catch (e) {
+            errorShouldBeInstanceOfEmptyValueError(e)
+        }
+    })
+
+    it('should not accept string with multiple whitespaces only', () => {
+        expect.assertions(1)
+        try {
+            new ProductionStack('   ')
         }
         catch (e) {
             errorShouldBeInstanceOfEmptyValueError(e)
