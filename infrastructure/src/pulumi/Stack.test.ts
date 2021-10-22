@@ -1,4 +1,4 @@
-import { ProductionStack } from './Stack'
+import { LocalStack, ProductionStack } from './Stack'
 
 const errorShouldBeInstanceOfTypeError = (error: Error) => {
     expect(error).toBeInstanceOf(TypeError)
@@ -41,5 +41,11 @@ describe('#ProductionStack', () => {
 
     it('should accept string', () => {
         expect(new ProductionStack('test').name).toBe('test')
+    })
+})
+
+describe('#LocalStack', () => {
+    it('should always return hardcoded value \'local\'', () => {
+        expect(new LocalStack().name).toBe('local')
     })
 })

@@ -10,3 +10,7 @@ export class ProductionStack {
             throw new TypeError('Stack name should be string, got ' + stringRepresentationOfVariableType(name))
     }
 }
+
+export class LocalStack {
+    public readonly name: string = 'local'
+}
