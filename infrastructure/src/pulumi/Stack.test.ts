@@ -43,45 +43,26 @@ describe('#ProductionStack', () => {
         })
     })
 
-    it('should not accept empty string', () => {
-        expect.assertions(1)
-        try {
-            new ProductionStack('')
-        }
-        catch (e) {
-            errorShouldBeInstanceOfEmptyValueError(e)
-        }
+    const forbiddenStringValues = [
+        { name: 'empty string',                               value: ''},
+        { name: 'string with only a single whitespace',       value: ' '},
+        { name: 'string with a couple of whitespaces only',   value: '   '},
+        { name: 'string with many whitespaces only',          value: '                  '},
+        // there are infinite possibilities here but these should be enough
+    ]
+
+    forbiddenStringValues.forEach(({ name, value }) => {
+        it('should not accept ' + name, () => {
+            expect.assertions(1)
+            try {
+                new ProductionStack(value)
+            }
+            catch (e) {
+                errorShouldBeInstanceOfEmptyValueError(e)
+            }
+        })
     })
 
-    it('should not accept string with only a single whitespace', () => {
-        expect.assertions(1)
-        try {
-            new ProductionStack(' ')
-        }
-        catch (e) {
-            errorShouldBeInstanceOfEmptyValueError(e)
-        }
-    })
-
-    it('should not accept string with a couple of whitespaces only', () => {
-        expect.assertions(1)
-        try {
-            new ProductionStack('   ')
-        }
-        catch (e) {
-            errorShouldBeInstanceOfEmptyValueError(e)
-        }
-    })
-
-    it('should not accept string with many whitespaces only', () => {
-        expect.assertions(1)
-        try {
-            new ProductionStack('                  ')
-        }
-        catch (e) {
-            errorShouldBeInstanceOfEmptyValueError(e)
-        }
-    })
 
     it('should trim all front and back whitespaces', () => {
         expect(new ProductionStack('  test  ').name).toBe('test')
