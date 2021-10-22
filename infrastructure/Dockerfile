@@ -51,7 +51,7 @@ COPY package.json .
 COPY jest.config.js .
 COPY tsconfig.json .
 
-CMD ["npm", "run", "test"]
+CMD ["npm", "run", "test", "--no-update-notifier", "--silent"]
 
 
 FROM base AS production
@@ -69,4 +69,4 @@ COPY package.json package.json
 
 USER node
 
-CMD ["npm", "run", "production"]
+CMD ["npm", "run", "production", "--no-update-notifier", "--silent"]
