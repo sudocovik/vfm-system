@@ -1,6 +1,5 @@
 # .cache is intentionally left because pulumi in local environment needs it
 node_modules/
-dist/
 .gitignore
 CHANGELOG.md
 Makefile
