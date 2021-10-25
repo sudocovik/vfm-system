@@ -4,7 +4,7 @@ COPY --from=pulumi/pulumi-base:3.12.0 /pulumi/bin/pulumi /usr/bin/pulumi
 
 COPY --from=alpine/helm:3.6.3 /usr/bin/helm /usr/bin/helm
 
-ENV PROJECT_ROOT='/app'
+ENV PROJECT_ROOT="/app"
 ENV PATH="${PROJECT_ROOT}/node_modules/.bin:${PATH}"
 
 WORKDIR $PROJECT_ROOT
@@ -23,8 +23,8 @@ RUN npm install
 
 FROM base AS development
 
-ENV NODE_ENV='local'
-ENV PULUMI_CONFIG_PASSPHRASE=''
+ENV NODE_ENV="local"
+ENV PULUMI_CONFIG_PASSPHRASE=""
 
 ARG HOST_DOCKER_GROUP_ID
 
@@ -45,12 +45,12 @@ USER node
 
 FROM base AS production
 
-ENV NODE_ENV='production'
+ENV NODE_ENV="production"
 
 # These variables should be set in runtime
-ENV PULUMI_ACCESS_TOKEN=''
-ENV DIGITALOCEAN_TOKEN=''
-ENV CLUSTER_TOKEN=''
+ENV PULUMI_ACCESS_TOKEN=""
+ENV DIGITALOCEAN_TOKEN=""
+ENV CLUSTER_TOKEN=""
 
 COPY --from=dependencies /app/node_modules /app/node_modules
 COPY . .
