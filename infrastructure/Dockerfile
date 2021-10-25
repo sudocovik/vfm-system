@@ -36,7 +36,7 @@ SHELL ["/bin/bash", "-c"]
 
 COPY --from=docker:20.10.8 /usr/local/bin/docker /usr/local/bin/docker
 
-RUN curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
+RUN curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v5.0.1 bash
 
 COPY --from=production-artifact /app/node_modules /app/node_modules
 
