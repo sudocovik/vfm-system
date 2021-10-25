@@ -18,5 +18,4 @@ dev:
 			--name $(CONTAINER_NAME) \
 			-v $$(pwd)/infrastructure:/app \
 			-v /var/run/docker.sock:/var/run/docker.sock \
-		$(IMAGE_NAME) \
-		bash -c "tsc && node dist/local-environment/index.js"
+		$(IMAGE_NAME)

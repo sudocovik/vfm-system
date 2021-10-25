@@ -42,6 +42,8 @@ COPY --from=dependencies /app/node_modules /app/node_modules
 
 USER node
 
+CMD ["ts-node", "src/local-environment/index.ts"]
+
 
 FROM base AS production
 
