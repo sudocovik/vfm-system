@@ -1,4 +1,4 @@
-FROM node:16.7-alpine3.14 AS base
+FROM node:17.0.1-alpine3.14 AS base
 
 COPY --from=pulumi/pulumi-base:3.12.0 /pulumi/bin/pulumi /usr/bin/pulumi
 
