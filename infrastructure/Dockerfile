@@ -5,6 +5,7 @@ COPY --from=pulumi/pulumi-base:3.12.0 /pulumi/bin/pulumi /usr/bin/pulumi
 COPY --from=alpine/helm:3.6.3 /usr/bin/helm /usr/bin/helm
 
 ENV PROJECT_ROOT='/app'
+ENV PATH="${PROJECT_ROOT}/node_modules/.bin:${PATH}"
 
 WORKDIR $PROJECT_ROOT
 
@@ -23,7 +24,6 @@ RUN npm run build
 FROM base AS development
 
 ENV NODE_ENV='local'
-ENV PATH="${PROJECT_ROOT}/node_modules/.bin:${PATH}"
 ENV PULUMI_CONFIG_PASSPHRASE=''
 
 ARG HOST_DOCKER_GROUP_ID
