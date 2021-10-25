@@ -15,13 +15,13 @@ jobs:
       - name: "Checkout repository"
         uses: actions/checkout@v2
 
-      - name: "Run unit tests"
-        working-directory: "./infrastructure"
-        run: make test
-
       - name: "Build image"
         working-directory: "./infrastructure"
         run: make
+
+      - name: "Run unit tests"
+        working-directory: "./infrastructure"
+        run: make test
 
       - name: "Deploy production infrastructure"
         working-directory: "./infrastructure"
