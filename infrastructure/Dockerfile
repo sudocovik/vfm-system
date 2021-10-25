@@ -43,17 +43,6 @@ COPY --from=dependencies /app/node_modules /app/node_modules
 USER node
 
 
-FROM base AS test
-
-COPY --from=dependencies /app/node_modules /app/node_modules
-COPY ./src ./src
-COPY package.json .
-COPY jest.config.js .
-COPY tsconfig.json .
-
-CMD ["npm", "run", "test", "--no-update-notifier", "--silent"]
-
-
 FROM base AS production
 
 ENV NODE_ENV='production'

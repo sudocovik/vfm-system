@@ -1,9 +1,6 @@
 {
   "name": "vfm-infrastructure",
   "description": "Infrastructure provisioning for VFM project",
-  "scripts": {
-    "test": "jest --colors"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Covik/vfm-system.git"

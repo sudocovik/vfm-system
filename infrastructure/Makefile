@@ -6,8 +6,7 @@ build:
 
 .PHONY: test
 test:
-	@docker run \
-	  $$(DOCKER_BUILDKIT=1 docker build --target=test --quiet .)
+	@docker run $(IMAGE_NAME) jest --colors
 
 .PHONY: deploy
 deploy:
