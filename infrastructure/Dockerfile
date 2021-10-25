@@ -14,11 +14,11 @@ RUN chown node:node /app
 
 FROM base AS production-artifact
 
-COPY . .
+COPY package.json .
+COPY package-lock.json .
 
 RUN npm install
-RUN npm run build
-# /app/dist and /app/node_modules is where all the final JS files live
+# /app/node_modules is where all the dependency files live
 
 
 FROM base AS development
