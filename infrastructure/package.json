@@ -2,8 +2,6 @@
   "name": "vfm-infrastructure",
   "description": "Infrastructure provisioning for VFM project",
   "scripts": {
-    "build": "tsc",
-    "production": "node dist/main.js",
     "test": "jest --colors"
   },
   "repository": {
