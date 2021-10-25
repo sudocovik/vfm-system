@@ -1,12 +1,11 @@
 IMAGE_NAME=covik/vfm-infrastructure:local
 CONTAINER_NAME=vfm-infrastructure
+DOCKER_GROUP_ID=$$(getent group docker | cut -d: -f3)
 
 .PHONY: build
 build:
-	@set -e ; \
-	DOCKER_GROUP_ID=$$(getent group docker | cut -d: -f3) && \
-	DOCKER_BUILDKIT=1 docker build ./infrastructure \
-		--build-arg HOST_DOCKER_GROUP_ID=$$DOCKER_GROUP_ID \
+	docker buildx build ./infrastructure \
+		--build-arg HOST_DOCKER_GROUP_ID=$(DOCKER_GROUP_ID) \
  		--target=development \
  		--tag=$(IMAGE_NAME)
 
