@@ -63,10 +63,9 @@ ENV PULUMI_ACCESS_TOKEN=''
 ENV DIGITALOCEAN_TOKEN=''
 ENV CLUSTER_TOKEN=''
 
-COPY --from=production-artifact /app/dist /app/dist
 COPY --from=production-artifact /app/node_modules /app/node_modules
-COPY package.json package.json
+COPY . .
 
 USER node
 
-CMD ["npm", "run", "production", "--no-update-notifier", "--silent"]
+CMD ["ts-node", "src/main.ts"]
