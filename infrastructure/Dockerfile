@@ -21,7 +21,7 @@ RUN npm install
 # /app/node_modules is where all the dependency files live
 
 
-FROM base AS development
+FROM base AS local
 
 ENV NODE_ENV="local"
 ENV PULUMI_CONFIG_PASSPHRASE=""
