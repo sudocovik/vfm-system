@@ -1,4 +1,5 @@
 # .cache is intentionally left because pulumi in local environment needs it
+.idea/
 node_modules/
 .gitignore
 CHANGELOG.md
