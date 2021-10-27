@@ -4,20 +4,34 @@ const stringRepresentationOfVariableType = (value: any) => {
     return typeof value
 }
 
+export interface Stack {
+    name(): string
+}
+
 export class EmptyValueError extends Error {}
 
-export class ProductionStack {
-    constructor(public readonly name: string) {
+export class ProductionStack implements Stack {
+    private readonly _name: string
+
+    constructor(name: string) {
         if (typeof name !== 'string')
             throw new TypeError('Stack name should be string, got ' + stringRepresentationOfVariableType(name))
 
-        this.name = name.trim()
+        name = name.trim()
 
-        if (this.name === '')
+        if (name === '')
             throw new EmptyValueError('Stack name should not be empty string')
+
+        this._name = name
+    }
+
+    public name(): string {
+        return this._name
     }
 }
 
-export class LocalStack {
-    public readonly name: string = 'local'
+export class LocalStack implements Stack {
+    public name(): string {
+        return 'local'
+    }
 }

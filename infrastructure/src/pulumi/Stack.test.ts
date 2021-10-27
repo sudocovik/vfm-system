@@ -65,16 +65,19 @@ describe('#ProductionStack', () => {
     })
 
     it('should trim all front and back whitespaces', () => {
-        expect(new ProductionStack('  test  ').name).toBe('test')
+        const stack = new ProductionStack('  test  ')
+        expect(stack.name()).toBe('test')
     })
 
     it('should accept string', () => {
-        expect(new ProductionStack('test').name).toBe('test')
+        const stack = new ProductionStack('test')
+        expect(stack.name()).toBe('test')
     })
 })
 
 describe('#LocalStack', () => {
     it('should always return hardcoded value \'local\'', () => {
-        expect(new LocalStack().name).toBe('local')
+        const stack = new LocalStack()
+        expect(stack.name()).toBe('local')
     })
 })
