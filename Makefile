@@ -18,3 +18,7 @@ dev:
 			-v $$(pwd)/infrastructure:/app \
 			-v /var/run/docker.sock:/var/run/docker.sock \
 		$(IMAGE_NAME)
+
+.PHONY: exec
+exec:
+	@docker exec -it $(CONTAINER_NAME) bash
