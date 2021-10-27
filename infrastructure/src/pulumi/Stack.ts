@@ -13,7 +13,7 @@ export class EmptyValueError extends Error {}
 export class ProductionStack implements Stack {
     private readonly _name: string
 
-    constructor(name: string) {
+    constructor(name: string, resources: () => Promise<any>) {
         if (typeof name !== 'string')
             throw new TypeError('Stack name should be string, got ' + stringRepresentationOfVariableType(name))
 
