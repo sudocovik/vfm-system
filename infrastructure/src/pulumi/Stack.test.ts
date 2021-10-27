@@ -25,7 +25,8 @@ describe('#ProductionStack', () => {
         { type: 'true',      value: true },
         { type: 'false',     value: false },
         { type: 'bigint',    value: 22n ** 53n },
-        { type: 'symbol',    value: Symbol('test') }
+        { type: 'symbol',    value: Symbol('test') },
+        { type: 'function',  value: () => {} }
     ]
 
     forbiddenTypes.forEach(({ type, value }) => {
