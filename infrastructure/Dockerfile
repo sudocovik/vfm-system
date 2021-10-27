@@ -5,7 +5,7 @@ COPY --from=pulumi/pulumi-base:3.12.0 /pulumi/bin/pulumi /usr/bin/pulumi
 COPY --from=alpine/helm:3.6.3 /usr/bin/helm /usr/bin/helm
 
 ENV PROJECT_ROOT="/app"
-ENV PATH="${PROJECT_ROOT}/node_modules/.bin:${PATH}"
+ENV PATH="${PROJECT_ROOT}/bin:${PROJECT_ROOT}/node_modules/.bin:${PATH}"
 
 WORKDIR $PROJECT_ROOT
 
@@ -42,7 +42,7 @@ COPY --from=dependencies /app/node_modules /app/node_modules
 
 USER node
 
-CMD ["ts-node", "src/local-environment/index.ts"]
+CMD ["vfm"]
 
 
 FROM base AS production
