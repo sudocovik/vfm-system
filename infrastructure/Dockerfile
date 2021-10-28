@@ -59,4 +59,4 @@ COPY . .
 
 USER node
 
-CMD ["ts-node", "src/main.ts"]
+CMD vfm deploy
