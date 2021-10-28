@@ -1,0 +1,8 @@
+import { spawn } from 'child_process'
+
+export function test(watch: boolean = false): void {
+    let jestArguments: string[] = ['--colors']
+    if (watch) jestArguments.push('--watchAll')
+
+    spawn('jest', jestArguments, { stdio: 'inherit' })
+}
