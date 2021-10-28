@@ -1,5 +1,5 @@
 import { promisify } from 'util'
-import { LocalCluster } from './LocalClusterManager'
+import { LocalCluster } from './LocalCluster'
 const exec = promisify(require('child_process').exec)
 
 export class k3dCluster implements LocalCluster {
