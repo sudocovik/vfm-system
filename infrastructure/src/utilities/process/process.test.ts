@@ -12,7 +12,7 @@ class TestProcess extends SimpleProcess {
   }
 }
 
-describe('#process', () => {
+describe('#CustomProcess', () => {
   describe('main functionality', () => {
     it('should execute callback passed as argument', () => {
       let hasRun: boolean = false

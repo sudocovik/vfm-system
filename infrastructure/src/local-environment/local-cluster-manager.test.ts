@@ -33,7 +33,7 @@ class ClusterSpy implements LocalCluster {
     }
 }
 
-describe('#local cluster', () => {
+describe('#LocalClusterManager', () => {
     let clusterSpy: ClusterSpy
     let cluster: LocalClusterManager
 
