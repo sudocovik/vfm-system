@@ -6,7 +6,7 @@ build:
 
 .PHONY: test
 test:
-	@docker run $(IMAGE_NAME) jest --colors
+	@docker run $(IMAGE_NAME) vfm test
 
 .PHONY: deploy
 deploy:
