@@ -42,7 +42,7 @@ COPY --from=dependencies /app/node_modules /app/node_modules
 
 USER node
 
-CMD ["vfm"]
+CMD vfm ; bash
 
 
 FROM base AS production
