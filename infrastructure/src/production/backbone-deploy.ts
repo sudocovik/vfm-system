@@ -52,13 +52,11 @@ export function deployBackboneResources(): void {
 
     const apiToken: string = process.env.CLUSTER_TOKEN || ''
 
-    provision(async () => {
-        describeBackboneResources(
-            domainConfiguration,
-            loadBalancerConfiguration,
-            clusterConfiguration,
-            projectConfiguration,
-            apiToken
-        )
-    })
+    provision(async () => describeBackboneResources(
+        domainConfiguration,
+        loadBalancerConfiguration,
+        clusterConfiguration,
+        projectConfiguration,
+        apiToken
+    ))
 }
