@@ -1,4 +1,4 @@
-import { EmptyValueError, LocalStack, ProductionStack } from './Stack'
+import { EmptyValueError, LocalStack, ProductionStack } from '../Stack'
 
 const errorShouldBeInstanceOfTypeError = (error: Error) => {
     expect(error).toBeInstanceOf(TypeError)
