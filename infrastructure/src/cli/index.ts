@@ -4,6 +4,7 @@ import {
 } from '../local-environment/index'
 import { Command } from 'commander'
 import { test as runUnitTests } from './unit-tests'
+import { deployBackboneResources } from '../production/backbone-deploy'
 
 const program = new Command()
 
@@ -23,6 +24,10 @@ test.option('-w, --watch', 'Watch filesystem changes and re-run tests', false)
 test.action(({ watch }) => {
     runUnitTests(watch)
 })
+
+const deploy = program.command('deploy')
+deploy.description('Deploy backbone resources to production')
+deploy.action(deployBackboneResources)
 
 
 program.parse()
