@@ -9,6 +9,7 @@ export class k3dCluster implements LocalCluster {
             '--timeout=120s',
             '--k3s-arg=\'--no-deploy=traefik\'@server:*',
             '--port 80:32080@loadbalancer',
+            '--api-port 6445'
         ]
 
         await exec('k3d cluster create vfm ' + options.join(' '))
