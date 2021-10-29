@@ -83,5 +83,6 @@ export function describeFrontendResources(): any {
 }
 
 export function deployFrontendResources(): void {
+    // temporary comment, to trigger CI
     provision('frontend-production', async () => describeFrontendResources())
 }
