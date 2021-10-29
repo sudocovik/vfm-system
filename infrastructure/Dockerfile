@@ -59,4 +59,6 @@ COPY . .
 
 USER node
 
-CMD vfm deploy
+# should not be runnable without explicitly defined command
+# command should be defined in Makefile
+CMD ["exit", "-1"]

@@ -15,6 +15,7 @@ deploy:
 		-e DIGITALOCEAN_TOKEN=$(DIGITALOCEAN_TOKEN) \
 		-e CLUSTER_TOKEN=$(CLUSTER_TOKEN) \
 	  $(IMAGE_NAME)
+	  vfm deploy infrastructure
 
 .PHONY: deploy-frontend
 deploy-frontend:
