@@ -1,5 +1,5 @@
 import provision from '../pulumi/provision'
-import { DatabaseCluster, DatabaseFirewall } from '@pulumi/digitalocean'
+import { DatabaseCluster, DatabaseFirewall, DatabaseUser } from '@pulumi/digitalocean'
 import * as pulumi from '@pulumi/pulumi'
 
 function describeBackendResources(): any {
@@ -25,6 +25,11 @@ function describeBackendResources(): any {
             type: 'k8s',
             value: kubernetesClusterId
         }]
+    })
+
+    new DatabaseUser('main-database-user', {
+        clusterId: cluster.id,
+        name: 'regular'
     })
 }
 
