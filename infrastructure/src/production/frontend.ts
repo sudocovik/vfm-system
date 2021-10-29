@@ -2,20 +2,15 @@ import * as pulumi from '@pulumi/pulumi'
 import * as k8s from '@pulumi/kubernetes'
 import provision from '../pulumi/provision'
 
-export function describeFrontendResources(): any {
-    const backbone = new pulumi.StackReference('covik/vfm/backbone-production')
-    const kubeconfig = backbone.getOutput('kubeconfig')
-    const namespace = backbone.getOutput('namespaceName')
-    const domain = backbone.getOutput('domainName')
-    const subdomain = domain.apply(domainName => `app.${domainName}`)
+function describeOldFrontend(
+    provider: k8s.Provider,
+    kubeconfig: pulumi.Output<any>,
+    namespace: pulumi.Output<any>,
+    containerRegistrySecret: pulumi.Output<any>
+): void {
+    const labels = { app: 'old-frontend' }
 
-    const provider: k8s.Provider = new k8s.Provider('main-kubernetes-provider', {
-        kubeconfig
-    })
-
-    const labels = { app: 'test' }
-
-    const deployment = new k8s.apps.v1.Deployment('test-deployment', {
+    const deployment = new k8s.apps.v1.Deployment('old-deployment', {
         metadata: {
             namespace
         },
@@ -29,9 +24,10 @@ export function describeFrontendResources(): any {
                     labels
                 },
                 spec: {
+                    imagePullSecrets: [containerRegistrySecret],
                     containers: [{
                         name: 'webserver',
-                        image: 'nginx:1.21.1-alpine',
+                        image: 'ghcr.io/covik/tracking-frontend:0.0.14',
                         imagePullPolicy: 'IfNotPresent',
                         ports: [{
                             name: 'http',
@@ -83,6 +79,21 @@ export function describeFrontendResources(): any {
             }]
         }
     }, { provider })
+}
+
+export function describeFrontendResources(): any {
+    const backbone = new pulumi.StackReference('covik/vfm/backbone-production')
+    const kubeconfig = backbone.getOutput('kubeconfig')
+    const namespace = backbone.getOutput('namespaceName')
+    const domain = backbone.getOutput('domainName')
+    const subdomain = domain.apply(domainName => `app.${domainName}`)
+    const containerRegistrySecret = backbone.getOutput('containerRegistryCredentialsName')
+
+    const provider: k8s.Provider = new k8s.Provider('main-kubernetes-provider', {
+        kubeconfig
+    })
+
+    describeOldFrontend(provider, kubeconfig, namespace, containerRegistrySecret)
 }
 
 export function deployFrontendResources(): void {
