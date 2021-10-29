@@ -1,5 +1,5 @@
 import provision from '../pulumi/provision'
-import { DatabaseCluster, DatabaseFirewall, DatabaseUser } from '@pulumi/digitalocean'
+import { DatabaseCluster, DatabaseDb, DatabaseFirewall, DatabaseUser } from '@pulumi/digitalocean'
 import * as pulumi from '@pulumi/pulumi'
 
 function describeBackendResources(): any {
@@ -30,6 +30,11 @@ function describeBackendResources(): any {
     new DatabaseUser('main-database-user', {
         clusterId: cluster.id,
         name: 'regular'
+    })
+
+    new DatabaseDb('main-database-db', {
+        clusterId: cluster.id,
+        name: 'vfm'
     })
 }
 
