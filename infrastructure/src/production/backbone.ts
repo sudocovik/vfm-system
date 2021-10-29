@@ -175,7 +175,7 @@ export function describeBackboneResources(
     const dockerLogin = {
         auths: {
             'ghcr.io': {
-                auth: new Buffer(clusterConfiguration.containerRegistryToken).toString('base64')
+                auth: Buffer.from(clusterConfiguration.containerRegistryToken).toString('base64')
             }
         }
     }
@@ -186,7 +186,7 @@ export function describeBackboneResources(
         },
         type: 'kubernetes.io/dockerconfigjson',
         data: {
-            '.dockerconfigjson': new Buffer(JSON.stringify(dockerLogin), 'utf8').toString('base64')
+            '.dockerconfigjson': Buffer.from(JSON.stringify(dockerLogin), 'utf8').toString('base64')
         }
     }, { provider })
 
