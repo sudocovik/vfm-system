@@ -169,6 +169,7 @@ export function describeBackboneResources(
 
     return {
         kubeconfig,
-        namespaceName
+        namespaceName,
+        domainName: domain.name
     }
 }

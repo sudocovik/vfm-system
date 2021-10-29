@@ -6,6 +6,8 @@ export function describeFrontendResources(): any {
     const backbone = new pulumi.StackReference('covik/vfm/backbone-production')
     const kubeconfig = backbone.getOutput('kubeconfig')
     const namespace = backbone.getOutput('namespaceName')
+    const domain = backbone.getOutput('domainName')
+    const subdomain = domain.apply(domainName => `app.${domainName}`)
 
     const provider: k8s.Provider = new k8s.Provider('main-kubernetes-provider', {
         kubeconfig
@@ -63,6 +65,7 @@ export function describeFrontendResources(): any {
         },
         spec: {
             rules: [{
+                host: subdomain,
                 http: {
                     paths: [{
                         path: '/',
@@ -83,6 +86,5 @@ export function describeFrontendResources(): any {
 }
 
 export function deployFrontendResources(): void {
-    // temporary comment, to trigger CI
     provision('frontend-production', async () => describeFrontendResources())
 }
