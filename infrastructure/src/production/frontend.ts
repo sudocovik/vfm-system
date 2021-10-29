@@ -24,7 +24,7 @@ function describeOldFrontend(
                     labels
                 },
                 spec: {
-                    imagePullSecrets: [containerRegistrySecret],
+                    imagePullSecrets: [{ name: containerRegistrySecret }],
                     containers: [{
                         name: 'webserver',
                         image: 'ghcr.io/covik/tracking-frontend:0.0.14',
