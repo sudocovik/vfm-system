@@ -1,9 +1,9 @@
 import { InlineProgramArgs, LocalWorkspace, Stack } from '@pulumi/pulumi/automation'
 
-export default async function (program: () => Promise<any>) {
+export default async function (stackName: string, program: () => Promise<any>) {
   const stackArguments: InlineProgramArgs = {
     projectName: 'vfm',
-    stackName: 'production',
+    stackName: stackName,
     program
   }
 
