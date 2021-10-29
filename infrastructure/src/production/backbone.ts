@@ -172,9 +172,28 @@ export function describeBackboneResources(
         ]
     }, { provider })
 
+    const dockerLogin = {
+        auths: {
+            'ghcr.io': {
+                auth: new Buffer(clusterConfiguration.containerRegistryToken).toString('base64')
+            }
+        }
+    }
+    const containerRegistryCredentials = new k8s.core.v1.Secret('main-container-registry-credentials', {
+        metadata: {
+            namespace: namespaceName,
+            name: 'container-registry'
+        },
+        type: 'kubernetes.io/dockerconfigjson',
+        data: {
+            '.dockerconfigjson': new Buffer(JSON.stringify(dockerLogin), 'utf8').toString('base64')
+        }
+    }, { provider })
+
     return {
         kubeconfig,
         namespaceName,
-        domainName: domain.name
+        domainName: domain.name,
+        containerRegistryCredentialsName: containerRegistryCredentials.metadata.name
     }
 }

@@ -53,6 +53,7 @@ ENV NODE_ENV="production"
 ENV PULUMI_ACCESS_TOKEN=""
 ENV DIGITALOCEAN_TOKEN=""
 ENV CLUSTER_TOKEN=""
+ENV CLUSTER_CONTAINER_REGISTRY_TOKEN=""
 
 COPY --from=dependencies /app/node_modules /app/node_modules
 COPY . .
