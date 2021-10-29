@@ -3,7 +3,15 @@ import { DatabaseCluster, DatabaseDb, DatabaseFirewall, DatabaseUser } from '@pu
 import * as pulumi from '@pulumi/pulumi'
 import * as k8s from '@pulumi/kubernetes'
 
-function describeDatabase(kubernetesCluster: pulumi.Output<any>): void {
+type DatabaseConnection = {
+    host: pulumi.Output<string>
+    port: pulumi.Output<number>
+    user: pulumi.Output<string>
+    password: pulumi.Output<string>
+    database: pulumi.Output<string>
+}
+
+function describeDatabase(kubernetesCluster: pulumi.Output<any>): DatabaseConnection {
     const cluster = new DatabaseCluster('main-backend-database', {
         name: 'vfm-database',
         region: 'fra1',
@@ -25,19 +33,67 @@ function describeDatabase(kubernetesCluster: pulumi.Output<any>): void {
         }]
     })
 
-    new DatabaseUser('main-database-user', {
+    const user = new DatabaseUser('main-database-user', {
         clusterId: cluster.id,
         name: 'regular'
     })
 
-    new DatabaseDb('main-database-db', {
+    const database = new DatabaseDb('main-database-db', {
         clusterId: cluster.id,
         name: 'vfm'
     })
+
+    return {
+        host: cluster.privateHost,
+        port: cluster.port,
+        user: user.name,
+        password: user.password,
+        database: database.name
+    }
 }
 
-function describeApplication(provider: k8s.Provider, namespace: pulumi.Output<any>): void {
+function describeApplication(provider: k8s.Provider, namespace: pulumi.Output<any>, databaseConnectionSettings: DatabaseConnection): void {
+    const configuration = new k8s.core.v1.ConfigMap('traccar-configuration', {
+        metadata: {
+            namespace
+        },
+        data: {
+            'traccar.xml':
+`<?xml version='1.0' encoding='UTF-8'?>
+
+<!DOCTYPE properties SYSTEM 'http://java.sun.com/dtd/properties.dtd'>
+
+<properties>
+
+  <entry key='config.default'>./conf/default.xml</entry>
+
+  <!--
+  This is the main configuration file. All your configuration parameters should be placed in this file.
+  Default configuration parameters are located in the "default.xml" file. You should not modify it to avoid issues
+  with upgrading to a new version. Parameters in the main config file override values in the default file. Do not
+  remove "config.default" parameter from this file unless you know what you are doing.
+  For list of available parameters see following page: https://www.traccar.org/configuration-file/
+  -->
+
+  <entry key='database.driver'>com.mysql.cj.jdbc.Driver</entry>
+  <entry key='database.url'>jdbc:mysql://${databaseConnectionSettings.host}:${databaseConnectionSettings.port}/${databaseConnectionSettings.database}</entry>
+  <entry key='database.user'>${databaseConnectionSettings.user}</entry>
+  <entry key='database.password'>${databaseConnectionSettings.password}</entry>
+  <entry key='database.saveOriginal'>true</entry>
+
+  <entry key='web.origin'>*</entry>
+
+  <entry key='geocoder.format'>%r %h, %p %t, %s, %c</entry>
+
+  <entry key='filter.enable'>true</entry>
+  <entry key='filter.zero'>true</entry>
+
+</properties>`
+        }
+    }, { provider })
+
     const labels = { app: 'traccar' }
+    const configurationVolumeName = 'configuration'
 
     const deployment: k8s.apps.v1.Deployment = new k8s.apps.v1.Deployment('traccar-deployment', {
         metadata: {
@@ -52,11 +108,22 @@ function describeApplication(provider: k8s.Provider, namespace: pulumi.Output<an
                     labels:  labels
                 },
                 spec: {
+                    volumes: [{
+                       name: configurationVolumeName,
+                       configMap: {
+                           name: configuration.metadata.name
+                       }
+                    }],
                     restartPolicy: 'Always',
                     containers: [{
                         name: 'backend',
                         image: 'traccar/traccar:4.13-alpine',
                         imagePullPolicy: 'IfNotPresent',
+                        args: [
+                            '-jar',
+                            'tracker-server.jar',
+                            'conf-custom/traccar.xml',
+                        ],
                         ports: [{
                             name: 'api',
                             containerPort: 8082,
@@ -74,7 +141,12 @@ function describeApplication(provider: k8s.Provider, namespace: pulumi.Output<an
                             },
                             failureThreshold: 30,
                             periodSeconds: 30,
-                        }
+                        },
+                        volumeMounts: [{
+                            name: configurationVolumeName,
+                            mountPath: '/opt/traccar/conf-custom/traccar.xml',
+                            readOnly: true
+                        }]
                     }]
                 }
             }
@@ -148,8 +220,8 @@ function describeBackendResources(): any {
         kubeconfig
     })
 
-    describeDatabase(kubernetesClusterId)
-    describeApplication(provider, namespaceName)
+    const databaseConnectionSettings = describeDatabase(kubernetesClusterId)
+    describeApplication(provider, namespaceName, databaseConnectionSettings)
 }
 
 export function deployBackendResources(): void {
