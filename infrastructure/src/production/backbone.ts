@@ -156,7 +156,11 @@ export function describeBackboneResources(
                 web: {
                     nodePort: loadBalancerConfiguration.ports.http.internal
                 }
-            }
+            },
+            additionalArguments: [
+                '--ping',
+                '--ping.entrypoint=web'
+            ]
         },
         transformations: [
             (obj: any) => {
