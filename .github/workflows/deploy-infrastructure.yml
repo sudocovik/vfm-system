@@ -30,3 +30,10 @@ jobs:
           DIGITALOCEAN_TOKEN: ${{ secrets.DIGITALOCEAN_TOKEN }}
           CLUSTER_TOKEN: ${{ secrets.CLUSTER_TOKEN }}
         run: make deploy
+
+      - name: "Deploy frontend"
+        working-directory: "./infrastructure"
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          FRONTEND_VERSION: "right now its useless"
+        run: make deploy-frontend

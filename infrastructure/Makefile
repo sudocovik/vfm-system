@@ -15,3 +15,11 @@ deploy:
 		-e DIGITALOCEAN_TOKEN=$(DIGITALOCEAN_TOKEN) \
 		-e CLUSTER_TOKEN=$(CLUSTER_TOKEN) \
 	  $(IMAGE_NAME)
+
+.PHONY: deploy-frontend
+deploy-frontend:
+	@docker run \
+		-e PULUMI_ACCESS_TOKEN=$(PULUMI_ACCESS_TOKEN) \
+		-e FRONTEND_VERSION=$(FRONTEND_VERSION) \
+	  $(IMAGE_NAME)
+	  vfm deploy frontend

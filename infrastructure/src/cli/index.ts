@@ -5,6 +5,7 @@ import {
 import { Command } from 'commander'
 import { test as runUnitTests } from './unit-tests'
 import { deployBackboneResources } from '../production/backbone-deploy'
+import { deployFrontendResources } from '../production/frontend'
 
 const program = new Command()
 
@@ -25,9 +26,15 @@ test.action(({ watch }) => {
     runUnitTests(watch)
 })
 
-const deploy = program.command('deploy')
-deploy.description('Deploy backbone resources to production')
-deploy.action(deployBackboneResources)
+const deploy = new Command('deploy')
+deploy.command('infrastructure')
+      .description('Deploy backbone resources to production')
+      .action(deployBackboneResources)
+deploy.command('frontend')
+      .description('Deploy frontend to production')
+      .action(deployFrontendResources)
+
+program.addCommand(deploy)
 
 
 program.parse()
