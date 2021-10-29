@@ -25,3 +25,11 @@ deploy-frontend:
 		-e FRONTEND_VERSION=$(FRONTEND_VERSION) \
 	  $(IMAGE_NAME) \
 	  vfm deploy frontend
+
+.PHONY: deploy-backend
+deploy-backend:
+	@docker run \
+		-e PULUMI_ACCESS_TOKEN=$(PULUMI_ACCESS_TOKEN) \
+		-e DIGITALOCEAN_TOKEN=$(DIGITALOCEAN_TOKEN) \
+	  $(IMAGE_NAME) \
+	  vfm deploy backend

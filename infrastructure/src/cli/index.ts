@@ -6,6 +6,7 @@ import { Command } from 'commander'
 import { test as runUnitTests } from './unit-tests'
 import { deployBackboneResources } from '../production/backbone-deploy'
 import { deployFrontendResources } from '../production/frontend'
+import { deployBackendResources } from '../production/backend'
 
 const program = new Command()
 
@@ -33,6 +34,9 @@ deploy.command('infrastructure')
 deploy.command('frontend')
       .description('Deploy frontend to production')
       .action(deployFrontendResources)
+deploy.command('backend')
+      .description('Deploy backend to production')
+      .action(deployBackendResources)
 
 program.addCommand(deploy)
 
