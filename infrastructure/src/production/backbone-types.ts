@@ -32,6 +32,7 @@ export type ClusterConfiguration = {
     region: string
     nodePool: NodePool
     namespace: string
+    traefikVersion: string
 }
 
 export type ProjectConfiguration = {

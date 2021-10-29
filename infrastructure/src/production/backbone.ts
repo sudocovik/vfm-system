@@ -134,8 +134,41 @@ export function describeBackboneResources(
         provider
     })
 
+    const namespaceName = namespace.metadata.name
+
+    new k8s.helm.v3.Chart('main-ingress-controller', {
+        chart: 'traefik',
+        version: clusterConfiguration.traefikVersion,
+        fetchOpts: {
+            repo: 'https://helm.traefik.io/traefik',
+        },
+        namespace: namespaceName,
+        values: {
+            ingressRoute: {
+                dashboard: {
+                    enabled: false
+                }
+            },
+            service: {
+                type: 'NodePort'
+            },
+            ports: {
+                web: {
+                    nodePort: loadBalancerConfiguration.ports.http.internal
+                }
+            }
+        },
+        transformations: [
+            (obj: any) => {
+                if (obj.kind === 'Service') {
+                    obj.metadata.namespace = namespaceName
+                }
+            },
+        ]
+    }, { provider })
+
     return {
         kubeconfig,
-        namespaceName: namespace.metadata.name
+        namespaceName
     }
 }

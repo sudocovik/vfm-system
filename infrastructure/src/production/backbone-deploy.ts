@@ -41,7 +41,8 @@ export function deployBackboneResources(): void {
             count: 1,
             tag: 'vfm-worker'
         },
-        namespace: 'vfm'
+        namespace: 'vfm',
+        traefikVersion: '10.3.2'
     }
 
     const projectConfiguration: ProjectConfiguration = {
