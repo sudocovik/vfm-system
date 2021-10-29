@@ -65,7 +65,7 @@ export function describeFrontendResources(): any {
         },
         spec: {
             rules: [{
-                host: subdomain,
+                // host: subdomain,
                 http: {
                     paths: [{
                         path: '/',
