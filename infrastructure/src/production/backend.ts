@@ -2,10 +2,7 @@ import provision from '../pulumi/provision'
 import { DatabaseCluster, DatabaseDb, DatabaseFirewall, DatabaseUser } from '@pulumi/digitalocean'
 import * as pulumi from '@pulumi/pulumi'
 
-function describeBackendResources(): any {
-    const backbone = new pulumi.StackReference('covik/vfm/backbone-production')
-    const kubernetesClusterId = backbone.getOutput('clusterId')
-
+function describeDatabase(kubernetesCluster: pulumi.Output<any>): void {
     const cluster = new DatabaseCluster('main-backend-database', {
         name: 'vfm-database',
         region: 'fra1',
@@ -23,7 +20,7 @@ function describeBackendResources(): any {
         clusterId: cluster.id,
         rules: [{
             type: 'k8s',
-            value: kubernetesClusterId
+            value: kubernetesCluster
         }]
     })
 
@@ -36,6 +33,13 @@ function describeBackendResources(): any {
         clusterId: cluster.id,
         name: 'vfm'
     })
+}
+
+function describeBackendResources(): any {
+    const backbone = new pulumi.StackReference('covik/vfm/backbone-production')
+    const kubernetesClusterId = backbone.getOutput('clusterId')
+
+    describeDatabase(kubernetesClusterId)
 }
 
 export function deployBackendResources(): void {
