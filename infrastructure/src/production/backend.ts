@@ -1,8 +1,12 @@
 import provision from '../pulumi/provision'
-import { DatabaseCluster } from '@pulumi/digitalocean'
+import { DatabaseCluster, DatabaseFirewall } from '@pulumi/digitalocean'
+import * as pulumi from '@pulumi/pulumi'
 
 function describeBackendResources(): any {
-    new DatabaseCluster('main-backend-database', {
+    const backbone = new pulumi.StackReference('covik/vfm/backbone-production')
+    const kubernetesClusterId = backbone.getOutput('clusterId')
+
+    const cluster = new DatabaseCluster('main-backend-database', {
         name: 'vfm-database',
         region: 'fra1',
         size: 'db-s-1vcpu-1gb',
@@ -12,6 +16,14 @@ function describeBackendResources(): any {
         maintenanceWindows: [{
             day: 'sunday',
             hour: '12:00'
+        }]
+    })
+
+    new DatabaseFirewall('main-database-firewall', {
+        clusterId: cluster.id,
+        rules: [{
+            type: 'k8s',
+            value: kubernetesClusterId
         }]
     })
 }
