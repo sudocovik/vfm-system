@@ -59,7 +59,7 @@ function describeApplication(provider: k8s.Provider, namespace: pulumi.Output<an
         },
         data: {
             'traccar.xml':
-`<?xml version='1.0' encoding='UTF-8'?>
+pulumi.interpolate`<?xml version='1.0' encoding='UTF-8'?>
 
 <!DOCTYPE properties SYSTEM 'http://java.sun.com/dtd/properties.dtd'>
 
