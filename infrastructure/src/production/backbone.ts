@@ -6,6 +6,7 @@ import type {
     ProjectConfiguration,
 } from './backbone-types'
 import * as pulumi from '@pulumi/pulumi'
+import * as k8s from '@pulumi/kubernetes'
 
 export function generateKubeconfig(
     cluster: KubernetesCluster,
@@ -119,7 +120,22 @@ export function describeBackboneResources(
         ]
     })
 
+    const kubeconfig = generateKubeconfig(cluster, 'admin', apiToken)
+
+    const provider: k8s.Provider = new k8s.Provider('main-kubernetes-provider', {
+        kubeconfig
+    })
+
+    const namespace = new k8s.core.v1.Namespace('main-namespace', {
+        metadata: {
+            name: clusterConfiguration.namespace
+        }
+    }, {
+        provider
+    })
+
     return {
-        kubeconfig: generateKubeconfig(cluster, 'admin', apiToken)
+        kubeconfig,
+        namespaceName: namespace.metadata.name
     }
 }

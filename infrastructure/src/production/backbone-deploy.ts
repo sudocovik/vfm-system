@@ -40,7 +40,8 @@ export function deployBackboneResources(): void {
             size: 's-1vcpu-2gb',
             count: 1,
             tag: 'vfm-worker'
-        }
+        },
+        namespace: 'vfm'
     }
 
     const projectConfiguration: ProjectConfiguration = {
