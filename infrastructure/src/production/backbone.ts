@@ -194,6 +194,7 @@ export function describeBackboneResources(
         kubeconfig,
         namespaceName,
         domainName: domain.name,
-        containerRegistryCredentialsName: containerRegistryCredentials.metadata.name
+        containerRegistryCredentialsName: containerRegistryCredentials.metadata.name,
+        clusterId: cluster.id,
     }
 }
