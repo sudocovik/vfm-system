@@ -175,7 +175,7 @@ export function describeBackboneResources(
     const dockerLogin = {
         auths: {
             'ghcr.io': {
-                auth: Buffer.from(clusterConfiguration.containerRegistryToken).toString('base64')
+                auth: Buffer.from('covik:' + clusterConfiguration.containerRegistryToken).toString('base64')
             }
         }
     }
