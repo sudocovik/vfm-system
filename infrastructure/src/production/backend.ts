@@ -144,7 +144,7 @@ pulumi.interpolate`<?xml version='1.0' encoding='UTF-8'?>
                         },
                         volumeMounts: [{
                             name: configurationVolumeName,
-                            mountPath: '/opt/traccar/conf-custom/traccar.xml',
+                            mountPath: '/opt/traccar/conf-custom',
                             readOnly: true
                         }]
                     }]
