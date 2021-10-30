@@ -170,9 +170,7 @@ export function describeBackboneResources(
             (obj: any) => {
                 if (obj.kind === 'Service') {
                     obj.metadata.namespace = namespaceName
-                    obj.metadata.annotations = {
-                        'kubernetes.digitalocean.com/firewall-managed': false
-                    }
+                    obj.metadata.annotations['kubernetes.digitalocean.com/firewall-managed'] = false
                 }
             },
         ]
