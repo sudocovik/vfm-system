@@ -165,17 +165,7 @@ export function describeBackboneResources(
                     entrypoint: 'web'
                 }
             }  */
-        },
-        transformations: [
-            (obj: any) => {
-                if (obj.kind === 'Service') {
-                    obj.metadata.namespace = namespaceName
-                    obj.metadata.annotations = {
-                        'kubernetes.digitalocean.com/firewall-managed': false
-                    }
-                }
-            },
-        ]
+        }
     }, { provider })
 
     const dockerLogin = {
