@@ -13,6 +13,7 @@ export function deployBackboneResources(): void {
     }
 
     const loadBalancerConfiguration: LoadBalancerConfiguration = {
+        name: 'vfm',
         size: 'lb-small',
         region: 'fra1',
         ports: {

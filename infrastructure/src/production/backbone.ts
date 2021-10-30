@@ -56,7 +56,8 @@ export function describeBackboneResources(
         parent: domain
     })
 
-    const loadBalancer = new LoadBalancer('load-balancer', {
+    const loadBalancer = new LoadBalancer('primary-load-balancer', {
+        name: loadBalancerConfiguration.name,
         size: loadBalancerConfiguration.size,
         region: loadBalancerConfiguration.region,
         dropletTag: clusterConfiguration.nodePool.tag,
@@ -207,8 +208,8 @@ export function describeBackboneResources(
     return {
         kubeconfig,
         namespaceName,
-        domainName: 'zarafleet.com',
+        domainName: domain.name,
         containerRegistryCredentialsName: containerRegistryCredentials.metadata.name,
         clusterId: cluster.id,
-    } */
+    }
 }

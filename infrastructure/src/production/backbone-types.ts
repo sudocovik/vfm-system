@@ -14,6 +14,7 @@ type Ports = {
 }
 
 export type LoadBalancerConfiguration = {
+    name: string
     size: string
     region: string
     ports: Ports
