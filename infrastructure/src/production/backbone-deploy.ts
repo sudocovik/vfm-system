@@ -35,7 +35,7 @@ export function deployBackboneResources(): void {
     const clusterConfiguration: ClusterConfiguration = {
         name: 'vfm',
         region: 'fra1',
-        version: '1.21.3-do.0',
+        version: '1.21.5-do.0',
         nodePool: {
             name: 'worker',
             size: 's-1vcpu-2gb',
