@@ -136,12 +136,12 @@ export function describeBackboneResources(
 
     const namespaceName = namespace.metadata.name
 
-    new k8s.helm.v3.Chart('main-ingress-controller', {
+    new k8s.helm.v3.Release('main-ingress-controller', {
         chart: 'traefik',
-        version: clusterConfiguration.traefikVersion,
-        fetchOpts: {
-            repo: 'https://helm.traefik.io/traefik',
+        repositoryOpts: {
+            repo: 'https://helm.traefik.io/traefik'
         },
+        version: clusterConfiguration.traefikVersion,
         namespace: namespaceName,
         values: {
             ingressRoute: {
@@ -151,6 +151,9 @@ export function describeBackboneResources(
             },
             service: {
                 type: 'NodePort',
+                annotations: {
+                    'kubernetes.digitalocean.com/firewall-managed': false
+                }
             },
             ports: {
                 web: {
@@ -160,22 +163,8 @@ export function describeBackboneResources(
                     expose: false
                 }
             },
-            /*additionalArguments: {
-                ping: {
-                    entrypoint: 'web'
-                }
-            }  */
         },
-        transformations: [
-            (obj: any) => {
-                if (obj.kind === 'Service') {
-                    obj.metadata.namespace = namespaceName
-                    obj.metadata.annotations = {
-                        'kubernetes.digitalocean.com/firewall-managed': false
-                    }
-                }
-            },
-        ]
+        createNamespace: false
     }, { provider })
 
     const dockerLogin = {
