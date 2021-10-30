@@ -132,7 +132,7 @@ export function describeBackboneResources(
         parent: cluster
     })
 
-    const namespace = new k8s.core.v1.Namespace(clusterConfiguration.namespace, {
+    const namespace = new k8s.core.v1.Namespace('namespace', {
         metadata: {
             name: clusterConfiguration.namespace
         }
@@ -195,7 +195,7 @@ export function describeBackboneResources(
             }
         }
     }
-    const containerRegistryCredentials = new k8s.core.v1.Secret('main-container-registry-credentials', {
+    const containerRegistryCredentials = new k8s.core.v1.Secret('container-registry-credentials', {
         metadata: {
             namespace: namespaceName,
             name: 'container-registry'
