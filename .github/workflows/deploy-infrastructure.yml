@@ -23,13 +23,6 @@ jobs:
         working-directory: "./infrastructure"
         run: make test
 
-      - name: "Deploy backend"
-        working-directory: "./infrastructure"
-        env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-          DIGITALOCEAN_TOKEN: ${{ secrets.DIGITALOCEAN_TOKEN }}
-        run: make deploy-backend
-
       - name: "Deploy production infrastructure"
         working-directory: "./infrastructure"
         env:
@@ -38,6 +31,13 @@ jobs:
           CLUSTER_TOKEN: ${{ secrets.CLUSTER_TOKEN }}
           CLUSTER_CONTAINER_REGISTRY_TOKEN: ${{ secrets.CLUSTER_CONTAINER_REGISTRY_TOKEN }}
         run: make deploy
+
+      - name: "Deploy backend"
+        working-directory: "./infrastructure"
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          DIGITALOCEAN_TOKEN: ${{ secrets.DIGITALOCEAN_TOKEN }}
+        run: make deploy-backend
 
       - name: "Deploy frontend"
         working-directory: "./infrastructure"
