@@ -167,6 +167,7 @@ export function describeBackboneResources(
         },
         createNamespace: false,
         atomic: true,
+        forceUpdate: true,
     }, { provider })
 
     const dockerLogin = {
