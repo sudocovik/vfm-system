@@ -42,7 +42,7 @@ export function deployBackboneResources(): void {
             tag: 'vfm-worker'
         },
         namespace: 'vfm',
-        traefikVersion: '10.3.2',
+        traefikVersion: '10.6.0',
         containerRegistryToken: process.env.CLUSTER_CONTAINER_REGISTRY_TOKEN || ''
     }
 
