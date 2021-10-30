@@ -151,9 +151,6 @@ export function describeBackboneResources(
             },
             service: {
                 type: 'NodePort',
-                annotations: {
-                    'kubernetes.digitalocean.com/firewall-managed': false
-                }
             },
             ports: {
                 web: {
@@ -173,6 +170,9 @@ export function describeBackboneResources(
             (obj: any) => {
                 if (obj.kind === 'Service') {
                     obj.metadata.namespace = namespaceName
+                    obj.metadata.annotations = {
+                        'kubernetes.digitalocean.com/firewall-managed': false
+                    }
                 }
             },
         ]
