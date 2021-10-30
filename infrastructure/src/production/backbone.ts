@@ -133,7 +133,7 @@ export function describeBackboneResources(
         parent: cluster
     })
 
-    const namespace = new k8s.core.v1.Namespace('namespace', {
+    const namespace = new k8s.core.v1.Namespace('primary-namespace', {
         metadata: {
             name: clusterConfiguration.namespace
         }
