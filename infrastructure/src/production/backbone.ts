@@ -136,7 +136,7 @@ export function describeBackboneResources(
 
     const namespaceName = namespace.metadata.name
 
-    new k8s.helm.v3.Release('main-ingress-controller', {
+    new k8s.helm.v3.Release('ingress-controller', {
         chart: 'traefik',
         repositoryOpts: {
             repo: 'https://helm.traefik.io/traefik'
