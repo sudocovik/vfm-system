@@ -167,11 +167,6 @@ export function describeBackboneResources(
                     expose: false
                 }
             },
-            /*additionalArguments: {
-                ping: {
-                    entrypoint: 'web'
-                }
-            }  */
         },
         transformations: [
             (obj: any) => {
