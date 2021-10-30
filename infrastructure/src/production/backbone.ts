@@ -136,7 +136,7 @@ export function describeBackboneResources(
 
     const namespaceName = namespace.metadata.name
 
-    new k8s.helm.v3.Chart('main-ingress-controller', {
+    /*new k8s.helm.v3.Chart('main-ingress-controller', {
         chart: 'traefik',
         version: clusterConfiguration.traefikVersion,
         fetchOpts: {
@@ -160,11 +160,6 @@ export function describeBackboneResources(
                     expose: false
                 }
             },
-            /*additionalArguments: {
-                ping: {
-                    entrypoint: 'web'
-                }
-            }  */
         },
         transformations: [
             (obj: any) => {
@@ -176,7 +171,7 @@ export function describeBackboneResources(
                 }
             },
         ]
-    }, { provider })
+    }, { provider })*/
 
     const dockerLogin = {
         auths: {
