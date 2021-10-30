@@ -142,6 +142,7 @@ export function describeBackboneResources(
             repo: 'https://helm.traefik.io/traefik'
         },
         version: clusterConfiguration.traefikVersion,
+        name: 'traefik',
         namespace: namespaceName,
         values: {
             ingressRoute: {
