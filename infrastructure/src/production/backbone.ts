@@ -42,7 +42,7 @@ export function describeBackboneResources(
     projectConfiguration: ProjectConfiguration,
     apiToken: string
 ): any {
-    /* const domain = new Domain(domainConfiguration.name, {
+    const domain = new Domain('primary-domain', {
         name: domainConfiguration.name
     })
 
