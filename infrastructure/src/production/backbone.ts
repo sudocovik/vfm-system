@@ -155,6 +155,9 @@ export function describeBackboneResources(
             ports: {
                 web: {
                     nodePort: loadBalancerConfiguration.ports.http.internal
+                },
+                websecure: {
+                    expose: false
                 }
             },
             /*additionalArguments: {
