@@ -42,19 +42,21 @@ export function describeBackboneResources(
     projectConfiguration: ProjectConfiguration,
     apiToken: string
 ): any {
-    const domain = new Domain('main-domain', {
+    const domain = new Domain(domainConfiguration.name, {
         name: domainConfiguration.name
     })
 
-    const certificate = new Certificate('main-certificate', {
+    const certificate = new Certificate('certificate', {
         type: 'lets_encrypt',
         domains: [
             domain.name,
             domain.name.apply(domainName => `*.${domainName}`)
         ]
+    }, {
+        parent: domain
     })
 
-    const loadBalancer = new LoadBalancer('main-load-balancer', {
+    const loadBalancer = new LoadBalancer('load-balancer', {
         size: loadBalancerConfiguration.size,
         region: loadBalancerConfiguration.region,
         dropletTag: clusterConfiguration.nodePool.tag,
@@ -87,14 +89,16 @@ export function describeBackboneResources(
         }
     })
 
-    new DnsRecord('main-subdomains', {
+    new DnsRecord('wildcard-subdomain', {
         domain: domain.name,
         name: '*',
         type: 'A',
         value: loadBalancer.ip
+    }, {
+        parent: domain
     })
 
-    const cluster = new KubernetesCluster('main-cluster', {
+    const cluster = new KubernetesCluster('cluster', {
         name: clusterConfiguration.name,
         version: clusterConfiguration.version,
         region: clusterConfiguration.region,
@@ -108,7 +112,7 @@ export function describeBackboneResources(
         }
     })
 
-    new Project('main-project', {
+    new Project('project', {
         name: projectConfiguration.name,
         environment: projectConfiguration.environment,
         description: projectConfiguration.description,
@@ -122,16 +126,19 @@ export function describeBackboneResources(
 
     const kubeconfig = generateKubeconfig(cluster, 'admin', apiToken)
 
-    const provider: k8s.Provider = new k8s.Provider('main-kubernetes-provider', {
+    const provider: k8s.Provider = new k8s.Provider('kubernetes-provider', {
         kubeconfig
+    }, {
+        parent: cluster
     })
 
-    const namespace = new k8s.core.v1.Namespace('main-namespace', {
+    const namespace = new k8s.core.v1.Namespace(clusterConfiguration.namespace, {
         metadata: {
             name: clusterConfiguration.namespace
         }
     }, {
-        provider
+        provider,
+        parent: provider
     })
 
     const namespaceName = namespace.metadata.name
@@ -176,7 +183,10 @@ export function describeBackboneResources(
                 }
             },
         ]
-    }, { provider })
+    }, {
+        provider,
+        parent: namespace
+    })
 
     const dockerLogin = {
         auths: {
@@ -194,7 +204,10 @@ export function describeBackboneResources(
         data: {
             '.dockerconfigjson': Buffer.from(JSON.stringify(dockerLogin), 'utf8').toString('base64')
         }
-    }, { provider })
+    }, {
+        provider,
+        parent: namespace
+    })
 
     return {
         kubeconfig,
