@@ -152,7 +152,7 @@ export function describeBackboneResources(
             },
             service: {
                 type: 'NodePort',
-                annotations: {
+                annotationsTCP: {
                     'kubernetes.digitalocean.com/firewall-managed': false
                 }
             },
