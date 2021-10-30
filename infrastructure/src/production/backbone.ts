@@ -143,7 +143,7 @@ export function describeBackboneResources(
 
     const namespaceName = namespace.metadata.name
 
-    new k8s.helm.v3.Chart('main-ingress-controller', {
+    new k8s.helm.v3.Chart('ingress-controller', {
         chart: 'traefik',
         version: clusterConfiguration.traefikVersion,
         fetchOpts: {
