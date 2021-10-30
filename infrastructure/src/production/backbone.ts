@@ -99,7 +99,7 @@ export function describeBackboneResources(
         parent: domain
     })
 
-    const cluster = new KubernetesCluster('cluster', {
+    const cluster = new KubernetesCluster('primary-cluster', {
         name: clusterConfiguration.name,
         version: clusterConfiguration.version,
         region: clusterConfiguration.region,
