@@ -206,6 +206,22 @@ pulumi.interpolate`<?xml version='1.0' encoding='UTF-8'?>
                         }
                     }]
                 }
+            }, {
+                host: 'old.zarafleet.com',
+                http: {
+                    paths: [{
+                        path: '/',
+                        pathType: 'Prefix',
+                        backend: {
+                            service: {
+                                name: service.metadata.name,
+                                port: {
+                                    name: service.spec.ports[0].name
+                                }
+                            }
+                        }
+                    }]
+                }
             }]
         }
     }, { provider })
