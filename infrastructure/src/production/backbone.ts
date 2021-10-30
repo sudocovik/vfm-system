@@ -167,8 +167,10 @@ export function describeBackboneResources(
         },
         createNamespace: false,
         atomic: true,
-        forceUpdate: true,
-    }, { provider })
+    }, {
+        provider,
+        deleteBeforeReplace: true,
+    })
 
     const dockerLogin = {
         auths: {
