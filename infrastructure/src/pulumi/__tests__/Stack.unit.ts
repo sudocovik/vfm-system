@@ -38,7 +38,7 @@ describe('#ProductionStack', () => {
                 try {
                     instantiateProductionStackWithDefaultResources(value)
                 }
-                catch (e) {
+                catch (e: any) {
                     const stringRepresentationOfVariableType: string = value === null ? 'null' : typeof value
 
                     errorShouldBeInstanceOfTypeError(e)
@@ -61,7 +61,7 @@ describe('#ProductionStack', () => {
                 try {
                     instantiateProductionStackWithDefaultResources(value)
                 }
-                catch (e) {
+                catch (e: any) {
                     errorShouldBeInstanceOfEmptyValueError(e)
                 }
             })
