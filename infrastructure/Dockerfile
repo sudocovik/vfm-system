@@ -34,7 +34,7 @@ RUN addgroup -g $HOST_DOCKER_GROUP_ID docker && \
 RUN apk update && apk add curl bash
 SHELL ["/bin/bash", "-c"]
 
-COPY --from=docker:20.10.8 /usr/local/bin/docker /usr/local/bin/docker
+COPY --from=docker:20.10.10 /usr/local/bin/docker /usr/local/bin/docker
 
 RUN curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v5.0.1 bash
 
