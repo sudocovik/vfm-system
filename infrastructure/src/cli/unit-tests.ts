@@ -1,4 +1,4 @@
-import { spawn } from 'child_process'
+import { spawnSync } from 'child_process'
 
 export function test(watch: boolean = false): void {
     let jestArguments: string[] = [
@@ -7,5 +7,5 @@ export function test(watch: boolean = false): void {
     ]
     if (watch) jestArguments.push('--watchAll')
 
-    spawn('jest', jestArguments, { stdio: 'inherit' })
+    spawnSync('jest', jestArguments, { stdio: 'inherit' })
 }
