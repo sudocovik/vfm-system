@@ -135,7 +135,7 @@ export function describeBackboneResources(
     })
 
     const namespaceName = namespace.metadata.name
-
+/*
     new k8s.helm.v3.Release('main-ingress-controller', {
         chart: 'traefik',
         repositoryOpts: {
@@ -166,7 +166,7 @@ export function describeBackboneResources(
         },
         createNamespace: false
     }, { provider })
-
+*/
     const dockerLogin = {
         auths: {
             'ghcr.io': {
