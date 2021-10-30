@@ -24,7 +24,8 @@ program.addCommand(local, { isDefault: true })
 const test = program.command('test')
 test.option('-w, --watch', 'Watch filesystem changes and re-run tests', false)
 test.action(({ watch }) => {
-    runUnitTests(watch)
+    const exitCode = runUnitTests(watch)
+    process.exit(exitCode ?? -1)
 })
 
 const deploy = new Command('deploy')
