@@ -96,7 +96,7 @@ export function describeBackboneResources(
         value: loadBalancer.ip
     }, {
         parent: domain
-    }) */
+    })
 
     const cluster = new KubernetesCluster('cluster', {
         name: clusterConfiguration.name,
@@ -210,5 +210,5 @@ export function describeBackboneResources(
         domainName: 'zarafleet.com',
         containerRegistryCredentialsName: containerRegistryCredentials.metadata.name,
         clusterId: cluster.id,
-    }
+    } */
 }
