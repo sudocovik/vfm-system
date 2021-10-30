@@ -113,15 +113,15 @@ export function describeBackboneResources(
         }
     })
 
-    new Project('project', {
+    new Project('primary-project', {
         name: projectConfiguration.name,
         environment: projectConfiguration.environment,
         description: projectConfiguration.description,
         purpose: projectConfiguration.purpose,
         resources: [
-            // domain.domainUrn,
+            domain.domainUrn,
             cluster.clusterUrn,
-            // loadBalancer.loadBalancerUrn
+            loadBalancer.loadBalancerUrn
         ]
     })
 
