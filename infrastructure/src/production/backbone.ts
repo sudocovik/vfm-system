@@ -42,7 +42,7 @@ export function describeBackboneResources(
     projectConfiguration: ProjectConfiguration,
     apiToken: string
 ): any {
-    const domain = new Domain(domainConfiguration.name, {
+    /* const domain = new Domain(domainConfiguration.name, {
         name: domainConfiguration.name
     })
 
@@ -96,7 +96,7 @@ export function describeBackboneResources(
         value: loadBalancer.ip
     }, {
         parent: domain
-    })
+    }) */
 
     const cluster = new KubernetesCluster('cluster', {
         name: clusterConfiguration.name,
@@ -118,9 +118,9 @@ export function describeBackboneResources(
         description: projectConfiguration.description,
         purpose: projectConfiguration.purpose,
         resources: [
-            domain.domainUrn,
+            // domain.domainUrn,
             cluster.clusterUrn,
-            loadBalancer.loadBalancerUrn
+            // loadBalancer.loadBalancerUrn
         ]
     })
 
@@ -207,7 +207,7 @@ export function describeBackboneResources(
     return {
         kubeconfig,
         namespaceName,
-        domainName: domain.name,
+        domainName: 'zarafleet.com',
         containerRegistryCredentialsName: containerRegistryCredentials.metadata.name,
         clusterId: cluster.id,
     }
