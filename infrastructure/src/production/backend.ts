@@ -156,7 +156,10 @@ pulumi.interpolate`<?xml version='1.0' encoding='UTF-8'?>
 
     new k8s.core.v1.Service('traccar-teltonika-service', {
         metadata: {
-            namespace
+            namespace,
+            annotations: {
+                'kubernetes.digitalocean.com/firewall-managed': 'false'
+            }
         },
         spec: {
             type: 'NodePort',
