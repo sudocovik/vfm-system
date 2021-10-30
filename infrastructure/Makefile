@@ -2,11 +2,11 @@ IMAGE_NAME=covik/vfm-infrastructure:latest
 
 .PHONY: build
 build:
-	docker buildx build --target=production --tag=$(IMAGE_NAME) .
+	@docker buildx build --target=production --tag=$(IMAGE_NAME) .
 
 .PHONY: test
 test:
-	docker run $(IMAGE_NAME) vfm test
+	@docker run $(IMAGE_NAME) vfm test
 
 .PHONY: deploy
 deploy:
@@ -20,7 +20,7 @@ deploy:
 
 .PHONY: deploy-frontend
 deploy-frontend:
-	docker run \
+	@docker run \
 		-e PULUMI_ACCESS_TOKEN=$(PULUMI_ACCESS_TOKEN) \
 		-e FRONTEND_VERSION=$(FRONTEND_VERSION) \
 	  $(IMAGE_NAME) \
@@ -28,7 +28,7 @@ deploy-frontend:
 
 .PHONY: deploy-backend
 deploy-backend:
-	docker run \
+	@docker run \
 		-e PULUMI_ACCESS_TOKEN=$(PULUMI_ACCESS_TOKEN) \
 		-e DIGITALOCEAN_TOKEN=$(DIGITALOCEAN_TOKEN) \
 	  $(IMAGE_NAME) \
