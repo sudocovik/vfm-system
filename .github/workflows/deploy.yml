@@ -12,6 +12,10 @@ on:
         required: true
         type: string
     secrets:
+      registry_username:
+        required: true
+      registry_password:
+        required: true
       pulumi_token:
         required: true
       digitalocean_token:
@@ -27,6 +31,9 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ${{ inputs.image }}
+      credentials:
+        username: ${{ secrets.registry_username }}
+        password: ${{ secrets.registry_password }}
     steps:
       - name: "Deploy"
         env:
