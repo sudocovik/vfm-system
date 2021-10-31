@@ -1,6 +1,6 @@
 import provision from '../pulumi/provision'
-import { DatabaseCluster, DatabaseDb, DatabaseFirewall, DatabaseUser } from '@pulumi/digitalocean'
 import * as pulumi from '@pulumi/pulumi'
+import * as digitalocean from '@pulumi/digitalocean'
 import * as k8s from '@pulumi/kubernetes'
 
 type DatabaseConnection = {
@@ -12,7 +12,7 @@ type DatabaseConnection = {
 }
 
 function describeDatabase(kubernetesCluster: pulumi.Output<any>): DatabaseConnection {
-    const cluster = new DatabaseCluster('main-backend-database', {
+    const cluster = new digitalocean.DatabaseCluster('main-backend-database', {
         name: 'vfm-database',
         region: 'fra1',
         size: 'db-s-1vcpu-1gb',
@@ -25,7 +25,7 @@ function describeDatabase(kubernetesCluster: pulumi.Output<any>): DatabaseConnec
         }]
     })
 
-    new DatabaseFirewall('main-database-firewall', {
+    new digitalocean.DatabaseFirewall('main-database-firewall', {
         clusterId: cluster.id,
         rules: [{
             type: 'k8s',
@@ -33,12 +33,12 @@ function describeDatabase(kubernetesCluster: pulumi.Output<any>): DatabaseConnec
         }]
     })
 
-    const user = new DatabaseUser('main-database-user', {
+    const user = new digitalocean.DatabaseUser('main-database-user', {
         clusterId: cluster.id,
         name: 'regular'
     })
 
-    const database = new DatabaseDb('main-database-db', {
+    const database = new digitalocean.DatabaseDb('main-database-db', {
         clusterId: cluster.id,
         name: 'vfm'
     })
