@@ -1,4 +1,3 @@
-import { Certificate, DnsRecord, Domain, KubernetesCluster, LoadBalancer, Project } from '@pulumi/digitalocean'
 import type {
     ClusterConfiguration,
     DomainConfiguration,
@@ -6,10 +5,11 @@ import type {
     ProjectConfiguration,
 } from './backbone-types'
 import * as pulumi from '@pulumi/pulumi'
+import * as digitalocean from '@pulumi/digitalocean'
 import * as k8s from '@pulumi/kubernetes'
 
 export function generateKubeconfig(
-    cluster: KubernetesCluster,
+    cluster: digitalocean.KubernetesCluster,
     user: pulumi.Input<string>,
     apiToken: pulumi.Input<string>,
 ): pulumi.Output<string> {
@@ -42,11 +42,11 @@ export function describeBackboneResources(
     projectConfiguration: ProjectConfiguration,
     apiToken: string
 ): any {
-    const domain = new Domain('primary-domain', {
+    const domain = new digitalocean.Domain('primary-domain', {
         name: domainConfiguration.name
     })
 
-    const certificate = new Certificate('certificate', {
+    const certificate = new digitalocean.Certificate('certificate', {
         type: 'lets_encrypt',
         domains: [
             domain.name,
@@ -56,7 +56,7 @@ export function describeBackboneResources(
         parent: domain
     })
 
-    const loadBalancer = new LoadBalancer('primary-load-balancer', {
+    const loadBalancer = new digitalocean.LoadBalancer('primary-load-balancer', {
         name: loadBalancerConfiguration.name,
         size: loadBalancerConfiguration.size,
         region: loadBalancerConfiguration.region,
@@ -90,7 +90,7 @@ export function describeBackboneResources(
         }
     })
 
-    new DnsRecord('wildcard-subdomain', {
+    new digitalocean.DnsRecord('wildcard-subdomain', {
         domain: domain.name,
         name: '*',
         type: 'A',
@@ -99,7 +99,7 @@ export function describeBackboneResources(
         parent: domain
     })
 
-    const cluster = new KubernetesCluster('primary-cluster', {
+    const cluster = new digitalocean.KubernetesCluster('primary-cluster', {
         name: clusterConfiguration.name,
         version: clusterConfiguration.version,
         region: clusterConfiguration.region,
@@ -113,7 +113,7 @@ export function describeBackboneResources(
         }
     })
 
-    new Project('primary-project', {
+    new digitalocean.Project('primary-project', {
         name: projectConfiguration.name,
         environment: projectConfiguration.environment,
         description: projectConfiguration.description,
