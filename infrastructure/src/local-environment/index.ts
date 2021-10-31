@@ -1,7 +1,7 @@
 import { COLORS, Stdout, UNICODE } from '../utilities/terminal'
 import { LocalClusterManager } from './LocalClusterManager'
 import { k3dCluster } from './cluster'
-import pulumiProgram from './pulumi-program'
+import { localProgram as pulumiProgram } from '../pulumi/provision'
 import { createKubernetesManifests } from '../pulumi/create-kubernetes-manifests'
 
 const clusterManager = new LocalClusterManager(new k3dCluster())
