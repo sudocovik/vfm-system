@@ -8,9 +8,10 @@ function describeOldFrontend(
     namespace: pulumi.Output<any>,
     containerRegistrySecret: pulumi.Output<any>
 ): void {
+    const name = 'old-frontend'
     const labels = { app: 'old-frontend' }
 
-    const deployment = new k8s.apps.v1.Deployment('old-deployment', {
+    const deployment = new k8s.apps.v1.Deployment(name, {
         metadata: {
             namespace
         },
@@ -38,9 +39,12 @@ function describeOldFrontend(
                 }
             }
         }
-    }, { provider })
+    }, {
+        provider,
+        parent: provider
+    })
 
-    const service = new k8s.core.v1.Service('test-service', {
+    const service = new k8s.core.v1.Service(name, {
         metadata: {
             namespace
         },
@@ -53,9 +57,12 @@ function describeOldFrontend(
                 protocol: 'TCP'
             }]
         }
-    }, { provider })
+    }, {
+        provider,
+        parent: provider
+    })
 
-    new k8s.networking.v1.Ingress('test-ingress', {
+    new k8s.networking.v1.Ingress(name, {
         metadata: {
             namespace
         },
@@ -78,7 +85,10 @@ function describeOldFrontend(
                 }
             }]
         }
-    }, { provider })
+    }, {
+        provider,
+        parent: provider,
+    })
 }
 
 export function describeFrontendResources(): any {
