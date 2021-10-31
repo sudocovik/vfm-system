@@ -10,7 +10,7 @@ function describeOldFrontend(
 ): void {
     const labels = { app: 'old-frontend' }
 
-    /*const deployment = new k8s.apps.v1.Deployment('old-deployment', {
+    const deployment = new k8s.apps.v1.Deployment('old-deployment', {
         metadata: {
             namespace
         },
@@ -78,7 +78,7 @@ function describeOldFrontend(
                 }
             }]
         }
-    }, { provider })*/
+    }, { provider })
 }
 
 export function describeFrontendResources(): any {
