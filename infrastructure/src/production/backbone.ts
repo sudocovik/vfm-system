@@ -162,10 +162,7 @@ export function describeBackboneResources(
             },
             ports: {
                 web: {
-                    nodePort: loadBalancerConfiguration.ports.http.internal,
-                    annotations: {
-                        'kubernetes.digitalocean.com/firewall-managed': 'false'
-                    }
+                    nodePort: loadBalancerConfiguration.ports.http.internal
                 },
                 websecure: {
                     expose: false
@@ -176,6 +173,9 @@ export function describeBackboneResources(
             (obj: any) => {
                 if (obj.kind === 'Service') {
                     obj.metadata.namespace = namespaceName
+                    obj.metadata.annotations = {
+                        'kubernetes.digitalocean.com/firewall-managed': 'false'
+                    }
                 }
             },
         ]
