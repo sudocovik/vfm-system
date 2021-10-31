@@ -77,7 +77,7 @@ jobs:
     needs: [build-infrastructure]
     with:
       type: infrastructure
-      image: ${{ format('ghcr.io/covik/vfm-infrastructure:{0}', env.VERSION) }}
+      image: ${{ format('ghcr.io/covik/vfm-infrastructure:{0}', github.sha) }}
     secrets:
       pulumi_token: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       digitalocean_token: ${{ secrets.DIGITALOCEAN_TOKEN }}
