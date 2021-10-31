@@ -7,7 +7,7 @@ on:
       - "**.md"
 
 env:
-  VERSION: ${{ github.sha }}
+  IMAGE_VERSION: ${{ github.sha }}
   CONTAINER_REGISTRY_URL: ghcr.io
   CONTAINER_REGISTRY_USERNAME: ${{ github.repository_owner }}
   CONTAINER_REGISTRY_PASSWORD: ${{ secrets.GHCR_TOKEN }}
@@ -19,8 +19,6 @@ jobs:
     defaults:
       run:
         working-directory: "./infrastructure"
-    env:
-      IMAGE_VERSION: ${{ env.VERSION }}
     steps:
       - name: "Checkout repository"
         uses: actions/checkout@v2
@@ -50,8 +48,6 @@ jobs:
     defaults:
       run:
         working-directory: "./frontend"
-    env:
-      IMAGE_VERSION: ${{ env.VERSION }}
     steps:
       - name: "Checkout repository"
         uses: actions/checkout@v2
