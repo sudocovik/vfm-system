@@ -1,4 +1,5 @@
-IMAGE_NAME=covik/vfm-infrastructure:latest
+# IMAGE_VERSION should be set by CI
+IMAGE_NAME=ghcr.io/covik/vfm-infrastructure:$(IMAGE_VERSION)
 
 .PHONY: build
 build:
@@ -7,6 +8,10 @@ build:
 .PHONY: test
 test:
 	@docker run $(IMAGE_NAME) vfm test
+
+.PHONY: push
+push:
+	docker push $(IMAGE_NAME)
 
 .PHONY: deploy
 deploy:

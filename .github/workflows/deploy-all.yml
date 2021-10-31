@@ -1,0 +1,118 @@
+name: "Build and deploy infrastructure, frontend and backend"
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - "**.md"
+
+env:
+  VERSION: ${{ github.sha }}
+  CONTAINER_REGISTRY_URL: ghcr.io
+  CONTAINER_REGISTRY_USERNAME: ${{ github.repository_owner }}
+  CONTAINER_REGISTRY_PASSWORD: ${{ secrets.GHCR_TOKEN }}
+
+jobs:
+  build-infrastructure:
+    name: "Build infrastructure image"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: "./infrastructure"
+    env:
+      IMAGE_VERSION: ${{ env.VERSION }}
+    steps:
+      - name: "Checkout repository"
+        uses: actions/checkout@v2
+
+      - name: "Login to GitHub Container Registry"
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.CONTAINER_REGISTRY_URL }}
+          username: ${{ env.CONTAINER_REGISTRY_USERNAME }}
+          password: ${{ env.CONTAINER_REGISTRY_PASSWORD }}
+
+      - name: "Build image"
+        working-directory: "./infrastructure"
+        run: make
+
+      - name: "Run unit tests"
+        working-directory: "./infrastructure"
+        run: make test
+
+      - name: "Push image to GitHub Container Registry"
+        run:
+          make push
+
+  build-frontend:
+    name: "Build frontend image"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: "./frontend"
+    env:
+      IMAGE_VERSION: ${{ env.VERSION }}
+    steps:
+      - name: "Checkout repository"
+        uses: actions/checkout@v2
+
+      - name: "Login to GitHub Container Registry"
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.CONTAINER_REGISTRY_URL }}
+          username: ${{ env.CONTAINER_REGISTRY_USERNAME }}
+          password: ${{ env.CONTAINER_REGISTRY_PASSWORD }}
+
+      - name: "Build container image"
+        run: make
+
+      - name: "Run linter"
+        run: make lint
+
+      - name: "Run unit tests"
+        run: make test
+
+      - name: "Push image to GitHub Container Registry"
+        run:
+          make push
+
+  deploy-infrastructure:
+    name: "Deploy infrastructure"
+    needs: [build-infrastructure]
+    runs-on: ubuntu-latest
+    concurrency: "infrastructure-deployment"
+    container: ghcr.io/covik/vfm-infrastructure:${{ env.VERSION }}
+    steps:
+      - name: "Deploy"
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          DIGITALOCEAN_TOKEN: ${{ secrets.DIGITALOCEAN_TOKEN }}
+          CLUSTER_TOKEN: ${{ secrets.CLUSTER_TOKEN }}
+          CLUSTER_CONTAINER_REGISTRY_TOKEN: ${{ secrets.CLUSTER_CONTAINER_REGISTRY_TOKEN }}
+        run: vfm deploy infrastructure
+
+  deploy-backend:
+    name: "Deploy backend"
+    needs: [build-infrastructure]
+    runs-on: ubuntu-latest
+    concurrency: "backend-deployment"
+    container: ghcr.io/covik/vfm-infrastructure:${{ env.VERSION }}
+    steps:
+      - name: "Deploy"
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          DIGITALOCEAN_TOKEN: ${{ secrets.DIGITALOCEAN_TOKEN }}
+        run: vfm deploy backend
+
+  deploy-frontend:
+    name: "Deploy frontend"
+    needs: [build-infrastructure, build-frontend]
+    runs-on: ubuntu-latest
+    concurrency: "frontend-deployment"
+    container: ghcr.io/covik/vfm-infrastructure:${{ env.VERSION }}
+    steps:
+      - name: "Deploy"
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          FRONTEND_VERSION: "useless"
+        run: vfm deploy frontend

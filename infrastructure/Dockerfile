@@ -47,6 +47,8 @@ CMD vfm ; bash
 
 FROM base AS production
 
+LABEL org.opencontainers.image.source=https://github.com/Covik/vfm-system
+
 ENV NODE_ENV="production"
 
 # These variables should be set in runtime
