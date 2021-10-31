@@ -189,7 +189,7 @@ pulumi.interpolate`<?xml version='1.0' encoding='UTF-8'?>
         }
     }, { provider })
 
-    new k8s.networking.v1.Ingress('default-ingress', {
+    new k8s.networking.v1.Ingress('traccar-ingress', {
         metadata: {
             namespace
         },
