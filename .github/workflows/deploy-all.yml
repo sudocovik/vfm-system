@@ -78,7 +78,7 @@ jobs:
     runs-on: ubuntu-latest
     concurrency: "infrastructure-deployment"
     container:
-      image: ghcr.io/covik/vfm-infrastructure:${{ env.VERSION }}
+      image: ${{ format('ghcr.io/covik/vfm-infrastructure:{0}', env.VERSION) }}
     steps:
       - name: "Deploy"
         env:
@@ -94,7 +94,7 @@ jobs:
     runs-on: ubuntu-latest
     concurrency: "backend-deployment"
     container:
-      image: ghcr.io/covik/vfm-infrastructure:${{ env.VERSION }}
+      image: ${{ format('ghcr.io/covik/vfm-infrastructure:{0}', env.VERSION) }}
     steps:
       - name: "Deploy"
         env:
@@ -108,7 +108,7 @@ jobs:
     runs-on: ubuntu-latest
     concurrency: "frontend-deployment"
     container:
-      image: ghcr.io/covik/vfm-infrastructure:${{ env.VERSION }}
+      image: ${{ format('ghcr.io/covik/vfm-infrastructure:{0}', env.VERSION) }}
     steps:
       - name: "Deploy"
         env:
