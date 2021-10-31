@@ -16,7 +16,8 @@ on:
         required: true
       digitalocean_token:
         required: false
-      cluster_token: false
+      cluster_token:
+        required: true
       cluster_container_registry_token:
         required: false
 
