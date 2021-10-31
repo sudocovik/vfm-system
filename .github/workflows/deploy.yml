@@ -1,0 +1,36 @@
+name: "Deploy backend/frontend/infrastructure"
+
+on:
+  workflow_call:
+    inputs:
+      type:
+        description: "Type of deployment: backend, frontend or infrastructure"
+        required: true
+        type: string
+      image:
+        description: "Full infrastructure image tag"
+        required: true
+        type: string
+    secrets:
+      pulumi_token:
+        required: true
+      digitalocean_token:
+        required: false
+      cluster_token: false
+      cluster_container_registry_token:
+        required: false
+
+jobs:
+  deploy:
+    name: ${{ format('Deploy {0}', inputs.type) }}
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ inputs.image }}
+    steps:
+      - name: "Deploy"
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.pulumi_token }}
+          DIGITALOCEAN_TOKEN: ${{ secrets.digitalocean_token }}
+          CLUSTER_TOKEN: ${{ secrets.cluster_token }}
+          CLUSTER_CONTAINER_REGISTRY_TOKEN: ${{ secrets.cluster_container_registry_token }}
+        run: vfm deploy ${{ inputs.type }}

@@ -73,45 +73,13 @@ jobs:
           make push
 
   deploy-infrastructure:
-    name: "Deploy infrastructure"
+    uses: covik/vfm-system/.github/workflows/deploy.yml@main
     needs: [build-infrastructure]
-    runs-on: ubuntu-latest
-    concurrency: "infrastructure-deployment"
-    container:
+    with:
+      type: infrastructure
       image: ${{ format('ghcr.io/covik/vfm-infrastructure:{0}', env.VERSION) }}
-    steps:
-      - name: "Deploy"
-        env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-          DIGITALOCEAN_TOKEN: ${{ secrets.DIGITALOCEAN_TOKEN }}
-          CLUSTER_TOKEN: ${{ secrets.CLUSTER_TOKEN }}
-          CLUSTER_CONTAINER_REGISTRY_TOKEN: ${{ secrets.CLUSTER_CONTAINER_REGISTRY_TOKEN }}
-        run: vfm deploy infrastructure
-
-  deploy-backend:
-    name: "Deploy backend"
-    needs: [build-infrastructure]
-    runs-on: ubuntu-latest
-    concurrency: "backend-deployment"
-    container:
-      image: ${{ format('ghcr.io/covik/vfm-infrastructure:{0}', env.VERSION) }}
-    steps:
-      - name: "Deploy"
-        env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-          DIGITALOCEAN_TOKEN: ${{ secrets.DIGITALOCEAN_TOKEN }}
-        run: vfm deploy backend
-
-  deploy-frontend:
-    name: "Deploy frontend"
-    needs: [build-infrastructure, build-frontend]
-    runs-on: ubuntu-latest
-    concurrency: "frontend-deployment"
-    container:
-      image: ${{ format('ghcr.io/covik/vfm-infrastructure:{0}', env.VERSION) }}
-    steps:
-      - name: "Deploy"
-        env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-          FRONTEND_VERSION: "useless"
-        run: vfm deploy frontend
+    secrets:
+      pulumi_token: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+      digitalocean_token: ${{ secrets.DIGITALOCEAN_TOKEN }}
+      cluster_token: ${{ secrets.CLUSTER_TOKEN }}
+      cluster_container_registry_token: ${{ secrets.cluster_container_registry_token }}
