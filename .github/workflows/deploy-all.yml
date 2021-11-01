@@ -73,6 +73,7 @@ jobs:
           make push
 
   deploy-infrastructure:
+    name: "Infrastructure"
     uses: Covik/vfm-system/.github/workflows/deploy.yml@main
     needs: [build-infrastructure]
     with:
