@@ -96,12 +96,15 @@ pulumi.interpolate`<?xml version='1.0' encoding='UTF-8'?>
 
 </properties>`
         }
-    }, { provider })
+    }, {
+        provider,
+        parent: provider
+    })
 
     const labels = { app: 'traccar' }
     const configurationVolumeName = 'configuration'
 
-    const deployment: k8s.apps.v1.Deployment = new k8s.apps.v1.Deployment('traccar-deployment', {
+    const deployment: k8s.apps.v1.Deployment = new k8s.apps.v1.Deployment('traccar', {
         metadata: {
             namespace
         },
@@ -178,7 +181,10 @@ pulumi.interpolate`<?xml version='1.0' encoding='UTF-8'?>
                 protocol: 'TCP'
             }]
         }
-    }, { provider })
+    }, {
+        provider,
+        parent: provider
+    })
 
     const service: k8s.core.v1.Service = new k8s.core.v1.Service('traccar-http-service', {
         metadata: {
@@ -193,7 +199,10 @@ pulumi.interpolate`<?xml version='1.0' encoding='UTF-8'?>
                 protocol: 'TCP'
             }]
         }
-    }, { provider })
+    }, {
+        provider,
+        parent: provider
+    })
 
     new k8s.networking.v1.Ingress('traccar-ingress', {
         metadata: {
@@ -233,7 +242,10 @@ pulumi.interpolate`<?xml version='1.0' encoding='UTF-8'?>
                 }
             }]
         }
-    }, { provider })
+    }, {
+        provider,
+        parent: provider
+    })
 }
 
 function describeBackendResources(): any {
@@ -248,7 +260,7 @@ function describeBackendResources(): any {
     })
 
     const databaseConnectionSettings = describeDatabase(kubernetesClusterId)
-//    describeApplication(provider, namespaceName, databaseConnectionSettings)
+    describeApplication(provider, namespaceName, databaseConnectionSettings)
 }
 
 export function deployBackendResources(): void {
