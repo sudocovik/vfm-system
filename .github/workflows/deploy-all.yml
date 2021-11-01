@@ -74,7 +74,7 @@ jobs:
 
   deploy-infrastructure:
     name: "Infrastructure"
-    uses: Covik/vfm-system/.github/workflows/deploy.yml@main
+    uses: ${{ format('{0}/.github/workflows/deploy.yml@main', github.repository) }}
     needs: [build-infrastructure]
     with:
       type: infrastructure
