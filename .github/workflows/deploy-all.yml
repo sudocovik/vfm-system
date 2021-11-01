@@ -45,7 +45,7 @@ jobs:
           make push
 
   build-frontend:
-    name: "Build frontend image"
+    name: "Frontend"
     uses: Covik/vfm-system/.github/workflows/build-frontend.yml@main
     secrets:
       registry_url: ghcr.io
