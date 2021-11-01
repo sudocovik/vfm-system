@@ -42,4 +42,4 @@ jobs:
           DIGITALOCEAN_TOKEN: ${{ secrets.digitalocean_token }}
           CLUSTER_TOKEN: ${{ secrets.cluster_token }}
           CLUSTER_CONTAINER_REGISTRY_TOKEN: ${{ secrets.cluster_container_registry_token }}
-        run: whoami ; helm -h ; echo $HELM_REPOSITORY_CACHE
+        run: vfm deploy ${{ inputs.type }}
