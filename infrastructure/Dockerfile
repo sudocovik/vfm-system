@@ -10,7 +10,9 @@ ENV PATH="${PROJECT_ROOT}/bin:${PROJECT_ROOT}/node_modules/.bin:${PATH}"
 WORKDIR $PROJECT_ROOT
 RUN chown node:node $PROJECT_ROOT
 
-RUN chown node:node /app
+ENV PULUMI_HOME /pulumi/home
+RUN mkdir $PULUMI_HOME && \
+    chown node:node $PULUMI_HOME
 
 
 FROM base AS dependencies
