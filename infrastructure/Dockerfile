@@ -11,7 +11,7 @@ WORKDIR $PROJECT_ROOT
 RUN chown node:node $PROJECT_ROOT
 
 ENV PULUMI_HOME /pulumi/home
-RUN mkdir $PULUMI_HOME && \
+RUN mkdir -p $PULUMI_HOME && \
     chown node:node $PULUMI_HOME
 
 
