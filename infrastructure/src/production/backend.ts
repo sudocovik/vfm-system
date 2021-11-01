@@ -25,13 +25,15 @@ function describeDatabase(kubernetesCluster: pulumi.Output<any>): DatabaseConnec
         }]
     })
 
-    /*new digitalocean.DatabaseFirewall('main-database-firewall', {
+    new digitalocean.DatabaseFirewall('database-firewall', {
         clusterId: cluster.id,
         rules: [{
             type: 'k8s',
             value: kubernetesCluster
         }]
-    }) */
+    }, {
+        parent: cluster
+    })
 
     const user = new digitalocean.DatabaseUser('database-user', {
         clusterId: cluster.id,
