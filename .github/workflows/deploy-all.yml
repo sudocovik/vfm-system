@@ -6,6 +6,8 @@ on:
     paths-ignore:
       - "**.md"
 
+concurrency: "full-system-deployment"
+
 env:
   IMAGE_VERSION: ${{ github.sha }}
   CONTAINER_REGISTRY_URL: ghcr.io
