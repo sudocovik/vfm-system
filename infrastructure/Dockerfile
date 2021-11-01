@@ -14,6 +14,9 @@ ENV PULUMI_HOME /pulumi/home
 RUN mkdir -p $PULUMI_HOME && \
     chown node:node $PULUMI_HOME
 
+ENV HELM_REPOSITORY_CACHE /helm/cache
+RUN mkdir -p $HELM_REPOSITORY_CACHE && \
+    chown node:node $HELM_REPOSITORY_CACHE
 
 FROM base AS dependencies
 
