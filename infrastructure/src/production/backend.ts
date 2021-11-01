@@ -236,12 +236,14 @@ function describeBackendResources(): any {
     const namespaceName = backbone.getOutput('namespaceName')
     const kubernetesClusterId = backbone.getOutput('clusterId')
 
+/*
     const provider: k8s.Provider = new k8s.Provider('main-kubernetes-provider', {
         kubeconfig
     })
 
     const databaseConnectionSettings = describeDatabase(kubernetesClusterId)
     describeApplication(provider, namespaceName, databaseConnectionSettings)
+*/
 }
 
 export function deployBackendResources(): void {
