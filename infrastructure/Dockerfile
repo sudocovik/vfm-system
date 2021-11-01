@@ -15,6 +15,7 @@ RUN mkdir -p $PULUMI_HOME && \
     chown node:node $PULUMI_HOME
 
 ENV HELM_REPOSITORY_CACHE /helm/cache
+ENV HELM_CACHE_HOME $HELM_REPOSITORY_CACHE
 RUN mkdir -p $HELM_REPOSITORY_CACHE && \
     chown node:node $HELM_REPOSITORY_CACHE
 
