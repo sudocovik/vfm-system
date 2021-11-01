@@ -112,3 +112,4 @@ jobs:
       registry_username: ${{ github.repository_owner }}
       registry_password: ${{ secrets.GHCR_TOKEN }}
       pulumi_token: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+      digitalocean_token: ${{ secrets.DIGITALOCEAN_TOKEN }}
