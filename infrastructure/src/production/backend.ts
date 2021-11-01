@@ -161,7 +161,10 @@ pulumi.interpolate`<?xml version='1.0' encoding='UTF-8'?>
                 }
             }
         }
-    }, { provider })
+    }, {
+        provider,
+        parent: provider
+    })
 
     new k8s.core.v1.Service('traccar-teltonika-service', {
         metadata: {
