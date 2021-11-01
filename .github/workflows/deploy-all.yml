@@ -46,33 +46,11 @@ jobs:
 
   build-frontend:
     name: "Build frontend image"
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: "./frontend"
-    steps:
-      - name: "Checkout repository"
-        uses: actions/checkout@v2
-
-      - name: "Login to GitHub Container Registry"
-        uses: docker/login-action@v1
-        with:
-          registry: ${{ env.CONTAINER_REGISTRY_URL }}
-          username: ${{ env.CONTAINER_REGISTRY_USERNAME }}
-          password: ${{ env.CONTAINER_REGISTRY_PASSWORD }}
-
-      - name: "Build container image"
-        run: make
-
-      - name: "Run linter"
-        run: make lint
-
-      - name: "Run unit tests"
-        run: make test
-
-      - name: "Push image to GitHub Container Registry"
-        run:
-          make push
+    uses: Covik/vfm-system/.github/workflows/build-frontend.yml@main
+    secrets:
+      registry_url: ghcr.io
+      registry_username: ${{ github.repository_owner }}
+      registry_password: ${{ secrets.GHCR_TOKEN }}
 
   deploy-infrastructure:
     name: "Infrastructure"
