@@ -100,3 +100,15 @@ jobs:
       registry_username: ${{ github.repository_owner }}
       registry_password: ${{ secrets.GHCR_TOKEN }}
       pulumi_token: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
+  deploy-backend:
+    name: "Backend"
+    uses: Covik/vfm-system/.github/workflows/deploy.yml@main
+    needs: [build-infrastructure]
+    with:
+      type: backend
+      image: ${{ format('ghcr.io/covik/vfm-infrastructure:{0}', github.sha) }}
+    secrets:
+      registry_username: ${{ github.repository_owner }}
+      registry_password: ${{ secrets.GHCR_TOKEN }}
+      pulumi_token: ${{ secrets.PULUMI_ACCESS_TOKEN }}
