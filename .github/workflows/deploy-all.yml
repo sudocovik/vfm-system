@@ -87,3 +87,14 @@ jobs:
       cluster_token: ${{ secrets.CLUSTER_TOKEN }}
       cluster_container_registry_token: ${{ secrets.CLUSTER_CONTAINER_REGISTRY_TOKEN }}
 
+  deploy-frontend:
+    name: "Frontend"
+    uses: Covik/vfm-system/.github/workflows/deploy.yml@main
+    needs: [build-infrastructure, build-frontend]
+    with:
+      type: frontend
+      image: ${{ format('ghcr.io/covik/vfm-infrastructure:{0}', github.sha) }}
+    secrets:
+      registry_username: ${{ github.repository_owner }}
+      registry_password: ${{ secrets.GHCR_TOKEN }}
+      pulumi_token: ${{ secrets.PULUMI_ACCESS_TOKEN }}
