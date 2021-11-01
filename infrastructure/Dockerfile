@@ -10,10 +10,6 @@ ENV PATH="${PROJECT_ROOT}/bin:${PROJECT_ROOT}/node_modules/.bin:${PATH}"
 WORKDIR $PROJECT_ROOT
 RUN chown node:node $PROJECT_ROOT
 
-ENV PULUMI_HOME /pulumi/home
-RUN mkdir -p $PULUMI_HOME && \
-    chown node:node $PULUMI_HOME
-
 ENV HELM_REPOSITORY_CACHE /helm/cache
 ENV HELM_CACHE_HOME $HELM_REPOSITORY_CACHE
 RUN mkdir -p $HELM_REPOSITORY_CACHE && \
