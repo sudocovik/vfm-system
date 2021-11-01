@@ -12,8 +12,8 @@ type DatabaseConnection = {
 }
 
 function describeDatabase(kubernetesCluster: pulumi.Output<any>): DatabaseConnection {
-    const cluster = new digitalocean.DatabaseCluster('main-backend-database', {
-        name: 'vfm-database',
+    const cluster = new digitalocean.DatabaseCluster('database-cluster', {
+        name: 'vfm',
         region: 'fra1',
         size: 'db-s-1vcpu-1gb',
         nodeCount: 1,
@@ -25,22 +25,26 @@ function describeDatabase(kubernetesCluster: pulumi.Output<any>): DatabaseConnec
         }]
     })
 
-    new digitalocean.DatabaseFirewall('main-database-firewall', {
+    /*new digitalocean.DatabaseFirewall('main-database-firewall', {
         clusterId: cluster.id,
         rules: [{
             type: 'k8s',
             value: kubernetesCluster
         }]
-    })
+    }) */
 
-    const user = new digitalocean.DatabaseUser('main-database-user', {
+    const user = new digitalocean.DatabaseUser('database-user', {
         clusterId: cluster.id,
         name: 'regular'
+    }, {
+        parent: cluster
     })
 
-    const database = new digitalocean.DatabaseDb('main-database-db', {
+    const database = new digitalocean.DatabaseDb('database', {
         clusterId: cluster.id,
         name: 'vfm'
+    }, {
+        parent: cluster
     })
 
     return {
@@ -236,14 +240,13 @@ function describeBackendResources(): any {
     const namespaceName = backbone.getOutput('namespaceName')
     const kubernetesClusterId = backbone.getOutput('clusterId')
 
-/*
-    const provider: k8s.Provider = new k8s.Provider('main-kubernetes-provider', {
+
+    const provider: k8s.Provider = new k8s.Provider('kubernetes-provider', {
         kubeconfig
     })
 
     const databaseConnectionSettings = describeDatabase(kubernetesClusterId)
-    describeApplication(provider, namespaceName, databaseConnectionSettings)
-*/
+//    describeApplication(provider, namespaceName, databaseConnectionSettings)
 }
 
 export function deployBackendResources(): void {
