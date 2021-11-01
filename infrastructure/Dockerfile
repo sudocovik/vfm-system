@@ -8,6 +8,7 @@ ENV PROJECT_ROOT="/app"
 ENV PATH="${PROJECT_ROOT}/bin:${PROJECT_ROOT}/node_modules/.bin:${PATH}"
 
 WORKDIR $PROJECT_ROOT
+RUN chown node:node $PROJECT_ROOT
 
 RUN chown node:node /app
 
