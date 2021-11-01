@@ -8,10 +8,9 @@ function describeOldFrontend(
     namespace: pulumi.Output<any>,
     containerRegistrySecret: pulumi.Output<any>
 ): void {
-    const name = 'old-frontend'
     const labels = { app: 'old-frontend' }
 
-    const deployment = new k8s.apps.v1.Deployment(name, {
+    const deployment = new k8s.apps.v1.Deployment('application', {
         metadata: {
             namespace
         },
@@ -44,7 +43,7 @@ function describeOldFrontend(
         parent: provider
     })
 
-    const service = new k8s.core.v1.Service(name, {
+    const service = new k8s.core.v1.Service('web', {
         metadata: {
             namespace
         },
@@ -62,7 +61,7 @@ function describeOldFrontend(
         parent: provider
     })
 
-    new k8s.networking.v1.Ingress(name, {
+    new k8s.networking.v1.Ingress('public-access', {
         metadata: {
             namespace
         },
@@ -99,7 +98,7 @@ export function describeFrontendResources(): any {
     const subdomain = domain.apply(domainName => `app.${domainName}`)
     const containerRegistrySecret = backbone.getOutput('containerRegistryCredentialsName')
 
-    const provider: k8s.Provider = new k8s.Provider('main-kubernetes-provider', {
+    const provider: k8s.Provider = new k8s.Provider('kubernetes-provider', {
         kubeconfig
     })
 
