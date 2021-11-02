@@ -17,6 +17,9 @@ jobs:
     defaults:
       run:
         working-directory: "./infrastructure"
+    env:
+      # used by build & push Makefile targets
+      IMAGE_VERSION: ${{ github.sha }}
     steps:
       - name: "Checkout repository"
         uses: actions/checkout@v2
