@@ -16,33 +16,12 @@ env:
 
 jobs:
   build-infrastructure:
-    name: "Build infrastructure image"
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: "./infrastructure"
-    steps:
-      - name: "Checkout repository"
-        uses: actions/checkout@v2
-
-      - name: "Login to GitHub Container Registry"
-        uses: docker/login-action@v1
-        with:
-          registry: ${{ env.CONTAINER_REGISTRY_URL }}
-          username: ${{ env.CONTAINER_REGISTRY_USERNAME }}
-          password: ${{ env.CONTAINER_REGISTRY_PASSWORD }}
-
-      - name: "Build image"
-        working-directory: "./infrastructure"
-        run: make
-
-      - name: "Run unit tests"
-        working-directory: "./infrastructure"
-        run: make test
-
-      - name: "Push image to GitHub Container Registry"
-        run:
-          make push
+    name: "Infrastructure"
+    uses: Covik/vfm-system/.github/workflows/build-infrastructure.yml@main
+    secrets:
+      registry_url: ghcr.io
+      registry_username: ${{ github.repository_owner }}
+      registry_password: ${{ secrets.GHCR_TOKEN }}
 
   build-frontend:
     name: "Frontend"
