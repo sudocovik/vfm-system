@@ -115,7 +115,7 @@ function describeNewFrontend(
                     restartPolicy: 'Always',
                     containers: [{
                         name: 'webserver',
-                        image: 'ghcr.io/vfm-frontend:' + version,
+                        image: 'ghcr.io/covik/vfm-frontend:' + version,
                         imagePullPolicy: 'IfNotPresent',
                         ports: [{
                             name: 'http',
