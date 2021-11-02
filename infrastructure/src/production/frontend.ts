@@ -89,7 +89,96 @@ function describeOldFrontend(
     })
 }
 
-export function describeFrontendResources(): any {
+function describeNewFrontend(
+    provider: k8s.Provider,
+    namespace: pulumi.Output<any>,
+    containerRegistrySecret: pulumi.Output<any>,
+    version: string
+): void {
+    const labels = { app: 'new-frontend' }
+
+    const deployment = new k8s.apps.v1.Deployment('new-application', {
+        metadata: {
+            namespace
+        },
+        spec: {
+            selector: {
+                matchLabels: labels
+            },
+            replicas: 1,
+            template: {
+                metadata: {
+                    labels
+                },
+                spec: {
+                    imagePullSecrets: [{ name: containerRegistrySecret }],
+                    restartPolicy: 'Always',
+                    containers: [{
+                        name: 'webserver',
+                        image: 'ghcr.io/vfm-frontend:' + version,
+                        imagePullPolicy: 'IfNotPresent',
+                        ports: [{
+                            name: 'http',
+                            containerPort: 80,
+                            protocol: 'TCP'
+                        }]
+                    }]
+                }
+            }
+        }
+    }, {
+        provider,
+        parent: provider
+    })
+
+    const service = new k8s.core.v1.Service('new-web', {
+        metadata: {
+            namespace
+        },
+        spec: {
+            selector: labels,
+            ports: [{
+                name: 'http',
+                port: 80,
+                targetPort: deployment.spec.template.spec.containers[0].ports[0].name,
+                protocol: 'TCP'
+            }]
+        }
+    }, {
+        provider,
+        parent: provider
+    })
+
+    new k8s.networking.v1.Ingress('new-web-access', {
+        metadata: {
+            namespace
+        },
+        spec: {
+            rules: [{
+                host: 'new.zarafleet.com',
+                http: {
+                    paths: [{
+                        path: '/',
+                        pathType: 'Prefix',
+                        backend: {
+                            service: {
+                                name: service.metadata.name,
+                                port: {
+                                    name: service.spec.ports[0].name
+                                }
+                            }
+                        }
+                    }]
+                }
+            }]
+        }
+    }, {
+        provider,
+        parent: provider,
+    })
+}
+
+export function describeFrontendResources(applicationVersion: string): any {
     const backbone = new pulumi.StackReference('covik/vfm/backbone-production')
     const kubeconfig = backbone.getOutput('kubeconfig')
     const namespace = backbone.getOutput('namespaceName')
@@ -102,8 +191,11 @@ export function describeFrontendResources(): any {
     })
 
     describeOldFrontend(provider, namespace, containerRegistrySecret)
+    describeNewFrontend(provider, namespace, containerRegistrySecret, applicationVersion)
 }
 
 export function deployFrontendResources(): void {
-    provision('frontend-production', async () => describeFrontendResources())
+    const applicationVersion: string = process.env.APPLICATION_VERSION || ''
+
+    provision('frontend-production', async () => describeFrontendResources(applicationVersion))
 }
