@@ -11,6 +11,9 @@ on:
         description: "Full infrastructure image tag"
         required: true
         type: string
+      application_version:
+        required: false
+        type: string
     secrets:
       registry_username:
         required: true
@@ -41,4 +44,5 @@ jobs:
           DIGITALOCEAN_TOKEN: ${{ secrets.digitalocean_token }}
           CLUSTER_TOKEN: ${{ secrets.cluster_token }}
           CLUSTER_CONTAINER_REGISTRY_TOKEN: ${{ secrets.cluster_container_registry_token }}
+          APPLICATION_VERSION: ${{ inputs.application_version }}
         run: vfm deploy ${{ inputs.type }}

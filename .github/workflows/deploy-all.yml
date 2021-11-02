@@ -51,6 +51,7 @@ jobs:
       registry_username: ${{ github.repository_owner }}
       registry_password: ${{ secrets.GHCR_TOKEN }}
       pulumi_token: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+      application_version: ${{ github.sha }}
 
   deploy-backend:
     name: "Backend"
