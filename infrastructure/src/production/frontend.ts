@@ -4,7 +4,6 @@ import provision from '../pulumi/provision'
 
 function describeOldFrontend(
     provider: k8s.Provider,
-    kubeconfig: pulumi.Output<any>,
     namespace: pulumi.Output<any>,
     containerRegistrySecret: pulumi.Output<any>
 ): void {
@@ -102,7 +101,7 @@ export function describeFrontendResources(): any {
         kubeconfig
     })
 
-    describeOldFrontend(provider, kubeconfig, namespace, containerRegistrySecret)
+    describeOldFrontend(provider, namespace, containerRegistrySecret)
 }
 
 export function deployFrontendResources(): void {
