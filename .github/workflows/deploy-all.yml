@@ -8,12 +8,6 @@ on:
 
 concurrency: "full-system-deployment"
 
-env:
-  IMAGE_VERSION: ${{ github.sha }}
-  CONTAINER_REGISTRY_URL: ghcr.io
-  CONTAINER_REGISTRY_USERNAME: ${{ github.repository_owner }}
-  CONTAINER_REGISTRY_PASSWORD: ${{ secrets.GHCR_TOKEN }}
-
 jobs:
   build-infrastructure:
     name: "Infrastructure"
