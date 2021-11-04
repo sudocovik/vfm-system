@@ -72,11 +72,6 @@ describe('#ProductionStack', () => {
             const stack = instantiateProductionStackWithDefaultResources('  test  ')
             expect(stack.name()).toBe('test')
         })
-
-        it('argument \'name\' should accept string', () => {
-            const stack = instantiateProductionStackWithDefaultResources('test')
-            expect(stack.name()).toBe('test')
-        })
     })
 })
 
