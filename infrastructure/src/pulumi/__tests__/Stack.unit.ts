@@ -15,6 +15,8 @@ const errorMessageShouldEndWith = (error: Error, substring: string) => {
 }
 
 describe('#ProductionStack', () => {
+    const instantiateProductionStackWithDefaultResources = (value: any) => new ProductionStack(value as any, async () => {})
+
     describe('- constructor()', () => {
         const forbiddenTypes = [
             { type: 'null',      value: null },
@@ -30,8 +32,6 @@ describe('#ProductionStack', () => {
             { type: 'function',  value: () => {} },
             { type: 'string',    value: 'test' },
         ]
-
-        const instantiateProductionStackWithDefaultResources = (value: any) => new ProductionStack(value as any, async () => {})
 
         forbiddenTypes.filter(({ type }) => type !== 'string').forEach(({ type, value }) => {
             it(`argument 'name' should not accept '${type}'`, () => {
@@ -67,10 +67,15 @@ describe('#ProductionStack', () => {
                 }
             })
         })
+    })
 
-        it('argument \'name\' should be trimmed of front and back whitespaces', () => {
+    describe('- name()', () => {
+        it('should return string trimmed of front and back whitespaces', () => {
             const stack = instantiateProductionStackWithDefaultResources('  test  ')
-            expect(stack.name()).toBe('test')
+
+            const stackName = stack.name()
+
+            expect(stackName).toBe('test')
         })
     })
 })
