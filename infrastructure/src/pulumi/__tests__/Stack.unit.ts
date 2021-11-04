@@ -27,12 +27,13 @@ describe('#ProductionStack', () => {
             { type: 'false',     value: false },
             { type: 'bigint',    value: 22n ** 53n },
             { type: 'symbol',    value: Symbol('test') },
-            { type: 'function',  value: () => {} }
+            { type: 'function',  value: () => {} },
+            { type: 'string',    value: 'test' },
         ]
 
         const instantiateProductionStackWithDefaultResources = (value: any) => new ProductionStack(value as any, async () => {})
 
-        forbiddenTypes.forEach(({ type, value }) => {
+        forbiddenTypes.filter(({ type }) => type !== 'string').forEach(({ type, value }) => {
             it(`argument 'name' should not accept '${type}'`, () => {
                 expect.assertions(2)
                 try {
