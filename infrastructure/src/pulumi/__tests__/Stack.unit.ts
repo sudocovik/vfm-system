@@ -16,6 +16,7 @@ const errorMessageShouldEndWith = (error: Error, substring: string) => {
 
 describe('#ProductionStack', () => {
     const instantiateProductionStackWithDefaultResources = (value: any) => new ProductionStack(value as any, async () => {})
+    const instantiateProductionStackWithDefaultName = (value: any) => new ProductionStack('test', value as any)
 
     describe('- constructor()', () => {
         const forbiddenTypes = [
@@ -76,6 +77,42 @@ describe('#ProductionStack', () => {
             const stackName = stack.name()
 
             expect(stackName).toBe('test')
+        })
+    })
+
+    describe('- resources()', () => {
+        it('should return a function', () => {
+            const stack = instantiateProductionStackWithDefaultName(() => {})
+
+            const resources = stack.resources()
+
+            expect(typeof resources).toBe('function')
+        })
+
+        it('should not implicitly call the function', () => {
+            const stack = instantiateProductionStackWithDefaultName(() => {
+                throw new Error('This should never happen')
+            })
+
+            const resources = stack.resources()
+
+            expect(() => resources).not.toThrow()
+        })
+
+        it('should return a function and that function should return false', () => {
+            const stack = instantiateProductionStackWithDefaultName(() => false)
+
+            const resources = stack.resources()
+
+            expect(resources()).toBe(false)
+        })
+
+        it('should return a function and that function should return true', () => {
+            const stack = instantiateProductionStackWithDefaultName(() => true)
+
+            const resources = stack.resources()
+
+            expect(resources()).toBe(true)
         })
     })
 })
