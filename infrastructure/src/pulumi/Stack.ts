@@ -23,6 +23,9 @@ export class ProductionStack implements Stack {
         if (name === '')
             throw new EmptyValueError('Stack name should not be empty string')
 
+        if (typeof resources !== 'function')
+            throw new TypeError('Stack resources should be function, got ' + stringRepresentationOfVariableType(resources))
+
         this._name = name
         this._resources = resources
     }

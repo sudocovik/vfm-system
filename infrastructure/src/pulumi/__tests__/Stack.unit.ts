@@ -68,6 +68,21 @@ describe('#ProductionStack', () => {
                 }
             })
         })
+
+        forbiddenTypes.filter(({ type }) => type !== 'function').forEach(({ type, value }) => {
+            it(`argument 'resources' should not accept '${type}'`, () => {
+                expect.assertions(2)
+                try {
+                    instantiateProductionStackWithDefaultName(value)
+                }
+                catch (e: any) {
+                    const stringRepresentationOfVariableType: string = value === null ? 'null' : typeof value
+
+                    errorShouldBeInstanceOfTypeError(e)
+                    errorMessageShouldEndWith(e, stringRepresentationOfVariableType)
+                }
+            })
+        })
     })
 
     describe('- name()', () => {
