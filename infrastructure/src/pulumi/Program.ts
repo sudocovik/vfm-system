@@ -23,7 +23,7 @@ export class Program {
         if(typeof stack === 'string')
             throw new TypeError()
 
-        if (typeof stack === 'object')
+        if (typeof stack === 'object' && !(stack instanceof Stack))
             throw new TypeError()
     }
 }

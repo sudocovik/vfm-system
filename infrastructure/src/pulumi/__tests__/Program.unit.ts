@@ -1,7 +1,12 @@
 import { Program } from '../Program'
+import { Stack } from '../Stack'
 
 const errorShouldBeInstanceOfTypeError = (error: Error) => {
     expect(error).toBeInstanceOf(TypeError)
+}
+
+const factory = (stack: Stack|null = null) => {
+    return new Program(stack ?? new Stack('testing', () => {}))
 }
 
 describe('#Program', () => {
@@ -31,6 +36,10 @@ describe('#Program', () => {
                     errorShouldBeInstanceOfTypeError(e)
                 }
             })
+        })
+
+        it(`argument 'stack' should only accept Stack type`, () => {
+            expect(() => factory()).not.toThrow()
         })
     })
 })
