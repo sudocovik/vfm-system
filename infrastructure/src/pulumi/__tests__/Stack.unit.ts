@@ -131,12 +131,3 @@ describe('#ProductionStack', () => {
         })
     })
 })
-
-describe('#LocalStack', () => {
-    describe('- name()', () => {
-        it('should always return hardcoded value \'local\'', () => {
-            const stack = new LocalStack()
-            expect(stack.name()).toBe('local')
-        })
-    })
-})

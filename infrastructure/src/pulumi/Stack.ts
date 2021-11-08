@@ -39,8 +39,3 @@ export class ProductionStack implements Stack {
     }
 }
 
-export class LocalStack implements Stack {
-    public name(): string {
-        return 'local'
-    }
-}
