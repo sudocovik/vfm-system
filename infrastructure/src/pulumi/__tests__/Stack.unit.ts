@@ -1,4 +1,4 @@
-import { EmptyValueError, LocalStack, ProductionStack } from '../Stack'
+import { EmptyValueError, Stack } from '../Stack'
 
 const errorShouldBeInstanceOfTypeError = (error: Error) => {
     expect(error).toBeInstanceOf(TypeError)
@@ -14,9 +14,9 @@ const errorMessageShouldEndWith = (error: Error, substring: string) => {
     expect(error.message).toMatch(endsWith(substring))
 }
 
-describe('#ProductionStack', () => {
-    const instantiateProductionStackWithDefaultResources = (value: any) => new ProductionStack(value as any, async () => {})
-    const instantiateProductionStackWithDefaultName = (value: any) => new ProductionStack('test', value as any)
+describe('#Stack', () => {
+    const instantiateProductionStackWithDefaultResources = (value: any) => new Stack(value as any, async () => {})
+    const instantiateProductionStackWithDefaultName = (value: any) => new Stack('test', value as any)
 
     describe('- constructor()', () => {
         const forbiddenTypes = [

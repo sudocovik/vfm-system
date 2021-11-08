@@ -4,13 +4,9 @@ const stringRepresentationOfVariableType = (value: any) => {
     return typeof value
 }
 
-export interface Stack {
-    name(): string
-}
-
 export class EmptyValueError extends Error {}
 
-export class ProductionStack implements Stack {
+export class Stack {
     private readonly _name: string
     private readonly _resources: () => any
 
