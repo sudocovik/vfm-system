@@ -3,7 +3,10 @@ import {
     stop as stopLocalEnvironment
 } from '../local-environment/index'
 import { Command } from 'commander'
-import { test as runUnitTests } from './unit-tests'
+import {
+    unitTest as runUnitTests,
+    integrationTest as runIntegrationTests
+} from './unit-tests'
 import { deployBackboneResources } from '../production/backbone-deploy'
 import { deployFrontendResources } from '../production/frontend'
 import { deployBackendResources } from '../production/backend'
@@ -21,10 +24,16 @@ local.command('stop')
 
 program.addCommand(local, { isDefault: true })
 
-const test = program.command('test')
-test.option('-w, --watch', 'Watch filesystem changes and re-run tests', false)
-test.action(({ watch }) => {
+const unitTest = program.command('test:unit')
+unitTest.option('-w, --watch', 'Watch filesystem changes and re-run tests', false)
+unitTest.action(({ watch }) => {
     const exitCode = runUnitTests(watch)
+    process.exit(exitCode ?? -1)
+})
+
+const integrationTest = program.command('test:integration')
+integrationTest.action(() => {
+    const exitCode = runIntegrationTests()
     process.exit(exitCode ?? -1)
 })
 

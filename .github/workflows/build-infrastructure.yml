@@ -35,7 +35,7 @@ jobs:
         run: make
 
       - name: "Run unit tests"
-        run: make test
+        run: make unit-test
 
       - name: "Push image to GitHub Container Registry"
         run: make push
