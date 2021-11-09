@@ -37,11 +37,11 @@ jobs:
         run: make
 
       - name: "Run unit tests"
-        env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.pulumi_token }}
         run: make unit-test
 
       - name: "Run integration tests"
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.pulumi_token }}
         run: make integration-test
 
       - name: "Push image to GitHub Container Registry"
