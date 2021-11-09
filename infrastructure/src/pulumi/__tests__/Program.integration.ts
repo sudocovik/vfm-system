@@ -33,7 +33,7 @@ describe('#Program', () => {
         await program.execute().then(async () => {
             const pulumiStack = await LocalWorkspace.selectStack({
                 stackName: stack.name(),
-                projectName: 'vfm',
+                projectName,
                 program: stack.resources()
             })
 
