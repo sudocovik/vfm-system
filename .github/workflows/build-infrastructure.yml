@@ -9,6 +9,8 @@ on:
         required: true
       registry_password:
         required: true
+      pulumi_token:
+        required: true
 
 jobs:
   build:
@@ -35,6 +37,8 @@ jobs:
         run: make
 
       - name: "Run unit tests"
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.pulumi_token }}
         run: make unit-test
 
       - name: "Run integration tests"

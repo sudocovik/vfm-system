@@ -11,7 +11,9 @@ unit-test:
 
 .PHONY: integration-test
 integration-test:
-	@docker run $(IMAGE_NAME) vfm test:integration
+	@docker run \
+		-e PULUMI_ACCESS_TOKEN=$(PULUMI_ACCESS_TOKEN) \
+ 		$(IMAGE_NAME) vfm test:integration
 
 .PHONY: push
 push:
