@@ -21,5 +21,6 @@ export class Program {
             vendorStack.workspace.installPlugin('digitalocean', findDependencyVersion('@pulumi/digitalocean')),
             vendorStack.workspace.installPlugin('kubernetes', findDependencyVersion('@pulumi/kubernetes'))
         ])
+        await vendorStack.up()
     }
 }
