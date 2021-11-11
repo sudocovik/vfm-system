@@ -15,6 +15,7 @@ export class Program {
 
     public async execute(): Promise<void> {
         await this.stackExecutor.select(this.stack)
+        await this.stackExecutor.installPlugins()
         /*const vendorStack = await LocalWorkspace.createOrSelectStack({
             stackName: this.stack.name(),
             projectName: 'vfm',

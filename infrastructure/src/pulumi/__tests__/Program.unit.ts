@@ -1,6 +1,7 @@
 import { Program } from '../Program'
 import { Stack } from '../Stack'
 import { StackExecutor } from '../StackExecutor'
+import { skipAwait } from '@pulumi/kubernetes/yaml'
 
 const errorShouldBeInstanceOfTypeError = (error: Error) => {
     expect(error).toBeInstanceOf(TypeError)
@@ -20,9 +21,14 @@ const factory = ({ stack, executor }: FactoryArguments = {}) => {
 
 class FakeStackExecutor implements StackExecutor {
     public stackSelected: boolean = false
+    public pluginsInstalled: boolean = false
 
     public async select(stack: Stack): Promise<void> {
         this.stackSelected = true
+    }
+
+    public async installPlugins(): Promise<void> {
+        this.pluginsInstalled = true
     }
 }
 
@@ -68,6 +74,15 @@ describe('#Program', () => {
             expect(executor.stackSelected).toBe(false)
             await program.execute()
             expect(executor.stackSelected).toBe(true)
+        })
+
+        it('should install plugins', async () => {
+            const executor = new FakeStackExecutor()
+            const program = factory({ executor })
+
+            expect(executor.pluginsInstalled).toBe(false)
+            await program.execute()
+            expect(executor.pluginsInstalled).toBe(true)
         })
     })
 })
