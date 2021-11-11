@@ -1,6 +1,8 @@
 import * as pulumi from '@pulumi/pulumi'
 import * as k8s from '@pulumi/kubernetes'
-import provision from '../pulumi/provision'
+import { Stack } from '../pulumi/Stack'
+import { Program } from '../pulumi/Program'
+import { PulumiStackExecutor } from '../pulumi/StackExecutor'
 
 function describeOldFrontend(
     provider: k8s.Provider,
@@ -178,7 +180,7 @@ function describeNewFrontend(
     })
 }
 
-export function describeFrontendResources(applicationVersion: string): any {
+export const describeFrontendResources = (applicationVersion: string) => (): void => {
     const backbone = new pulumi.StackReference('covik/vfm/backbone-production')
     const kubeconfig = backbone.getOutput('kubeconfig')
     const namespace = backbone.getOutput('namespaceName')
@@ -197,5 +199,8 @@ export function describeFrontendResources(applicationVersion: string): any {
 export function deployFrontendResources(): void {
     const applicationVersion: string = process.env.APPLICATION_VERSION || ''
 
-    provision('frontend-production', async () => describeFrontendResources(applicationVersion))
+    new Program(
+        new Stack('frontend-production', describeFrontendResources(applicationVersion)),
+        new PulumiStackExecutor()
+    ).execute()
 }

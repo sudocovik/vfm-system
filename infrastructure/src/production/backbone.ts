@@ -35,13 +35,13 @@ users:
 `;
 }
 
-export function describeBackboneResources(
+export const describeBackboneResources = (
     domainConfiguration: DomainConfiguration,
     loadBalancerConfiguration: LoadBalancerConfiguration,
     clusterConfiguration: ClusterConfiguration,
     projectConfiguration: ProjectConfiguration,
     apiToken: string
-): any {
+) => (): any => {
     const domain = new digitalocean.Domain('primary-domain', {
         name: domainConfiguration.name
     })

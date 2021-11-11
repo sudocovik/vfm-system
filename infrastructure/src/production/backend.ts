@@ -1,7 +1,9 @@
-import provision from '../pulumi/provision'
 import * as pulumi from '@pulumi/pulumi'
 import * as digitalocean from '@pulumi/digitalocean'
 import * as k8s from '@pulumi/kubernetes'
+import { Program } from '../pulumi/Program'
+import { Stack } from '../pulumi/Stack'
+import { PulumiStackExecutor } from '../pulumi/StackExecutor'
 
 type DatabaseConnection = {
     host: pulumi.Output<string>
@@ -251,7 +253,7 @@ pulumi.interpolate`<?xml version='1.0' encoding='UTF-8'?>
     })
 }
 
-function describeBackendResources(): any {
+function describeBackendResources(): void {
     const backbone = new pulumi.StackReference('covik/vfm/backbone-production')
     const kubeconfig = backbone.getOutput('kubeconfig')
     const namespaceName = backbone.getOutput('namespaceName')
@@ -267,5 +269,8 @@ function describeBackendResources(): any {
 }
 
 export function deployBackendResources(): void {
-    provision('backend-production', async () => describeBackendResources())
+    new Program(
+        new Stack('backend-production', describeBackendResources),
+        new PulumiStackExecutor()
+    ).execute()
 }
