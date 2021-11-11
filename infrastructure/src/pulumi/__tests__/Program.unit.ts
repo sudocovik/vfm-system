@@ -22,6 +22,7 @@ const factory = ({ stack, executor }: FactoryArguments = {}) => {
 class FakeStackExecutor implements StackExecutor {
     public stackSelected: boolean = false
     public pluginsInstalled: boolean = false
+    public stateRefreshed: boolean = false
 
     public async select(stack: Stack): Promise<void> {
         this.stackSelected = true
@@ -29,6 +30,10 @@ class FakeStackExecutor implements StackExecutor {
 
     public async installPlugins(): Promise<void> {
         this.pluginsInstalled = true
+    }
+
+    public async refreshState(): Promise<void> {
+        this.stateRefreshed = true
     }
 }
 
@@ -83,6 +88,15 @@ describe('#Program', () => {
             expect(executor.pluginsInstalled).toBe(false)
             await program.execute()
             expect(executor.pluginsInstalled).toBe(true)
+        })
+
+        it('should refresh the state', async () => {
+            const executor = new FakeStackExecutor()
+            const program = factory({ executor })
+
+            expect(executor.stateRefreshed).toBe(false)
+            await program.execute()
+            expect(executor.stateRefreshed).toBe(true)
         })
     })
 })
