@@ -5,21 +5,6 @@ const findDependencyVersion = (wantedDependency: string) => installedDependencie
 
 const projectName: string = 'vfm'
 
-export default async function (stackName: string, program: () => Promise<any>) {
-  const stackArguments: InlineProgramArgs = {
-    projectName: projectName,
-    stackName: stackName,
-    program
-  }
-
-  const stack: Stack = await LocalWorkspace.createOrSelectStack(stackArguments)
-
-  await stack.workspace.installPlugin('digitalocean', findDependencyVersion('@pulumi/digitalocean'))
-  await stack.workspace.installPlugin('kubernetes', findDependencyVersion('@pulumi/kubernetes'))
-  await stack.refresh({ onOutput: console.info })
-  await stack.up({ onOutput: console.info })
-}
-
 export async function localProgram (program: () => Promise<any>) {
   const stackArguments: InlineProgramArgs = {
     projectName: projectName,

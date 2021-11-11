@@ -1,7 +1,6 @@
 import { Program } from '../Program'
 import { Stack } from '../Stack'
 import { StackExecutor } from '../StackExecutor'
-import { skipAwait } from '@pulumi/kubernetes/yaml'
 
 const errorShouldBeInstanceOfTypeError = (error: Error) => {
     expect(error).toBeInstanceOf(TypeError)
