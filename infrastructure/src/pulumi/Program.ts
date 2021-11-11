@@ -1,9 +1,6 @@
 import { Stack } from './Stack'
 import { StackExecutor } from './StackExecutor'
 
-const installedDependencies = require('../../package-lock.json').dependencies
-const findDependencyVersion = (wantedDependency: string) => installedDependencies[wantedDependency].version
-
 export class Program {
     constructor(
         public readonly stack: Stack,
@@ -18,16 +15,5 @@ export class Program {
         await this.stackExecutor.installPlugins()
         await this.stackExecutor.refreshState()
         await this.stackExecutor.deployResources()
-        /*const vendorStack = await LocalWorkspace.createOrSelectStack({
-            stackName: this.stack.name(),
-            projectName: 'vfm',
-            program: this.stack.resources()
-        })
-
-        await Promise.all([
-            vendorStack.workspace.installPlugin('digitalocean', findDependencyVersion('@pulumi/digitalocean')),
-            vendorStack.workspace.installPlugin('kubernetes', findDependencyVersion('@pulumi/kubernetes'))
-        ])
-        await vendorStack.up()*/
     }
 }
