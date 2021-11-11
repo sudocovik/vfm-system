@@ -1,12 +1,29 @@
 import { Program } from '../Program'
 import { Stack } from '../Stack'
+import { StackExecutor } from '../StackExecutor'
 
 const errorShouldBeInstanceOfTypeError = (error: Error) => {
     expect(error).toBeInstanceOf(TypeError)
 }
 
-const factory = (stack: Stack|null = null) => {
-    return new Program(stack ?? new Stack('testing', () => {}))
+type FactoryArguments = {
+    stack?: Stack,
+    executor?: StackExecutor
+}
+
+const factory = ({ stack, executor }: FactoryArguments = {}) => {
+    return new Program(
+        stack ?? new Stack('testing', () => {}),
+        executor ?? new FakeStackExecutor()
+    )
+}
+
+class FakeStackExecutor implements StackExecutor {
+    public stackSelected: boolean = false
+
+    public async select(stack: Stack): Promise<void> {
+        this.stackSelected = true
+    }
 }
 
 describe('#Program', () => {
@@ -30,7 +47,7 @@ describe('#Program', () => {
             it(`argument 'stack' should not accept '${type}'`, () => {
                 expect.assertions(1)
                 try {
-                    new Program(value as any)
+                    new Program(value as any, new FakeStackExecutor())
                 }
                 catch (e: any) {
                     errorShouldBeInstanceOfTypeError(e)
@@ -40,6 +57,17 @@ describe('#Program', () => {
 
         it(`argument 'stack' should only accept Stack type`, () => {
             expect(() => factory()).not.toThrow()
+        })
+    })
+
+    describe('- execute()', () => {
+        it('should select the stack', async () => {
+            const executor = new FakeStackExecutor()
+            const program = factory({ executor })
+
+            expect(executor.stackSelected).toBe(false)
+            await program.execute()
+            expect(executor.stackSelected).toBe(true)
         })
     })
 })
