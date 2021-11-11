@@ -3,7 +3,6 @@ import * as digitalocean from '@pulumi/digitalocean'
 import * as k8s from '@pulumi/kubernetes'
 import { Program } from '../pulumi/Program'
 import { Stack } from '../pulumi/Stack'
-import { PulumiStackExecutor } from '../pulumi/StackExecutor'
 
 type DatabaseConnection = {
     host: pulumi.Output<string>
@@ -269,8 +268,7 @@ function describeBackendResources(): void {
 }
 
 export function deployBackendResources(): void {
-    new Program(
-        new Stack('backend-production', describeBackendResources),
-        new PulumiStackExecutor()
+    Program.forStack(
+        new Stack('backend-production', describeBackendResources)
     ).execute()
 }

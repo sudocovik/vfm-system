@@ -1,7 +1,11 @@
 import { Stack } from './Stack'
-import { StackExecutor } from './StackExecutor'
+import { PulumiStackExecutor, StackExecutor } from './StackExecutor'
 
 export class Program {
+    static forStack(stack: Stack): Program {
+        return new Program(stack, new PulumiStackExecutor())
+    }
+
     constructor(
         public readonly stack: Stack,
         private readonly stackExecutor: StackExecutor,

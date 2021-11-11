@@ -2,7 +2,6 @@ import * as pulumi from '@pulumi/pulumi'
 import * as k8s from '@pulumi/kubernetes'
 import { Stack } from '../pulumi/Stack'
 import { Program } from '../pulumi/Program'
-import { PulumiStackExecutor } from '../pulumi/StackExecutor'
 
 function describeOldFrontend(
     provider: k8s.Provider,
@@ -199,8 +198,7 @@ export const describeFrontendResources = (applicationVersion: string) => (): voi
 export function deployFrontendResources(): void {
     const applicationVersion: string = process.env.APPLICATION_VERSION || ''
 
-    new Program(
-        new Stack('frontend-production', describeFrontendResources(applicationVersion)),
-        new PulumiStackExecutor()
+    Program.forStack(
+        new Stack('frontend-production', describeFrontendResources(applicationVersion))
     ).execute()
 }

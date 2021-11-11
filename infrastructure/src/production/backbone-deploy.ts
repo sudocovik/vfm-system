@@ -7,7 +7,6 @@ import {
 } from './backbone-types'
 import { Stack } from '../pulumi/Stack'
 import { Program } from '../pulumi/Program'
-import { PulumiStackExecutor } from '../pulumi/StackExecutor'
 
 export function deployBackboneResources(): void {
     const domainConfiguration: DomainConfiguration = {
@@ -58,14 +57,13 @@ export function deployBackboneResources(): void {
 
     const apiToken: string = process.env.CLUSTER_TOKEN || ''
 
-    new Program(
+    Program.forStack(
         new Stack('backbone-production', describeBackboneResources(
             domainConfiguration,
             loadBalancerConfiguration,
             clusterConfiguration,
             projectConfiguration,
             apiToken
-        )),
-        new PulumiStackExecutor()
+        ))
     ).execute()
 }

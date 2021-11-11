@@ -2,7 +2,6 @@ import { Program } from '../Program'
 import { Stack } from '../Stack'
 import { LocalWorkspace } from '@pulumi/pulumi/automation'
 import * as kubernetes from '@pulumi/kubernetes'
-import { PulumiStackExecutor } from '../StackExecutor'
 
 const stackName = 'integration-testing'
 const projectName = 'vfm'
@@ -32,7 +31,7 @@ describe('#Program', () => {
 
     it('should install required plugins', async () => {
         const stack = new Stack(stackName, () => {})
-        const program = new Program(stack, new PulumiStackExecutor())
+        const program = Program.forStack(stack)
 
         await program.execute().then(async () => {
             const pulumiStack = await LocalWorkspace.selectStack({
@@ -60,7 +59,7 @@ describe('#Program', () => {
                 }
             })
         })
-        const program = new Program(stack, new PulumiStackExecutor())
+        const program = Program.forStack(stack)
 
         await program.execute().then(async () => {
             const pulumiStack = await LocalWorkspace.selectStack({
