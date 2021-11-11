@@ -23,6 +23,7 @@ class FakeStackExecutor implements StackExecutor {
     public stackSelected: boolean = false
     public pluginsInstalled: boolean = false
     public stateRefreshed: boolean = false
+    public deployedResources: boolean = false
 
     public async select(stack: Stack): Promise<void> {
         this.stackSelected = true
@@ -34,6 +35,10 @@ class FakeStackExecutor implements StackExecutor {
 
     public async refreshState(): Promise<void> {
         this.stateRefreshed = true
+    }
+
+    public async deployResources(): Promise<void> {
+        this.deployedResources = true
     }
 }
 
@@ -97,6 +102,15 @@ describe('#Program', () => {
             expect(executor.stateRefreshed).toBe(false)
             await program.execute()
             expect(executor.stateRefreshed).toBe(true)
+        })
+
+        it('should deploy resources', async () => {
+            const executor = new FakeStackExecutor()
+            const program = factory({ executor })
+
+            expect(executor.deployedResources).toBe(false)
+            await program.execute()
+            expect(executor.deployedResources).toBe(true)
         })
     })
 })

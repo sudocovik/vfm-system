@@ -6,4 +6,6 @@ export interface StackExecutor {
     installPlugins(): Promise<void>
 
     refreshState(): Promise<void>
+
+    deployResources(): Promise<void>
 }

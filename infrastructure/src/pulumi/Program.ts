@@ -17,6 +17,7 @@ export class Program {
         await this.stackExecutor.select(this.stack)
         await this.stackExecutor.installPlugins()
         await this.stackExecutor.refreshState()
+        await this.stackExecutor.deployResources()
         /*const vendorStack = await LocalWorkspace.createOrSelectStack({
             stackName: this.stack.name(),
             projectName: 'vfm',
