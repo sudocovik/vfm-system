@@ -68,8 +68,7 @@ describe('#Program', () => {
                 program: stack.resources()
             })
 
-            const deployedResources = await pulumiStack.exportStack()
-            const { resources } = deployedResources.deployment
+            const { resources } = (await pulumiStack.exportStack()).deployment
             const resourceTypes = resources.map(({ type }: { type: string }) => type)
             expect(resourceTypes).toContain('pulumi:providers:kubernetes')
         })
