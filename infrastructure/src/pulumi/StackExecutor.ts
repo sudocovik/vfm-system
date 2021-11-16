@@ -15,13 +15,15 @@ export interface StackExecutor {
 const installedDependencies = require('../../package-lock.json').dependencies
 const findDependencyVersion = (wantedDependency: string) => installedDependencies[wantedDependency].version
 
+const projectName = 'vfm'
+
 export class PulumiStackExecutor implements StackExecutor {
-    private pulumiStack?: PulumiStack
+    protected pulumiStack?: PulumiStack
 
     public async select(stack: Stack): Promise<void> {
         this.pulumiStack = await LocalWorkspace.createOrSelectStack({
             stackName: stack.name(),
-            projectName: 'vfm',
+            projectName: projectName,
             program: stack.resources()
         })
     }
@@ -39,5 +41,29 @@ export class PulumiStackExecutor implements StackExecutor {
 
     public async deployResources(): Promise<void> {
         await this.pulumiStack?.up()
+    }
+}
+
+export class LocalStackExecutor extends PulumiStackExecutor implements StackExecutor {
+    public override async select(stack: Stack): Promise<void> {
+        this.pulumiStack = await LocalWorkspace.createOrSelectStack({
+            stackName: stack.name(),
+            projectName: projectName,
+            program: stack.resources()
+        }, {
+            projectSettings: {
+                name: projectName,
+                backend: {
+                    url: `file://${process.env.PROJECT_ROOT}/.cache/`,
+                },
+                runtime: 'nodejs'
+            }
+        })
+    }
+
+    public override async installPlugins(): Promise<void> {
+        await Promise.all([
+            this.pulumiStack?.workspace.installPlugin('kubernetes', findDependencyVersion('@pulumi/kubernetes'))
+        ])
     }
 }

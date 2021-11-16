@@ -1,5 +1,5 @@
 import { Stack } from './Stack'
-import { PulumiStackExecutor, StackExecutor } from './StackExecutor'
+import { LocalStackExecutor, PulumiStackExecutor, StackExecutor } from './StackExecutor'
 
 export class Program {
     static forStack(stack: Stack): Program {
@@ -19,5 +19,11 @@ export class Program {
         await this.stackExecutor.installPlugins()
         await this.stackExecutor.refreshState()
         await this.stackExecutor.deployResources()
+    }
+}
+
+export class LocalProgram extends Program {
+    static override forStack(stack: Stack): Program {
+        return new LocalProgram(stack, new LocalStackExecutor())
     }
 }
