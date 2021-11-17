@@ -63,7 +63,8 @@ export class LocalStackExecutor extends PulumiStackExecutor implements StackExec
 
     public override async installPlugins(): Promise<void> {
         await Promise.all([
-            this.pulumiStack?.workspace.installPlugin('kubernetes', findDependencyVersion('@pulumi/kubernetes'))
+            this.pulumiStack?.workspace.installPlugin('kubernetes', findDependencyVersion('@pulumi/kubernetes')),
+            this.pulumiStack?.workspace.installPlugin('docker', findDependencyVersion('@pulumi/docker'))
         ])
     }
 }
