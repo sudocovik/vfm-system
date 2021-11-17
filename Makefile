@@ -16,6 +16,7 @@ dev:
 			--network host \
 			--name $(CONTAINER_NAME) \
 			-v $$(pwd)/infrastructure:/app \
+			-v $$(pwd)/frontend:/frontend \
 			-v /var/run/docker.sock:/var/run/docker.sock \
 		$(IMAGE_NAME)
 
