@@ -12,6 +12,10 @@ function createNamespace(provider: k8s.Provider): k8s.core.v1.Namespace {
     })
 }
 
+function replaceRegistryUrlWithUrlClusterUnderstands(originalImageName: pulumi.Output<string>): pulumi.Output<string> {
+    return originalImageName.apply(imageName => imageName.replace(/^localhost/, 'vfm-registry'))
+} 
+
 function createFrontendApplication(provider: k8s.Provider, namespace: pulumi.Output<string>, ingressController: k8s.helm.v3.Chart): void {
     const labels = { app: 'frontend' }
 
@@ -25,6 +29,7 @@ function createFrontendApplication(provider: k8s.Provider, namespace: pulumi.Out
             }
         }
     })
+    const imageName = replaceRegistryUrlWithUrlClusterUnderstands(image.imageName)
 
     const deployment = new k8s.apps.v1.Deployment('new-application', {
         metadata: {
@@ -43,7 +48,7 @@ function createFrontendApplication(provider: k8s.Provider, namespace: pulumi.Out
                     restartPolicy: 'Always',
                     containers: [{
                         name: 'webserver',
-                        image: 'vfm-registry:5000/vfm-frontend',
+                        image: imageName,
                         imagePullPolicy: 'IfNotPresent',
                         ports: [{
                             name: 'http',
@@ -56,8 +61,7 @@ function createFrontendApplication(provider: k8s.Provider, namespace: pulumi.Out
         }
     }, {
         provider,
-        parent: provider,
-        dependsOn: [ image ]
+        parent: provider
     })
 
     const service = new k8s.core.v1.Service('new-web', {
