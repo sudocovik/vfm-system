@@ -7,6 +7,7 @@ import {
 } from './backbone-types'
 import { Stack } from '../pulumi/Stack'
 import { Program } from '../pulumi/Program'
+import { Project } from '../../config'
 
 export function deployBackboneResources(): void {
     const domainConfiguration: DomainConfiguration = {
@@ -49,10 +50,10 @@ export function deployBackboneResources(): void {
     }
 
     const projectConfiguration: ProjectConfiguration = {
-        name: 'VFM',
-        description: 'Vehicle Fleet Management infrastructure',
-        environment: 'Production',
-        purpose: 'Web Application',
+        name: Project.nameUppercase,
+        description: Project.description,
+        environment: Project.environment,
+        purpose: Project.purpose,
     }
 
     const apiToken: string = process.env.CLUSTER_TOKEN || ''
