@@ -39,8 +39,7 @@ export const describeBackboneResources = (
     domainConfiguration: DomainConfiguration,
     loadBalancerConfiguration: LoadBalancerConfiguration,
     clusterConfiguration: ClusterConfiguration,
-    projectConfiguration: ProjectConfiguration,
-    apiToken: string
+    projectConfiguration: ProjectConfiguration
 ) => (): any => {
     const domain = new digitalocean.Domain('primary-domain', {
         name: domainConfiguration.name
@@ -125,7 +124,7 @@ export const describeBackboneResources = (
         ]
     })
 
-    const kubeconfig = generateKubeconfig(cluster, 'admin', apiToken)
+    const kubeconfig = generateKubeconfig(cluster, 'admin', clusterConfiguration.tokenForKubeconfig)
 
     const provider: k8s.Provider = new k8s.Provider('kubernetes-provider', {
         kubeconfig

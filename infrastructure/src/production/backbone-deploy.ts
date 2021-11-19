@@ -7,7 +7,7 @@ import {
 } from './backbone-types'
 import { Stack } from '../pulumi/Stack'
 import { Program } from '../pulumi/Program'
-import { Domain, LoadBalancer, Project } from '../../config'
+import { Cluster, Domain, Kubernetes, LoadBalancer, Project } from '../../config'
 
 export function deployBackboneResources(): void {
     const domainConfiguration: DomainConfiguration = {
@@ -35,18 +35,19 @@ export function deployBackboneResources(): void {
     }
 
     const clusterConfiguration: ClusterConfiguration = {
-        name: 'vfm',
-        region: 'fra1',
-        version: '1.21.5-do.0',
+        name: Cluster.title,
+        region: Cluster.region,
+        version: Cluster.version,
         nodePool: {
-            name: 'worker',
-            size: 's-1vcpu-2gb',
-            count: 1,
-            tag: 'vfm-worker'
+            name: Cluster.nodePool.title,
+            size: Cluster.nodePool.size,
+            count: Cluster.nodePool.count,
+            tag: Cluster.nodePool.tag
         },
-        namespace: 'vfm',
-        traefikVersion: '10.6.0',
-        containerRegistryToken: process.env.CLUSTER_CONTAINER_REGISTRY_TOKEN || ''
+        namespace: Kubernetes.namespace,
+        traefikVersion: Kubernetes.traefikVersion,
+        containerRegistryToken: Kubernetes.containerRegistryCredentials,
+        tokenForKubeconfig: Cluster.readToken
     }
 
     const projectConfiguration: ProjectConfiguration = {
@@ -56,15 +57,12 @@ export function deployBackboneResources(): void {
         purpose: Project.purpose,
     }
 
-    const apiToken: string = process.env.CLUSTER_TOKEN || ''
-
     Program.forStack(
         new Stack('backbone-production', describeBackboneResources(
             domainConfiguration,
             loadBalancerConfiguration,
             clusterConfiguration,
-            projectConfiguration,
-            apiToken
+            projectConfiguration
         ))
     ).execute()
 }

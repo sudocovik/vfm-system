@@ -35,6 +35,7 @@ export type ClusterConfiguration = {
     namespace: string
     traefikVersion: string
     containerRegistryToken: string
+    tokenForKubeconfig: string
 }
 
 export type ProjectConfiguration = {
