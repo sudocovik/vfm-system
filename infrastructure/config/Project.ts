@@ -4,4 +4,5 @@ export class Project {
     public static description: string = 'Infrastructure for Vehicle Fleet Management system'
     public static environment: string = 'Production'
     public static purpose: string = 'Web Application'
+    public static region: string = 'fra1'
 }

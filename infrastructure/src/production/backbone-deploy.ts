@@ -7,7 +7,7 @@ import {
 } from './backbone-types'
 import { Stack } from '../pulumi/Stack'
 import { Program } from '../pulumi/Program'
-import { Domain, Project } from '../../config'
+import { Domain, LoadBalancer, Project } from '../../config'
 
 export function deployBackboneResources(): void {
     const domainConfiguration: DomainConfiguration = {
@@ -15,9 +15,9 @@ export function deployBackboneResources(): void {
     }
 
     const loadBalancerConfiguration: LoadBalancerConfiguration = {
-        name: 'vfm',
-        size: 'lb-small',
-        region: 'fra1',
+        name: LoadBalancer.title,
+        size: LoadBalancer.size,
+        region: LoadBalancer.region,
         ports: {
             http: {
                 external: 80,
