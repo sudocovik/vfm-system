@@ -7,11 +7,11 @@ import {
 } from './backbone-types'
 import { Stack } from '../pulumi/Stack'
 import { Program } from '../pulumi/Program'
-import { Project } from '../../config'
+import { Domain, Project } from '../../config'
 
 export function deployBackboneResources(): void {
     const domainConfiguration: DomainConfiguration = {
-        name: 'zarafleet.com'
+        name: Domain.primary
     }
 
     const loadBalancerConfiguration: LoadBalancerConfiguration = {

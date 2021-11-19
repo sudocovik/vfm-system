@@ -2,6 +2,7 @@ import * as pulumi from '@pulumi/pulumi'
 import * as k8s from '@pulumi/kubernetes'
 import { Stack } from '../pulumi/Stack'
 import { Program } from '../pulumi/Program'
+import { Domain } from '../../config'
 
 function describeOldFrontend(
     provider: k8s.Provider,
@@ -156,7 +157,7 @@ function describeNewFrontend(
         },
         spec: {
             rules: [{
-                host: 'new.zarafleet.com',
+                host: Domain.newFrontend,
                 http: {
                     paths: [{
                         path: '/',

@@ -3,6 +3,7 @@ import * as digitalocean from '@pulumi/digitalocean'
 import * as k8s from '@pulumi/kubernetes'
 import { Program } from '../pulumi/Program'
 import { Stack } from '../pulumi/Stack'
+import { Domain } from '../../config'
 
 type DatabaseConnection = {
     host: pulumi.Output<string>
@@ -229,7 +230,7 @@ pulumi.interpolate`<?xml version='1.0' encoding='UTF-8'?>
                     }]
                 }
             }, {
-                host: 'old.zarafleet.com',
+                host: Domain.traccar,
                 http: {
                     paths: [{
                         path: '/',
