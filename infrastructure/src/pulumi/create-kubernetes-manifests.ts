@@ -14,7 +14,7 @@ function createNamespace(provider: k8s.Provider): k8s.core.v1.Namespace {
 
 function replaceRegistryUrlWithUrlClusterUnderstands(originalImageName: pulumi.Output<string>): pulumi.Output<string> {
     return originalImageName.apply(imageName => imageName.replace(/^localhost/, 'vfm-registry'))
-} 
+}
 
 function createFrontendApplication(provider: k8s.Provider, namespace: pulumi.Output<string>, ingressController: k8s.helm.v3.Chart): void {
     const labels = { app: 'frontend' }
@@ -50,6 +50,13 @@ function createFrontendApplication(provider: k8s.Provider, namespace: pulumi.Out
                         name: 'webserver',
                         image: imageName,
                         imagePullPolicy: 'IfNotPresent',
+                        args: [
+                            'npm',
+                            'run',
+                            'serve',
+                            '--', // pass following arguments to the vue-cli-service command instead of npm
+                            '--public=localhost'
+                        ],
                         ports: [{
                             name: 'http',
                             containerPort: 8080,
