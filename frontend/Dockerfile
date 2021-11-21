@@ -5,8 +5,9 @@ CMD ["exit", "-1"]
 
 FROM base AS dependencies
 WORKDIR /dependencies
-COPY package*.json ./
-RUN npm install
+COPY package.json .
+COPY yarn.lock .
+RUN yarn install
 
 
 FROM base AS source
@@ -28,10 +29,11 @@ COPY --from=production-artifact --chown=root:root /build/artifact /usr/share/ngi
 
 FROM base AS development-environment
 RUN apk update && apk add bash
-ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
-ENV PATH="/home/node/.npm-global/bin:${PATH}"
+RUN mkdir /yarn && chown node:node /yarn
 USER node
 WORKDIR /app
-RUN npm install -g @vue/cli
+RUN yarn config set prefix /yarn
+ENV PATH="/yarn/bin:${PATH}"
+RUN yarn global add @vue/cli@4.5.15 @quasar/cli@1.2.2
 COPY --from=source --chown=node:node /source /app
 CMD ["npm", "run", "serve"]
