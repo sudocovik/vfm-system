@@ -7,7 +7,7 @@ FROM base AS dependencies
 WORKDIR /dependencies
 COPY package.json .
 COPY yarn.lock .
-RUN yarn install
+RUN yarn install --frozen-lockfile
 
 
 FROM base AS source
