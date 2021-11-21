@@ -50,13 +50,6 @@ function createFrontendApplication(provider: k8s.Provider, namespace: pulumi.Out
                         name: 'webserver',
                         image: imageName,
                         imagePullPolicy: 'IfNotPresent',
-                        args: [
-                            'npm',
-                            'run',
-                            'serve',
-                            '--', // pass following arguments to the vue-cli-service command instead of npm
-                            '--public=localhost'
-                        ],
                         ports: [{
                             name: 'http',
                             containerPort: 8080,

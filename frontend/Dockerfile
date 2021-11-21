@@ -36,4 +36,4 @@ RUN yarn config set prefix /yarn
 ENV PATH="/yarn/bin:${PATH}"
 RUN yarn global add @vue/cli@4.5.15 @quasar/cli@1.2.2
 COPY --from=source --chown=node:node /source /app
-CMD ["npm", "run", "serve"]
+CMD ["quasar", "dev"]
