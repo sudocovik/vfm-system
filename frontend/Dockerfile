@@ -5,13 +5,17 @@ CMD ["exit", "-1"]
 
 
 FROM base AS dependencies
-COPY package*.json .
+COPY package*.json ./
 RUN npm install
 
 
-FROM base AS production-artifact
+FROM base AS source
 COPY --from=dependencies /app/node_modules /app/node_modules
 COPY . .
+
+
+FROM base AS production-artifact
+COPY --from=source /app /app
 RUN npm run build -- --dest=/app/artifact --modern
 
 
@@ -27,6 +31,5 @@ ENV PATH="/home/node/.npm-global/bin:${PATH}"
 RUN chown node:node /app
 USER node
 RUN npm install -g @vue/cli
-COPY --from=dependencies --chown=node:node /app/node_modules /app/node_modules
-COPY --chown=node:node . .
+COPY --from=source --chown=node:node /app /app
 CMD ["npm", "run", "serve"]
