@@ -19,12 +19,12 @@ COPY . .
 FROM base AS production-artifact
 WORKDIR /build
 COPY --from=source /source /build
-RUN npm run build -- --dest=/build/artifact --modern
+RUN quasar build -m pwa
 
 
 FROM nginx:1.21.3-alpine AS production-server
 LABEL org.opencontainers.image.source=https://github.com/Covik/vfm-system
-COPY --from=production-artifact --chown=root:root /build/artifact /usr/share/nginx/html
+COPY --from=production-artifact --chown=root:root /build/dist/pwa /usr/share/nginx/html
 
 
 FROM base AS development-environment
