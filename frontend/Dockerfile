@@ -19,7 +19,7 @@ COPY . .
 FROM base AS production-artifact
 WORKDIR /build
 COPY --from=source /source /build
-RUN quasar build -m pwa
+RUN npx quasar build -m pwa
 
 
 FROM nginx:1.21.3-alpine AS production-server
