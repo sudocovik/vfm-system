@@ -4,6 +4,11 @@ import { k3dCluster } from './cluster'
 import { createKubernetesManifests } from '../pulumi/create-kubernetes-manifests'
 import { LocalProgram } from '../pulumi/Program'
 import { Stack } from '../pulumi/Stack'
+import { promises as fs } from 'fs'
+
+async function writeKubeconfigToFile(path: string, kubeconfig: string) {
+    await fs.writeFile(path, kubeconfig)
+}
 
 const cluster = new LocalClusterManager(new k3dCluster())
 const local = new Stack('local', async () => {
@@ -14,6 +19,7 @@ export async function start(): Promise<void> {
     try {
         Stdout.write(Stdout.colorize(COLORS.YELLOW, UNICODE.FULL_CIRCLE) + ' Starting cluster...')
         await cluster.launch()
+        await writeKubeconfigToFile(process.env.KUBECONFIG ?? '', await cluster.kubeconfig())
         Stdout.clearLastLine()
         Stdout.writeLine(Stdout.colorize(COLORS.GREEN, UNICODE.CHECK_MARK) + ' Cluster running')
     } catch (e: any) {
