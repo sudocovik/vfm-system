@@ -1,5 +1,6 @@
 import { Stack } from './Stack'
 import { LocalWorkspace, Stack as PulumiStack } from '@pulumi/pulumi/automation'
+import { Directory } from '../../config'
 
 export interface StackExecutor {
     select(stack: Stack): Promise<void>
@@ -54,7 +55,7 @@ export class LocalStackExecutor extends PulumiStackExecutor implements StackExec
             projectSettings: {
                 name: projectName,
                 backend: {
-                    url: `file://${process.env.PROJECT_ROOT}/.cache/`,
+                    url: `file://${Directory.cacheRoot}`,
                 },
                 runtime: 'nodejs'
             }
