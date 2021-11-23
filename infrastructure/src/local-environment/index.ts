@@ -5,15 +5,15 @@ import { createKubernetesManifests } from '../pulumi/create-kubernetes-manifests
 import { LocalProgram } from '../pulumi/Program'
 import { Stack } from '../pulumi/Stack'
 
-const clusterManager = new LocalClusterManager(new k3dCluster())
+const cluster = new LocalClusterManager(new k3dCluster())
 const local = new Stack('local', async () => {
-    createKubernetesManifests(await clusterManager.kubeconfig())
+    createKubernetesManifests(await cluster.kubeconfig())
 })
 
 export async function start(): Promise<void> {
     try {
         Stdout.write(Stdout.colorize(COLORS.YELLOW, UNICODE.FULL_CIRCLE) + ' Starting cluster...')
-        await clusterManager.launch()
+        await cluster.launch()
         Stdout.clearLastLine()
         Stdout.writeLine(Stdout.colorize(COLORS.GREEN, UNICODE.CHECK_MARK) + ' Cluster running')
     } catch (e: any) {
@@ -37,7 +37,7 @@ export async function start(): Promise<void> {
 export async function stop(): Promise<void> {
     try {
         Stdout.write(Stdout.colorize(COLORS.YELLOW, UNICODE.FULL_CIRCLE) + ' Stopping cluster')
-        await clusterManager.stop()
+        await cluster.stop()
         Stdout.clearLastLine()
         Stdout.writeLine(Stdout.colorize(COLORS.GREEN, UNICODE.CHECK_MARK) + ' Cluster stopped')
     } catch (e: any) {
