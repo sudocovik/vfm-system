@@ -11,26 +11,38 @@ const local = new Stack('local', async () => {
 })
 
 export async function start(): Promise<void> {
-    Stdout.write(Stdout.colorize(COLORS.YELLOW, UNICODE.FULL_CIRCLE) + ' Starting cluster...')
-    await clusterManager.launch().then(() => {
+    try {
+        Stdout.write(Stdout.colorize(COLORS.YELLOW, UNICODE.FULL_CIRCLE) + ' Starting cluster...')
+        await clusterManager.launch()
         Stdout.clearLastLine()
         Stdout.writeLine(Stdout.colorize(COLORS.GREEN, UNICODE.CHECK_MARK) + ' Cluster running')
-    })
+    } catch (e: any) {
+        Stdout.clearLastLine()
+        Stdout.writeLine(Stdout.colorize(COLORS.RED, UNICODE.CROSS_MARK) + ' Failed to start cluster')
+        throw e
+    }
 
-    Stdout.write(Stdout.colorize(COLORS.YELLOW, UNICODE.FULL_CIRCLE) + ' Deploying apps...')
-    await LocalProgram.forStack(local)
-        .execute()
-        .then(() => {
-            Stdout.clearLastLine()
-            Stdout.writeLine(Stdout.colorize(COLORS.GREEN, UNICODE.CHECK_MARK) + ' Apps deployed')
-        })
+    try {
+        Stdout.write(Stdout.colorize(COLORS.YELLOW, UNICODE.FULL_CIRCLE) + ' Deploying apps...')
+        await LocalProgram.forStack(local).execute()
+        Stdout.clearLastLine()
+        Stdout.writeLine(Stdout.colorize(COLORS.GREEN, UNICODE.CHECK_MARK) + ' Apps deployed')
+    } catch (e: any) {
+        Stdout.clearLastLine()
+        Stdout.writeLine(Stdout.colorize(COLORS.RED, UNICODE.CROSS_MARK) + ' Failed to deploy apps')
+        throw e
+    }
 }
 
 export async function stop(): Promise<void> {
-    Stdout.write(Stdout.colorize(COLORS.YELLOW, UNICODE.FULL_CIRCLE) + ' Stopping cluster')
-
-    clusterManager.stop().then(() => {
+    try {
+        Stdout.write(Stdout.colorize(COLORS.YELLOW, UNICODE.FULL_CIRCLE) + ' Stopping cluster')
+        await clusterManager.stop()
         Stdout.clearLastLine()
         Stdout.writeLine(Stdout.colorize(COLORS.GREEN, UNICODE.CHECK_MARK) + ' Cluster stopped')
-    })
+    } catch (e: any) {
+        Stdout.clearLastLine()
+        Stdout.writeLine(Stdout.colorize(COLORS.RED, UNICODE.CROSS_MARK) + ' Failed to stop cluster')
+        throw e
+    }
 }
