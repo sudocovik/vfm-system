@@ -1,6 +1,6 @@
 <template>
   <q-page class="row items-center justify-evenly">
-    <example-component
+    <ExampleComponent
       title="Example component"
       active
       :todos="todos"

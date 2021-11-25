@@ -84,6 +84,21 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
 
     // allow debugger during development only
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+
+    // Additional Vue
+    "vue/component-name-in-template-casing": [
+      "error",
+      "PascalCase"
+    ],
+    "vue/match-component-file-name": [
+      "error",
+      {
+        "extensions": [
+          "vue"
+        ],
+        "shouldMatchCase": true
+      }
+    ]
   }
 }
