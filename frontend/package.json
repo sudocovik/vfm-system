@@ -6,7 +6,7 @@
   "author": "Covik",
   "private": true,
   "scripts": {
-    "lint": "eslint --ext .js,.ts,.vue ./",
+    "lint": "eslint --max-warnings=0 --ext .js,.ts,.vue ./",
     "test": "echo \"See package.json => scripts for available tests.\" && exit 0",
     "test:unit": "jest --updateSnapshot",
     "test:unit:ci": "jest --ci",
