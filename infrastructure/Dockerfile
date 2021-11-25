@@ -42,6 +42,8 @@ COPY --from=docker:20.10.10 /usr/local/bin/docker /usr/local/bin/docker
 
 RUN curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v5.1.0 bash
 
+COPY --from=devspacesh/devspace:5.17.0 /bin/devspace /usr/local/bin/devspace
+
 COPY --from=dependencies /app/node_modules /app/node_modules
 
 USER node
