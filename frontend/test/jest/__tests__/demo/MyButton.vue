@@ -2,8 +2,13 @@
 
 <template>
   <div>
-    <p class="content">{{ input }}</p>
+    <p class="content">
+      {{ input }}
+    </p>
     <span>{{ counter }}</span>
-    <q-btn class="button" @click="increment()"></q-btn>
+    <q-btn
+      class="button"
+      @click="increment()"
+    />
   </div>
 </template>
