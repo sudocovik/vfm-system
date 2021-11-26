@@ -26,4 +26,4 @@
 
 // DO NOT REMOVE
 // Imports Quasar Cypress AE predefined commands
-import '@quasar/quasar-app-extension-testing-e2e-cypress';
+import '@quasar/quasar-app-extension-testing-e2e-cypress'
