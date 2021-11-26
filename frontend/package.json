@@ -14,7 +14,9 @@
     "test:unit:watch": "jest --watch",
     "test:unit:watchAll": "jest --watchAll",
     "serve:test:coverage": "quasar serve test/jest/coverage/lcov-report/ --port 8788",
-    "concurrently:dev:jest": "concurrently \"quasar dev\" \"jest --watch\""
+    "concurrently:dev:jest": "concurrently \"quasar dev\" \"jest --watch\"",
+    "test:e2e": "cross-env E2E_TEST=true start-test \"quasar dev\" http-get://localhost:8080 \"cypress open\"",
+    "test:e2e:ci": "cross-env E2E_TEST=true start-test \"quasar dev\" http-get://localhost:8080 \"cypress run\""
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
@@ -27,6 +29,7 @@
     "@babel/eslint-parser": "^7.13.14",
     "@quasar/app": "^3.0.0",
     "@quasar/quasar-app-extension-testing": "^2.0.1",
+    "@quasar/quasar-app-extension-testing-e2e-cypress": "^4.0.0-beta.5",
     "@quasar/quasar-app-extension-testing-unit-jest": "^3.0.0-alpha.6",
     "@types/node": "^12.20.21",
     "@typescript-eslint/eslint-plugin": "^4.16.1",
@@ -38,7 +41,8 @@
     "eslint-plugin-node": "^11.0.0",
     "eslint-plugin-promise": "^5.1.0",
     "eslint-plugin-vue": "^7.0.0",
-    "workbox-webpack-plugin": "^6.0.0"
+    "workbox-webpack-plugin": "^6.0.0",
+    "eslint-plugin-cypress": "^2.11.3"
   },
   "browserslist": [
     "last 10 Chrome versions",
