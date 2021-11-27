@@ -16,3 +16,19 @@ test:
 .PHONY: push
 push:
 	docker push $(IMAGE_NAME)
+
+.PHONY: e2e-dev
+e2e-dev:
+	# run "xhost +" if errors with X server authorization occur (ie. Authorization required, but no authorization protocol specified)
+	docker run -it \
+    -v $$(pwd):/e2e \
+    -v /tmp/.X11-unix:/tmp/.X11-unix \
+    -v /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket \
+    -w /e2e \
+    -e DISPLAY=unix$(DISPLAY) \
+    -e QT_X11_NO_MITSHM=1 \
+    -e _X11_NO_MITSHM=1 \
+    -e _MITSHM=0 \
+    --network host \
+    --entrypoint cypress \
+    cypress/included:9.1.0 open --project .
