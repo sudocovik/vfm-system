@@ -65,11 +65,6 @@ jobs:
     needs: [build]
     container:
       image: cypress/included:9.1.0
-      volumes:
-        - ${{ format('{0}/frontend:/e2e', github.workspace) }}
-      options: |
-        --workdir=/e2e
-        --entrypoint=cypress
     steps:
       - name: "Execute tests"
-        run: cypress run --project .
+        run: cypress run
