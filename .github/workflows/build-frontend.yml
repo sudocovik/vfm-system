@@ -80,4 +80,6 @@ jobs:
         run: yarn --frozen-lockfile
       - run: ls -lah
       - name: "Execute tests"
-        run: cypress run --project .
+        run: |
+          cypress run --project . \
+            --config baseUrl=http://frontend
