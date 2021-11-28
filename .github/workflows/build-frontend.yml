@@ -67,6 +67,6 @@ jobs:
     steps:
       - name: "Checkout repository"
         uses: actions/checkout@v2
-      - run: ls -lah
-      - name: "Execute tests"
-        run: cypress run --project .
+      - uses: cypress-io/github-action@v2
+        with:
+          browser: chrome
