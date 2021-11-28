@@ -21,6 +21,7 @@ push:
 e2e-dev:
 	# run "xhost +" if errors with X server authorization occur (ie. Authorization required, but no authorization protocol specified)
 	docker run -it \
+		--rm \
     -v $$(pwd):/e2e \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -v /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket \
