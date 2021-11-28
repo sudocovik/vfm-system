@@ -58,3 +58,18 @@ jobs:
 
       - name: "Push image to GitHub Container Registry"
         run: make push
+
+  e2e:
+    name: "End-to-end test"
+    runs-on: ubuntu-latest
+    needs: [build]
+    container:
+      image: cypress/included:9.1.0
+      volumes:
+        - ./frontend:/e2e
+      options: |
+        --workdir=/e2e
+        --entrypoint=cypress
+    steps:
+      - name: "Execute tests"
+        run: cypress run --project .
