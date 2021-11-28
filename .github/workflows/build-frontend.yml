@@ -66,5 +66,6 @@ jobs:
     container:
       image: cypress/included:9.1.0
     steps:
+      - run: ls -lah
       - name: "Execute tests"
-        run: cypress run
+        run: cypress run --project .
