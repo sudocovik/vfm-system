@@ -82,4 +82,5 @@ jobs:
       - name: "Execute tests"
         run: |
           cypress run --project . \
-            --config baseUrl=http://frontend
+            --config baseUrl=http://frontend \
+            --browser chrome
