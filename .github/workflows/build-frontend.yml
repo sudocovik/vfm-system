@@ -72,4 +72,4 @@ jobs:
         with:
           install-command: yarn --frozen-lockfile --silent
           browser: chrome
-          working-directory: e2e
+          working-directory: fronted
