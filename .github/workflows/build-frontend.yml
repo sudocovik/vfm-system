@@ -67,6 +67,7 @@ jobs:
       image: cypress/included:9.1.0
       volumes:
         - ${{ format('{0}:/e2e', github.workspace) }}
+      options: --workdir /e2e
     steps:
       - run: ls -lah
       - run: ls -lah /e2e
