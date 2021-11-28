@@ -33,3 +33,13 @@ e2e-dev:
     --network host \
     --entrypoint cypress \
     cypress/included:9.1.0 open --project .
+
+.PHONY: e2e-run
+e2e-run:
+	docker run -it \
+		--rm \
+    -v $$(pwd):/e2e \
+    -w /e2e \
+    --entrypoint cypress \
+    --network host \
+    cypress/included:9.1.0 run
