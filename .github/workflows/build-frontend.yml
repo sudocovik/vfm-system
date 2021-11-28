@@ -67,7 +67,9 @@ jobs:
     steps:
       - name: "Checkout repository"
         uses: actions/checkout@v2
+      - run: pwd && ls -lah
       - uses: cypress-io/github-action@v2
         with:
           install-command: yarn --frozen-lockfile --silent
           browser: chrome
+          working-directory: e2e
