@@ -76,8 +76,10 @@ jobs:
     steps:
       - name: "Checkout repository"
         uses: actions/checkout@v2
+
       - name: "Install dependencies"
         run: yarn --frozen-lockfile
+
       - name: "Execute tests"
         run: |
           cypress run --project . \
