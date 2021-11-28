@@ -67,7 +67,7 @@ jobs:
       image: cypress/included:9.1.0
     services:
       frontend:
-        image: ${{ format('ghcr.io/covik/vfm-frontend:{0}', github.ref) }}
+        image: ${{ format('ghcr.io/covik/vfm-frontend:{0}', github.sha) }}
         credentials:
           username: ${{ secrets.registry_username }}
           password: ${{ secrets.registry_password }}
