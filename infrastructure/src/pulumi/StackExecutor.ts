@@ -1,6 +1,8 @@
 import { Stack } from './Stack'
 import { LocalWorkspace, Stack as PulumiStack } from '@pulumi/pulumi/automation'
 import { Directory } from '../../config'
+import * as lockfile from '@yarnpkg/lockfile'
+import * as fs from 'fs'
 
 export interface StackExecutor {
     select(stack: Stack): Promise<void>
@@ -13,7 +15,14 @@ export interface StackExecutor {
 }
 
 
-const installedDependencies = require('../../package-lock.json').dependencies
+const yarnLockFile = fs.readFileSync('yarn.lock', 'utf8')
+const rawInstalledDependencies = lockfile.parse(yarnLockFile).object
+const installedDependencies = Object.keys(rawInstalledDependencies)
+    .reduce((dependencies: any, dependencyName: string) => {
+        const dependencyNameWithoutVersion: string = dependencyName.substring(0, dependencyName.lastIndexOf('@'))
+        dependencies[dependencyNameWithoutVersion] = rawInstalledDependencies[dependencyName]
+        return dependencies
+    }, {})
 const findDependencyVersion = (wantedDependency: string) => installedDependencies[wantedDependency].version
 
 const projectName = 'vfm'

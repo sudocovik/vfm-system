@@ -18,9 +18,9 @@ RUN mkdir -p $HELM_REPOSITORY_CACHE && \
 FROM base AS dependencies
 
 COPY package.json .
-COPY package-lock.json .
+COPY yarn.lock .
 
-RUN npm install
+RUN yarn --frozen-lockfile
 # /app/node_modules is where all the dependency files live
 
 
