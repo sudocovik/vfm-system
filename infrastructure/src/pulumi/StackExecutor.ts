@@ -15,7 +15,7 @@ export interface StackExecutor {
 }
 
 
-const yarnLockFile = fs.readFileSync('yarn.lock', 'utf8')
+const yarnLockFile = fs.readFileSync(`${Directory.projectRoot}/yarn.lock`, 'utf8')
 const rawInstalledDependencies = lockfile.parse(yarnLockFile).object
 const installedDependencies = Object.keys(rawInstalledDependencies)
     .reduce((dependencies: any, dependencyName: string) => {
