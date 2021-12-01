@@ -95,6 +95,8 @@ pulumi.interpolate`<?xml version='1.0' encoding='UTF-8'?>
 
   <entry key='filter.enable'>true</entry>
   <entry key='filter.zero'>true</entry>
+  
+  <entry key='logger.file'>/proc/1/fd/1</entry>
 
 </properties>`
         }
