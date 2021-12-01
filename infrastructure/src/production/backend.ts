@@ -211,7 +211,10 @@ pulumi.interpolate`<?xml version='1.0' encoding='UTF-8'?>
 
     new k8s.networking.v1.Ingress('traccar-ingress', {
         metadata: {
-            namespace
+            namespace,
+            annotations: {
+                'pulumi.com/skipAwait': 'true'
+            }
         },
         spec: {
             rules: [{

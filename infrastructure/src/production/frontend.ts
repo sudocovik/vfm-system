@@ -64,7 +64,10 @@ function describeOldFrontend(
 
     new k8s.networking.v1.Ingress('public-access', {
         metadata: {
-            namespace
+            namespace,
+            annotations: {
+                'pulumi.com/skipAwait': 'true'
+            }
         },
         spec: {
             rules: [{
