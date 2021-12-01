@@ -204,6 +204,17 @@ export const describeBackboneResources = (
         parent: namespace
     })
 
+    new k8s.helm.v3.Chart('metrics-server', {
+        chart: 'metrics-server',
+        version: clusterConfiguration.metricsServerVersion,
+        fetchOpts: {
+            repo: 'https://kubernetes-sigs.github.io/metrics-server/',
+        }
+    }, {
+        provider,
+        parent: namespace
+    })
+
     return {
         kubeconfig,
         namespaceName,
