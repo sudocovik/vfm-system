@@ -197,7 +197,7 @@ export function createKubernetesManifests(kubeconfig: string): void {
         }
     }, { provider })
 
-    const traefik = new k8s.helm.v3.Chart('default-ingress-controller', {
+    const traefik = new k8s.helm.v3.Chart('ingress-controller', {
         chart: 'traefik',
         version: '10.6.0',
         fetchOpts: {
