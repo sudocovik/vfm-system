@@ -156,7 +156,10 @@ function describeNewFrontend(
 
     new k8s.networking.v1.Ingress('new-web-access', {
         metadata: {
-            namespace
+            namespace,
+            annotations: {
+                'pulumi.com/skipAwait': 'true'
+            }
         },
         spec: {
             rules: [{
