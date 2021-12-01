@@ -1,6 +1,7 @@
 import * as k8s from '@pulumi/kubernetes'
 import * as pulumi from '@pulumi/pulumi'
 import * as docker from '@pulumi/docker'
+import { Kubernetes } from '../../config'
 
 function createNamespace(provider: k8s.Provider): k8s.core.v1.Namespace {
     return new k8s.core.v1.Namespace('vfm', {
@@ -199,7 +200,7 @@ export function createKubernetesManifests(kubeconfig: string): void {
 
     const traefik = new k8s.helm.v3.Chart('ingress-controller', {
         chart: 'traefik',
-        version: '10.6.0',
+        version: Kubernetes.traefikVersion,
         fetchOpts: {
             repo: 'https://helm.traefik.io/traefik',
         },
