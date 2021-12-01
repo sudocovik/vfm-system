@@ -48,7 +48,7 @@ export function deployBackboneResources(): void {
         traefikVersion: Kubernetes.traefikVersion,
         containerRegistryToken: Kubernetes.containerRegistryCredentials,
         tokenForKubeconfig: Cluster.readToken,
-        metricsServerVersion: Kubernetes.metricsServerVersion
+        kubeStateMetricsVersion: Kubernetes.kubeStateMetricsVersion
     }
 
     const projectConfiguration: ProjectConfiguration = {

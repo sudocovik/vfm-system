@@ -36,7 +36,7 @@ export type ClusterConfiguration = {
     traefikVersion: string
     containerRegistryToken: string
     tokenForKubeconfig: string
-    metricsServerVersion: string
+    kubeStateMetricsVersion: string
 }
 
 export type ProjectConfiguration = {

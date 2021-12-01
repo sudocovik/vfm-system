@@ -204,12 +204,13 @@ export const describeBackboneResources = (
         parent: namespace
     })
 
-    new k8s.helm.v3.Chart('metrics-server', {
-        chart: 'metrics-server',
-        version: clusterConfiguration.metricsServerVersion,
+    new k8s.helm.v3.Chart('kube-state-metrics', {
+        chart: 'kube-state-metrics',
+        version: clusterConfiguration.kubeStateMetricsVersion,
         fetchOpts: {
-            repo: 'https://kubernetes-sigs.github.io/metrics-server/',
-        }
+            repo: 'https://prometheus-community.github.io/helm-charts',
+        },
+        namespace: 'kube-system'
     }, {
         provider,
         parent: namespace
