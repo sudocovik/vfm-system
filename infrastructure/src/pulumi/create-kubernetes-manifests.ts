@@ -122,9 +122,54 @@ export function createKubernetesManifests(kubeconfig: string): void {
 
     const namespace = createNamespace(provider).metadata.name
 
-    const traccarLabels = { app: 'traccar' }
+    const configuration = new k8s.core.v1.ConfigMap('traccar-configuration', {
+        metadata: {
+            namespace
+        },
+        data: {
+            'traccar.xml':
+                pulumi.interpolate`<?xml version='1.0' encoding='UTF-8'?>
 
-    const traccarDeployment: k8s.apps.v1.Deployment = new k8s.apps.v1.Deployment('traccar-deployment', {
+<!DOCTYPE properties SYSTEM 'http://java.sun.com/dtd/properties.dtd'>
+
+<properties>
+
+  <entry key='config.default'>./conf/default.xml</entry>
+
+  <!--
+  This is the main configuration file. All your configuration parameters should be placed in this file.
+  Default configuration parameters are located in the "default.xml" file. You should not modify it to avoid issues
+  with upgrading to a new version. Parameters in the main config file override values in the default file. Do not
+  remove "config.default" parameter from this file unless you know what you are doing.
+  For list of available parameters see following page: https://www.traccar.org/configuration-file/
+  -->
+
+  <entry key='database.driver'>org.h2.Driver</entry>
+  <entry key='database.url'>jdbc:h2:./data/database</entry>
+  <entry key='database.user'>sa</entry>
+  <entry key='database.password'></entry>
+  <entry key='database.saveOriginal'>true</entry>
+
+  <entry key='web.origin'>*</entry>
+
+  <entry key='geocoder.format'>%r %h, %p %t, %s, %c</entry>
+
+  <entry key='filter.enable'>true</entry>
+  <entry key='filter.zero'>true</entry>
+  
+  <entry key='logger.file'>/proc/1/fd/1</entry>
+
+</properties>`
+        }
+    }, {
+        provider,
+        parent: provider
+    })
+
+    const traccarLabels = { app: 'traccar' }
+    const configurationVolumeName = 'configuration'
+
+    const traccarDeployment: k8s.apps.v1.Deployment = new k8s.apps.v1.Deployment('traccar', {
         metadata: {
             namespace
         },
@@ -132,16 +177,28 @@ export function createKubernetesManifests(kubeconfig: string): void {
             selector: {
                 matchLabels: traccarLabels
             },
+            replicas: 1,
             template: {
                 metadata: {
                     labels:  traccarLabels
                 },
                 spec: {
+                    volumes: [{
+                        name: configurationVolumeName,
+                        configMap: {
+                            name: configuration.metadata.name
+                        }
+                    }],
                     restartPolicy: 'Always',
                     containers: [{
                         name: 'backend',
                         image: 'traccar/traccar:4.13-alpine',
                         imagePullPolicy: 'IfNotPresent',
+                        args: [
+                            '-jar',
+                            'tracker-server.jar',
+                            'conf-custom/traccar.xml',
+                        ],
                         ports: [{
                             name: 'api',
                             containerPort: 8082,
@@ -159,12 +216,20 @@ export function createKubernetesManifests(kubeconfig: string): void {
                             },
                             failureThreshold: 30,
                             periodSeconds: 30,
-                        }
+                        },
+                        volumeMounts: [{
+                            name: configurationVolumeName,
+                            mountPath: '/opt/traccar/conf-custom',
+                            readOnly: true
+                        }]
                     }]
                 }
             }
         }
-    }, { provider })
+    }, {
+        provider,
+        parent: provider
+    })
 
     const traccarApiService: k8s.core.v1.Service = new k8s.core.v1.Service('traccar-api-service', {
         metadata: {
