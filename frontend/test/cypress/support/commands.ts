@@ -27,3 +27,7 @@
 // DO NOT REMOVE
 // Imports Quasar Cypress AE predefined commands
 import '@quasar/quasar-app-extension-testing-e2e-cypress'
+
+Cypress.Commands.add('validateTitle', (pageTitle: string) => {
+  cy.title().should('equal', `${pageTitle} | Zara Fleet`)
+})

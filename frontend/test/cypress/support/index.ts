@@ -14,6 +14,22 @@
 // ***********************************************************
 
 // Import commands.ts using ES2015 syntax:
+/// <reference types="cypress" />
+
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace Cypress {
+    interface Chainable {
+      /**
+       * Custom command to validate page title.
+       * No need to manually add generic suffix.
+       * @example cy.validateTitle('Login') - Same as cy.title().should('equal', 'Login | Zara Fleet')
+       */
+      validateTitle(pageTitle: string): void
+    }
+  }
+}
+
 import './commands'
 
 const resizeObserverLoopError = 'ResizeObserver loop limit exceeded'
