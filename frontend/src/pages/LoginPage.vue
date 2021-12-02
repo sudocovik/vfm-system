@@ -10,7 +10,7 @@ export default {
 
   setup () {
     useMeta({
-      title: 'Login'
+      title: 'Login | Zara Fleet'
     })
   }
 }
