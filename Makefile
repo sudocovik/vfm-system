@@ -8,6 +8,9 @@ build:
 		--build-arg HOST_DOCKER_GROUP_ID=$(DOCKER_GROUP_ID) \
  		--target=local \
  		--tag=$(IMAGE_NAME)
+	@$(eval CONTAINER_ID := $(shell docker create $(IMAGE_NAME)))
+	@docker cp $(CONTAINER_ID):/app/node_modules ./infrastructure/.
+	@docker rm $(CONTAINER_ID) > /dev/null
 
 .PHONY: dev
 dev:
