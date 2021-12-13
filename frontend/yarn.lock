@@ -987,6 +987,11 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
+"@cypress/mount-utils@1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@cypress/mount-utils/-/mount-utils-1.0.2.tgz#afbc4f8c350b7cd86edc5ad0db0cbe1e0181edc8"
+  integrity sha512-Fn3fdTiyayHoy8Ol0RSu4MlBH2maQ2ZEXeEVKl/zHHXEQpld5HX3vdNLhK5YLij8cLynA4DxOT/nO9iEnIiOXw==
+
 "@cypress/request@^2.88.6":
   version "2.88.10"
   resolved "https://registry.yarnpkg.com/@cypress/request/-/request-2.88.10.tgz#b66d76b07f860d3a4b8d7a0604d020c662752cce"
@@ -1010,6 +1015,23 @@
     tough-cookie "~2.5.0"
     tunnel-agent "^0.6.0"
     uuid "^8.3.2"
+
+"@cypress/vue@^3.0.5":
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/@cypress/vue/-/vue-3.0.5.tgz#a2a3ab838991bb11ef800751962d28dc96b4b331"
+  integrity sha512-v6uVMEP04mCJGfc9/oH2ZIYPZ3fRwiOSzjtQ7jT0O2Lt2+SkoEWbDymG0pUFMRM1W8oc7Ep1hqEgZjIop7RXgw==
+  dependencies:
+    "@cypress/mount-utils" "1.0.2"
+    "@vue/test-utils" "^2.0.0-rc.10"
+
+"@cypress/webpack-dev-server@^1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@cypress/webpack-dev-server/-/webpack-dev-server-1.7.0.tgz#00b2040f4e58aca815240ab310f7f5198cc98cbf"
+  integrity sha512-kolBDmgTaSTKgsJC4QsYw6GVy8Rg4d3c3Ck6MuAu3XQDjkIqGuRNtlxaJEIhhxZWa/ZyQWOqVMeeNASPRS2Kzw==
+  dependencies:
+    debug "4.3.2"
+    semver "^7.3.4"
+    webpack-merge "^5.4.0"
 
 "@cypress/xvfb@^1.2.4":
   version "1.2.4"
@@ -1444,14 +1466,16 @@
   resolved "https://registry.yarnpkg.com/@quasar/fastclick/-/fastclick-1.1.4.tgz#21ed3e9a4387dcb43022a08af4ef08a5f1abf159"
   integrity sha512-i9wbyV4iT+v4KhtHJynUFhH5LiEPvAEgSnwMqPN4hf/8uRe82nDl5qP5agrp2el1h0HzyBpbvHaW7NB0BPrtvA==
 
-"@quasar/quasar-app-extension-testing-e2e-cypress@^4.0.0-beta.5":
-  version "4.0.0-beta-4"
-  resolved "https://registry.yarnpkg.com/@quasar/quasar-app-extension-testing-e2e-cypress/-/quasar-app-extension-testing-e2e-cypress-4.0.0-beta-4.tgz#9acd54cf6f2dc4e938a97bd884bedd365a4d3326"
-  integrity sha512-4dOI5sPp7z7SufJBHsUpm96doHWpAzaD8rFFzi/kUV4STAQGij9zzVlMeFw22Oq1j0M3GlCWRerH2IxGPmA0JA==
+"@quasar/quasar-app-extension-testing-e2e-cypress@^4.0.0-beta.7":
+  version "4.0.0-beta.7"
+  resolved "https://registry.yarnpkg.com/@quasar/quasar-app-extension-testing-e2e-cypress/-/quasar-app-extension-testing-e2e-cypress-4.0.0-beta.7.tgz#b2be093394052dcb2773463b73545eb5eeefbeb8"
+  integrity sha512-Tm5Jg4NWsFEpbGEYaVH4kPCMGhdn9MvF/358y7zrxNYAhDKvxAFYeChUU2AlV9uuFdigLx847j0Mm2H6OhmHMw==
   dependencies:
+    "@cypress/vue" "^3.0.5"
+    "@cypress/webpack-dev-server" "^1.7.0"
     cross-env "^7.0.3"
     cypress "^8.0.0"
-    json5 "^2.2.0"
+    lodash "^4.17.21"
     start-server-and-test "^1.12.6"
 
 "@quasar/quasar-app-extension-testing-unit-jest@^3.0.0-alpha.6":
@@ -9933,7 +9957,7 @@ webpack-dev-server@4.4.0:
     webpack-dev-middleware "^5.2.1"
     ws "^8.1.0"
 
-webpack-merge@5.8.0:
+webpack-merge@5.8.0, webpack-merge@^5.4.0:
   version "5.8.0"
   resolved "https://registry.yarnpkg.com/webpack-merge/-/webpack-merge-5.8.0.tgz#2b39dbf22af87776ad744c390223731d30a68f61"
   integrity sha512-/SaI7xY0831XwP6kzuwhKWVKDP9t1QY1h65lAFLbZqMPIuYcD9QAW4u9STIbU9kaJbPBB/geU/gLr1wDjOhQ+Q==
