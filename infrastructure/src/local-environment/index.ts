@@ -18,6 +18,7 @@ function startHotReload() {
         '--container-path=/app',
         '--namespace=vfm',
         '--exclude=.idea',
+        '--initial-sync=preferNewest',
         '-l app=frontend',
     ], {
         stdio: 'inherit',
