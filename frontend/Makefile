@@ -2,23 +2,20 @@
 IMAGE_NAME=ghcr.io/covik/vfm-frontend:$(IMAGE_VERSION)
 TEST_ENVIRONMENT_IMAGE_NAME=ghcr.io/covik/vfm-frontend-testing:$(IMAGE_VERSION)
 
-.PHONY: build
+.PHONY: *
+
 build:
 	DOCKER_BUILDKIT=1 docker build . --target=production-server --tag=$(IMAGE_NAME)
 
-.PHONY: push
 push:
 	docker push $(IMAGE_NAME)
 
-.PHONY: build-test-environment
 build-test-environment:
 	DOCKER_BUILDKIT=1 docker build . --target=test-environment --tag=$(TEST_ENVIRONMENT_IMAGE_NAME)
 
-.PHONY: push-test-environment
 push-test-environment:
 	docker push $(TEST_ENVIRONMENT_IMAGE_NAME)
 
-.PHONY: e2e-dev
 e2e-dev:
 	# run "xhost +" if errors with X server authorization occur (ie. Authorization required, but no authorization protocol specified)
 	docker run -it \
@@ -35,7 +32,6 @@ e2e-dev:
     --entrypoint cypress \
     cypress/included:9.1.0 open --project .
 
-.PHONY: ct-dev
 ct-dev:
 	# run "xhost +" if errors with X server authorization occur (ie. Authorization required, but no authorization protocol specified)
 	docker run -it \
