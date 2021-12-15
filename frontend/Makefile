@@ -1,5 +1,6 @@
 # IMAGE_VERSION should be set by CI
 IMAGE_NAME=ghcr.io/covik/vfm-frontend:$(IMAGE_VERSION)
+TEST_ENVIRONMENT_IMAGE_NAME=ghcr.io/covik/vfm-frontend-testing:$(IMAGE_VERSION)
 
 .PHONY: build
 build:
@@ -16,6 +17,14 @@ test:
 .PHONY: push
 push:
 	docker push $(IMAGE_NAME)
+
+.PHONY: build-test-environment
+build-test-environment:
+	DOCKER_BUILDKIT=1 docker build . --target=test-environment --tag=$(TEST_ENVIRONMENT_IMAGE_NAME)
+
+.PHONY: push-test-environment
+push-test-environment:
+	docker push $(TEST_ENVIRONMENT_IMAGE_NAME)
 
 .PHONY: e2e-dev
 e2e-dev:
