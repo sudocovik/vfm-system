@@ -69,7 +69,7 @@ jobs:
         password: ${{ secrets.registry_password }}
     steps:
       - name: "Execute tests"
-        run: cypress run-ct --browser=chrome
+        run: HOME=/home/node cypress run-ct --browser=chrome
         working-directory: "/testing"
 
   build:
