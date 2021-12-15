@@ -41,12 +41,17 @@ jobs:
   lint:
     name: "Lint"
     runs-on: ubuntu-latest
+    needs: [ test-environment ]
+    container:
+      image: ${{ format('ghcr.io/covik/vfm-frontend-testing:{0}', github.sha) }}
+      credentials:
+        username: ${{ secrets.registry_username }}
+        password: ${{ secrets.registry_password }}
     steps:
-      - name: "Checkout repository"
-        uses: actions/checkout@v2
-
-      - name: "Run linter"
-        run: make lint
+      - name: "Execute linter"
+        working-directory: "/testing"
+        run: |
+          HOME=/home/node yarn lint --no-fix
 
   unit-test:
     name: "Unit test"
