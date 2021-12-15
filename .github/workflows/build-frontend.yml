@@ -118,6 +118,6 @@ jobs:
         run: |
           HOME=/home/node cypress run
             --browser chrome
-            --config baseUrl=http://frontend \
+            --config baseUrl=http://frontend
         working-directory: "/testing"
 
