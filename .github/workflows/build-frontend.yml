@@ -10,10 +10,6 @@ on:
       registry_password:
         required: true
 
-defaults:
-  run:
-    working-directory: "./frontend"
-
 jobs:
   test-environment:
     name: "Build test environment"
@@ -21,6 +17,9 @@ jobs:
     env:
       # used by build & push Makefile targets
       IMAGE_VERSION: ${{ github.sha }}
+    defaults:
+      run:
+        working-directory: "./frontend"
     steps:
       - name: "Checkout repository"
         uses: actions/checkout@v2
@@ -91,6 +90,9 @@ jobs:
     env:
       # used by build & push Makefile targets
       IMAGE_VERSION: ${{ github.sha }}
+    defaults:
+      run:
+        working-directory: "./frontend"
     steps:
       - name: "Checkout repository"
         uses: actions/checkout@v2
