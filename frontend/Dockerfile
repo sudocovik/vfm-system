@@ -29,6 +29,7 @@ COPY --from=production-artifact --chown=root:root /build/dist/pwa /usr/share/ngi
 
 
 FROM base AS development-environment
+ENV CYPRESS_INSTALL_BINARY=0
 RUN apk update && apk add bash
 RUN mkdir /yarn && chown node:node /yarn
 USER node
