@@ -116,8 +116,8 @@ jobs:
     steps:
       - name: "Execute tests"
         run: |
-          HOME=/home/node cypress run
-            --browser chrome
+          HOME=/home/node cypress run \
+            --browser chrome \
             --config baseUrl=http://frontend
         working-directory: "/testing"
 
