@@ -1,4 +1,4 @@
-name: "Build and deploy infrastructure, frontend and backend"
+name: "CI & CD"
 
 on:
   push:
