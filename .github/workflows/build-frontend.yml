@@ -63,7 +63,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [test-environment]
     container:
-      image: ${{ format('ghcr.io/covik/vfm-frontend-testing:{1}', github.sha) }}
+      image: ${{ format('ghcr.io/covik/vfm-frontend-testing:{0}', github.sha) }}
       credentials:
         username: ${{ secrets.registry_username }}
         password: ${{ secrets.registry_password }}
