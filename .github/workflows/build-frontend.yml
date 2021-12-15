@@ -18,6 +18,9 @@ jobs:
   test-environment:
     name: "Build test environment"
     runs-on: ubuntu-latest
+    env:
+      # used by build & push Makefile targets
+      IMAGE_VERSION: ${{ github.sha }}
     steps:
       - name: "Checkout repository"
         uses: actions/checkout@v2
