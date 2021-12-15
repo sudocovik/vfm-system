@@ -67,10 +67,10 @@ jobs:
       credentials:
         username: ${{ secrets.registry_username }}
         password: ${{ secrets.registry_password }}
-      options: --workdir /testing
     steps:
       - name: "Execute tests"
         run: cypress run-ct --browser=chrome
+        working-directory: "/testing"
 
   build:
     name: "Build"
