@@ -41,6 +41,8 @@ CMD ["quasar", "dev"]
 
 
 FROM ghcr.io/covik/light-cypress-images:node17.2.0-chrome96.0.4664.110 as test-environment
+RUN mkdir /cypress && chown node:node /cypress
+ENV CYPRESS_CACHE_FOLDER="/cypress"
 USER node
 WORKDIR /testing
 ENV PATH="/testing/node_modules/.bin:${PATH}"
