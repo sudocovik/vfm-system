@@ -7,7 +7,7 @@ FROM base AS dependencies
 WORKDIR /dependencies
 COPY package.json .
 COPY yarn.lock .
-RUN yarn install --frozen-lockfile
+RUN CYPRESS_INSTALL_BINARY=0 yarn install --frozen-lockfile
 
 
 FROM base AS source
