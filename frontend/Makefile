@@ -30,7 +30,7 @@ e2e-dev:
     -e _MITSHM=0 \
     --network host \
     --entrypoint cypress \
-    cypress/included:9.1.0 open --project .
+    cypress/included:8.7.0 open --project .
 
 ct-dev:
 	# run "xhost +" if errors with X server authorization occur (ie. Authorization required, but no authorization protocol specified)
@@ -46,4 +46,4 @@ ct-dev:
     -e _MITSHM=0 \
     --network host \
     --entrypoint cypress \
-    cypress/included:9.1.0 open-ct --project .
+    cypress/included:8.7.0 open-ct --project .
