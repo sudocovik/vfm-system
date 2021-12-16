@@ -39,4 +39,17 @@ describe('LoginFormEmailInput', () => {
         expect(props).to.be.equal('email')
       })
   })
+
+  it('should have a placeholder', () => {
+    mount(LoginFormEmailInput)
+      .then((): VueWrapper<QInput> => {
+        return Cypress.vueWrapper.findComponent(QInput)
+      })
+      .then((input: VueWrapper<QInput>) => {
+        return input.props('label') as string ?? ''
+      })
+      .then((label: string) => {
+        expect(label).to.be.equal('E-mail')
+      })
+  })
 })

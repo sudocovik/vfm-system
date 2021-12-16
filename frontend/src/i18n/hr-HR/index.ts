@@ -1,3 +1,4 @@
 export default {
-  login: 'Prijava'
+  login: 'Prijava',
+  email: 'E-mail'
 }

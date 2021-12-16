@@ -2,6 +2,7 @@
   <q-input
     v-model="email"
     type="email"
+    :label="$t('email')"
     outlined
   />
 </template>
