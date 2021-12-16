@@ -13,4 +13,17 @@ describe('LoginFormEmailInput', () => {
         expect(input.exists()).to.be.equal(true)
       })
   })
+
+  it('should use \'outlined\' design', () => {
+    mount(LoginFormEmailInput)
+      .then((): VueWrapper<QInput> => {
+        return Cypress.vueWrapper.findComponent(QInput)
+      })
+      .then((input: VueWrapper<QInput>) => {
+        return Object.keys(input.props())
+      })
+      .then((props: string[]) => {
+        expect(props).to.contain('outlined')
+      })
+  })
 })
