@@ -22,8 +22,8 @@ import 'quasar/src/css/index.sass'
 
 // ICON SETS
 // If you use multiple or different icon-sets then the default, be sure to import them here.
-import 'quasar/dist/icon-set/material-icons.umd.prod'
-import '@quasar/extras/material-icons/material-icons.css'
+import 'quasar/dist/icon-set/mdi-v6.umd.prod'
+import '@quasar/extras/mdi-v6/mdi-v6.css'
 
 import { installQuasarPlugin } from '@quasar/quasar-app-extension-testing-e2e-cypress'
 import { config } from '@vue/test-utils'
