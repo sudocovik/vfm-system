@@ -30,3 +30,18 @@ import { registerCommands } from '@quasar/quasar-app-extension-testing-e2e-cypre
 registerCommands()
 
 import './custom-commands'
+
+declare global {
+// eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace Cypress {
+    // eslint-disable-next-line no-unused-vars
+    interface Chainable {
+      /**
+       * Custom command to validate page title.
+       * No need to manually add generic suffix.
+       * @example cy.validateTitle('Login') - Same as cy.title().should('equal', 'Login | Zara Fleet')
+       */
+      validateTitle(pageTitle: string): void
+    }
+  }
+}
