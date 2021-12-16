@@ -29,6 +29,4 @@
 import { registerCommands } from '@quasar/quasar-app-extension-testing-e2e-cypress'
 registerCommands()
 
-Cypress.Commands.add('validateTitle', (pageTitle: string) => {
-  cy.title().should('equal', `${pageTitle} | Zara Fleet`)
-})
+import './custom-commands'

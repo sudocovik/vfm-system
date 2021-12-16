@@ -15,17 +15,3 @@
 /// <reference types="cypress" />
 
 import './commands'
-
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace Cypress {
-    interface Chainable {
-      /**
-       * Custom command to validate page title.
-       * No need to manually add generic suffix.
-       * @example cy.validateTitle('Login') - Same as cy.title().should('equal', 'Login | Zara Fleet')
-       */
-      validateTitle(pageTitle: string): void
-    }
-  }
-}
