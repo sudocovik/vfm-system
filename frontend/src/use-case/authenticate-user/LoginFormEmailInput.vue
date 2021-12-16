@@ -1,6 +1,7 @@
 <template>
   <q-input
     v-model="email"
+    type="email"
     outlined
   />
 </template>

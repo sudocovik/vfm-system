@@ -26,4 +26,17 @@ describe('LoginFormEmailInput', () => {
         expect(props).to.contain('outlined')
       })
   })
+
+  it('should assist mobile users when typing email', () => {
+    mount(LoginFormEmailInput)
+      .then((): VueWrapper<QInput> => {
+        return Cypress.vueWrapper.findComponent(QInput)
+      })
+      .then((input: VueWrapper<QInput>) => {
+        return input.props('type') as string
+      })
+      .then((props: string) => {
+        expect(props).to.be.equal('email')
+      })
+  })
 })
