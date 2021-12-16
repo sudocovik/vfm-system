@@ -6,9 +6,7 @@ import { VueWrapper } from '@vue/test-utils'
 describe('LoginFormEmailInput', () => {
   it('should render text input', () => {
     mount(LoginFormEmailInput)
-      .then((): VueWrapper<QInput> => {
-        return Cypress.vueWrapper.findComponent(QInput)
-      })
+      .then((): VueWrapper<QInput> => Cypress.vueWrapper.findComponent(QInput))
       .then((input: VueWrapper<QInput>) => {
         expect(input.exists()).to.be.equal(true)
       })
@@ -16,12 +14,8 @@ describe('LoginFormEmailInput', () => {
 
   it('should use \'outlined\' design', () => {
     mount(LoginFormEmailInput)
-      .then((): VueWrapper<QInput> => {
-        return Cypress.vueWrapper.findComponent(QInput)
-      })
-      .then((input: VueWrapper<QInput>) => {
-        return Object.keys(input.props())
-      })
+      .then((): VueWrapper<QInput> => Cypress.vueWrapper.findComponent(QInput))
+      .then((input: VueWrapper<QInput>): string[] => Object.keys(input.props()))
       .then((props: string[]) => {
         expect(props).to.contain('outlined')
       })
@@ -29,12 +23,8 @@ describe('LoginFormEmailInput', () => {
 
   it('should assist mobile users when typing email', () => {
     mount(LoginFormEmailInput)
-      .then((): VueWrapper<QInput> => {
-        return Cypress.vueWrapper.findComponent(QInput)
-      })
-      .then((input: VueWrapper<QInput>) => {
-        return input.props('type') as string
-      })
+      .then((): VueWrapper<QInput> => Cypress.vueWrapper.findComponent(QInput))
+      .then((input: VueWrapper<QInput>): string => input.props('type') as string)
       .then((props: string) => {
         expect(props).to.be.equal('email')
       })
@@ -42,12 +32,8 @@ describe('LoginFormEmailInput', () => {
 
   it('should have a placeholder', () => {
     mount(LoginFormEmailInput)
-      .then((): VueWrapper<QInput> => {
-        return Cypress.vueWrapper.findComponent(QInput)
-      })
-      .then((input: VueWrapper<QInput>) => {
-        return input.props('label') as string ?? ''
-      })
+      .then((): VueWrapper<QInput> => Cypress.vueWrapper.findComponent(QInput))
+      .then((input: VueWrapper<QInput>): string => input.props('label') as string ?? '')
       .then((label: string) => {
         expect(label).to.be.equal('E-mail')
       })
