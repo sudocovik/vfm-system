@@ -29,15 +29,12 @@ import { installQuasarPlugin } from '@quasar/quasar-app-extension-testing-e2e-cy
 import { config } from '@vue/test-utils'
 import { Dialog } from 'quasar'
 
-// Example to import i18n from boot and use as plugin
-// import { i18n } from 'src/boot/i18n';
+import { i18n } from 'src/boot/i18n'
 
 // You can modify the global config here for all tests or pass in the configuration per test
 // For example use the actual i18n instance or mock it
-// config.global.plugins.push(i18n);
-config.global.mocks = {
-  $t: () => ''
-}
+config.global.plugins.push(i18n)
+config.global.mocks = {}
 
 // Overwrite the transition and transition-group stubs which are stubbed by test-utils by default.
 // We do want transitions to show when doing visual testing :)
