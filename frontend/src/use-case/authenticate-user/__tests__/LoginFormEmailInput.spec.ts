@@ -25,8 +25,8 @@ describe('LoginFormEmailInput', () => {
     mount(LoginFormEmailInput)
       .then((): VueWrapper<QInput> => Cypress.vueWrapper.findComponent(QInput))
       .then((input: VueWrapper<QInput>): string => input.props('type') as string)
-      .then((props: string) => {
-        expect(props).to.be.equal('email')
+      .then((type: string) => {
+        expect(type).to.be.equal('email')
       })
   })
 
