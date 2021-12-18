@@ -21,7 +21,7 @@ describe('LoginFormEmailInput', () => {
       })
   })
 
-  it('should assist mobile users when typing email', () => {
+  it('should assist user while typing email', () => {
     mount(LoginFormEmailInput)
       .then((): VueWrapper<QInput> => Cypress.vueWrapper.findComponent(QInput))
       .then((input: VueWrapper<QInput>): string => input.props('type') as string)
