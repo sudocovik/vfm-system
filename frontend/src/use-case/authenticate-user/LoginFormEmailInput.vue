@@ -4,7 +4,11 @@
     type="email"
     :label="$t('email')"
     outlined
-  />
+  >
+    <template #prepend>
+      <q-icon name="mdi-account" />
+    </template>
+  </q-input>
 </template>
 
 <script lang="ts">
