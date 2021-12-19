@@ -1,6 +1,6 @@
 <template>
   <q-input
-    v-model="email"
+    :model-value="value"
     type="email"
     :label="$t('email')"
     outlined
@@ -12,16 +12,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'LoginFormEmailInput',
 
-  setup () {
-    const email = ref<string>('')
-
-    return {
-      email
+  props: {
+    value: {
+      type: String,
+      required: true
     }
   }
 })

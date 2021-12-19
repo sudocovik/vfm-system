@@ -38,4 +38,31 @@ describe('LoginFormEmailInput', () => {
         expect(label).to.be.equal('E-mail')
       })
   })
+
+  it('should let parent component control the input value', () => {
+    const defaultValues = {
+      initial: 'First default value',
+      secondary: 'Second default value'
+    }
+
+    mount(LoginFormEmailInput, {
+      props: {
+        value: defaultValues.initial
+      }
+    })
+
+    cy.then((): VueWrapper<QInput> => Cypress.vueWrapper.findComponent(QInput))
+      .then((input: VueWrapper<QInput>): string => <string>input.vm.modelValue)
+      .then((inputValue) => {
+        expect(inputValue).to.be.equal(defaultValues.initial)
+      })
+
+    cy.then(() => Cypress.vueWrapper.setProps({ value: defaultValues.secondary }))
+
+    cy.then((): VueWrapper<QInput> => Cypress.vueWrapper.findComponent(QInput))
+      .then((input: VueWrapper<QInput>): string => <string>input.vm.modelValue)
+      .then((inputValue) => {
+        expect(inputValue).to.be.equal(defaultValues.secondary)
+      })
+  })
 })
