@@ -99,7 +99,10 @@ module.exports = {
         ],
         "shouldMatchCase": true
       }
-    ]
+    ],
+
+    // Custom Eslint
+    "brace-style": ["error", "stroustrup"]
   },
 
   overrides: [
