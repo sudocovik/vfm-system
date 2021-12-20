@@ -87,22 +87,22 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
 
     // Additional Vue
-    "vue/component-name-in-template-casing": [
-      "error",
-      "PascalCase"
+    'vue/component-name-in-template-casing': [
+      'error',
+      'PascalCase'
     ],
-    "vue/match-component-file-name": [
-      "error",
+    'vue/match-component-file-name': [
+      'error',
       {
-        "extensions": [
-          "vue"
+        'extensions': [
+          'vue'
         ],
-        "shouldMatchCase": true
+        'shouldMatchCase': true
       }
     ],
 
     // Custom Eslint
-    "brace-style": ["error", "stroustrup"]
+    'brace-style': ['error', 'stroustrup']
   },
 
   overrides: [
