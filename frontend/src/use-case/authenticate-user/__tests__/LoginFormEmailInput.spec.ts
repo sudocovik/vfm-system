@@ -65,4 +65,25 @@ describe('LoginFormEmailInput', () => {
         expect(inputValue).to.be.equal(defaultValues.secondary)
       })
   })
+
+  it('should notify parent what the user typed', () => {
+    const expectedUserInput = 'user.email@example.com'
+
+    mount(LoginFormEmailInput)
+      .then((): VueWrapper<QInput> => Cypress.vueWrapper.findComponent(QInput))
+      .then((input: VueWrapper<QInput>) => {
+        void input.setValue(expectedUserInput)
+      })
+      .then((): string[][] => {
+        const eventSequence = <string[][]>Cypress.vueWrapper.emitted('update:value')
+        console.log(eventSequence)
+        if (eventSequence) return eventSequence
+        else throw new Error('Event \'update:value\' never occurred')
+      })
+      .then((eventSequence: string[][]) => {
+        const lastEvent = eventSequence[eventSequence.length - 1]
+        const actualUserInput: string = lastEvent[0]
+        expect(actualUserInput).to.be.equal(expectedUserInput)
+      })
+  })
 })

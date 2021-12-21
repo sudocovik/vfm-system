@@ -4,6 +4,7 @@
     type="email"
     :label="$t('email')"
     outlined
+    @update:model-value="(value) => $emit('update:value', value)"
   >
     <template #prepend>
       <q-icon name="mdi-account" />
@@ -22,6 +23,8 @@ export default defineComponent({
       type: String,
       required: true
     }
-  }
+  },
+
+  emits: ['update:value']
 })
 </script>
