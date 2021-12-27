@@ -76,7 +76,6 @@ describe('LoginFormEmailInput', () => {
       })
       .then((): string[][] => {
         const eventSequence = <string[][]>Cypress.vueWrapper.emitted('update:value')
-        console.log(eventSequence)
         if (eventSequence) return eventSequence
         else throw new Error('Event \'update:value\' never occurred')
       })
