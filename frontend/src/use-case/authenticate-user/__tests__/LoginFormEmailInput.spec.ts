@@ -23,6 +23,9 @@ const takeLastEvent = () => (eventSequence: string[][]): string[] => eventSequen
 
 const takeFirstValue = () => (eventData: string[]): string => eventData[0]
 
+const changeComponentProperties = (changedProperties: Record<string, unknown>) =>
+  () => Cypress.vueWrapper.setProps(changedProperties)
+
 describe('LoginFormEmailInput', () => {
   it('should render text input', () => {
     mount(LoginFormEmailInput)
@@ -66,7 +69,7 @@ describe('LoginFormEmailInput', () => {
         expect(inputValue).to.be.equal(defaultValue)
       })
 
-    cy.then(() => Cypress.vueWrapper.setProps({ value: changedValue }))
+    cy.then(changeComponentProperties({ value: changedValue }))
 
     cy.then(findInputComponent())
       .then(returnInputValue())
