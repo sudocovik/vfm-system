@@ -14,15 +14,6 @@ describe('LoginFormEmailInput', () => {
       })
   })
 
-  it('should use \'outlined\' design', () => {
-    mount(LoginFormEmailInput)
-      .then((): InputComponent => Cypress.vueWrapper.findComponent(QInput))
-      .then((input: InputComponent): string[] => Object.keys(input.props()))
-      .then((props: string[]) => {
-        expect(props).to.contain('outlined')
-      })
-  })
-
   it('should assist user while typing email', () => {
     mount(LoginFormEmailInput)
       .then((): InputComponent => Cypress.vueWrapper.findComponent(QInput))
