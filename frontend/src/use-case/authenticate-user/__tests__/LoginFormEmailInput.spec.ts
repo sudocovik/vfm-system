@@ -67,12 +67,15 @@ describe('LoginFormEmailInput', () => {
   })
 
   it('should notify parent what the user typed', () => {
-    const expectedUserInput = 'user.email@example.com'
+    const inputValue = {
+      initial: 'user.email@example.com',
+      secondary: 'user.email2@example.com'
+    }
 
     mount(LoginFormEmailInput)
       .then((): VueWrapper<QInput> => Cypress.vueWrapper.findComponent(QInput))
       .then((input: VueWrapper<QInput>) => {
-        void input.setValue(expectedUserInput)
+        void input.setValue(inputValue.initial)
       })
       .then((): string[][] => {
         const eventSequence = <string[][]>Cypress.vueWrapper.emitted('update:value')
@@ -82,7 +85,22 @@ describe('LoginFormEmailInput', () => {
       .then((eventSequence: string[][]) => {
         const lastEvent = eventSequence[eventSequence.length - 1]
         const actualUserInput: string = lastEvent[0]
-        expect(actualUserInput).to.be.equal(expectedUserInput)
+        expect(actualUserInput).to.be.equal(inputValue.initial)
+      })
+
+    cy.then((): VueWrapper<QInput> => Cypress.vueWrapper.findComponent(QInput))
+      .then((input: VueWrapper<QInput>) => {
+        void input.setValue(inputValue.secondary)
+      })
+      .then((): string[][] => {
+        const eventSequence = <string[][]>Cypress.vueWrapper.emitted('update:value')
+        if (eventSequence) return eventSequence
+        else throw new Error('Event \'update:value\' never occurred')
+      })
+      .then((eventSequence: string[][]) => {
+        const lastEvent = eventSequence[eventSequence.length - 1]
+        const actualUserInput: string = lastEvent[0]
+        expect(actualUserInput).to.be.equal(inputValue.secondary)
       })
   })
 })
