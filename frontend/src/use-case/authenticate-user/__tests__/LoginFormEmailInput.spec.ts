@@ -51,55 +51,51 @@ describe('LoginFormEmailInput', () => {
   })
 
   it('should let parent component control the input value', () => {
-    const defaultValues = {
-      initial: 'First default value',
-      secondary: 'Second default value'
-    }
+    const defaultValue = 'First default value'
+    const changedValue = 'Second default value'
 
     mount(LoginFormEmailInput, {
       props: {
-        value: defaultValues.initial
+        value: defaultValue
       }
     })
 
     cy.then(findInputComponent())
       .then(returnInputValue())
       .then((inputValue) => {
-        expect(inputValue).to.be.equal(defaultValues.initial)
+        expect(inputValue).to.be.equal(defaultValue)
       })
 
-    cy.then(() => Cypress.vueWrapper.setProps({ value: defaultValues.secondary }))
+    cy.then(() => Cypress.vueWrapper.setProps({ value: changedValue }))
 
     cy.then(findInputComponent())
       .then(returnInputValue())
       .then((inputValue) => {
-        expect(inputValue).to.be.equal(defaultValues.secondary)
+        expect(inputValue).to.be.equal(changedValue)
       })
   })
 
   it('should notify parent what the user typed', () => {
-    const inputValue = {
-      initial: 'user.email@example.com',
-      secondary: 'user.email2@example.com'
-    }
+    const firstValue = 'user.email@example.com'
+    const secondValue = 'user.email2@example.com'
 
     mount(LoginFormEmailInput)
       .then(findInputComponent())
-      .then(changeInputValue(inputValue.initial))
+      .then(changeInputValue(firstValue))
       .then(findEventsByName('update:value'))
       .then(takeLastEvent())
       .then(takeFirstValue())
       .then((actualUserInput: string) => {
-        expect(actualUserInput).to.be.equal(inputValue.initial)
+        expect(actualUserInput).to.be.equal(firstValue)
       })
 
       .then(findInputComponent())
-      .then(changeInputValue(inputValue.secondary))
+      .then(changeInputValue(secondValue))
       .then(findEventsByName('update:value'))
       .then(takeLastEvent())
       .then(takeFirstValue())
       .then((actualUserInput: string) => {
-        expect(actualUserInput).to.be.equal(inputValue.secondary)
+        expect(actualUserInput).to.be.equal(secondValue)
       })
   })
 })
