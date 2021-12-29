@@ -11,6 +11,8 @@ const findProperty = (wantedProperty: string) => (input: InputComponent): string
 
 const returnInputValue = () => (input: InputComponent): string => <string>input.vm.modelValue
 
+const changeInputValue = (inputValue: string) => (input: InputComponent) => input.setValue(inputValue)
+
 describe('LoginFormEmailInput', () => {
   it('should render text input', () => {
     mount(LoginFormEmailInput)
@@ -73,9 +75,7 @@ describe('LoginFormEmailInput', () => {
 
     mount(LoginFormEmailInput)
       .then(findInputComponent())
-      .then((input: InputComponent) => {
-        void input.setValue(inputValue.initial)
-      })
+      .then(changeInputValue(inputValue.initial))
       .then((): string[][] => {
         const eventSequence = <string[][]>Cypress.vueWrapper.emitted('update:value')
         if (eventSequence) return eventSequence
@@ -88,9 +88,7 @@ describe('LoginFormEmailInput', () => {
       })
 
     cy.then(findInputComponent())
-      .then((input: InputComponent) => {
-        void input.setValue(inputValue.secondary)
-      })
+      .then(changeInputValue(inputValue.secondary))
       .then((): string[][] => {
         const eventSequence = <string[][]>Cypress.vueWrapper.emitted('update:value')
         if (eventSequence) return eventSequence
