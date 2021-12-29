@@ -9,6 +9,8 @@ const findInputComponent = () => (): InputComponent => Cypress.vueWrapper.findCo
 
 const findProperty = (wantedProperty: string) => (input: InputComponent): string => input.props(wantedProperty) as string
 
+const returnInputValue = () => (input: InputComponent): string => <string>input.vm.modelValue
+
 describe('LoginFormEmailInput', () => {
   it('should render text input', () => {
     mount(LoginFormEmailInput)
@@ -49,7 +51,7 @@ describe('LoginFormEmailInput', () => {
     })
 
     cy.then(findInputComponent())
-      .then((input: InputComponent): string => <string>input.vm.modelValue)
+      .then(returnInputValue())
       .then((inputValue) => {
         expect(inputValue).to.be.equal(defaultValues.initial)
       })
@@ -57,7 +59,7 @@ describe('LoginFormEmailInput', () => {
     cy.then(() => Cypress.vueWrapper.setProps({ value: defaultValues.secondary }))
 
     cy.then(findInputComponent())
-      .then((input: InputComponent): string => <string>input.vm.modelValue)
+      .then(returnInputValue())
       .then((inputValue) => {
         expect(inputValue).to.be.equal(defaultValues.secondary)
       })
