@@ -3,19 +3,21 @@ import LoginFormEmailInput from '../LoginFormEmailInput.vue'
 import { QInput } from 'quasar'
 import { VueWrapper } from '@vue/test-utils'
 
+type InputComponent = VueWrapper<QInput>
+
 describe('LoginFormEmailInput', () => {
   it('should render text input', () => {
     mount(LoginFormEmailInput)
-      .then((): VueWrapper<QInput> => Cypress.vueWrapper.findComponent(QInput))
-      .then((input: VueWrapper<QInput>) => {
+      .then((): InputComponent => Cypress.vueWrapper.findComponent(QInput))
+      .then((input: InputComponent) => {
         expect(input.exists()).to.be.equal(true)
       })
   })
 
   it('should use \'outlined\' design', () => {
     mount(LoginFormEmailInput)
-      .then((): VueWrapper<QInput> => Cypress.vueWrapper.findComponent(QInput))
-      .then((input: VueWrapper<QInput>): string[] => Object.keys(input.props()))
+      .then((): InputComponent => Cypress.vueWrapper.findComponent(QInput))
+      .then((input: InputComponent): string[] => Object.keys(input.props()))
       .then((props: string[]) => {
         expect(props).to.contain('outlined')
       })
@@ -23,8 +25,8 @@ describe('LoginFormEmailInput', () => {
 
   it('should assist user while typing email', () => {
     mount(LoginFormEmailInput)
-      .then((): VueWrapper<QInput> => Cypress.vueWrapper.findComponent(QInput))
-      .then((input: VueWrapper<QInput>): string => input.props('type') as string)
+      .then((): InputComponent => Cypress.vueWrapper.findComponent(QInput))
+      .then((input: InputComponent): string => input.props('type') as string)
       .then((type: string) => {
         expect(type).to.be.equal('email')
       })
@@ -32,8 +34,8 @@ describe('LoginFormEmailInput', () => {
 
   it('should have a placeholder', () => {
     mount(LoginFormEmailInput)
-      .then((): VueWrapper<QInput> => Cypress.vueWrapper.findComponent(QInput))
-      .then((input: VueWrapper<QInput>): string => input.props('label') as string ?? '')
+      .then((): InputComponent => Cypress.vueWrapper.findComponent(QInput))
+      .then((input: InputComponent): string => input.props('label') as string ?? '')
       .then((label: string) => {
         expect(label).to.be.equal('E-mail')
       })
@@ -51,16 +53,16 @@ describe('LoginFormEmailInput', () => {
       }
     })
 
-    cy.then((): VueWrapper<QInput> => Cypress.vueWrapper.findComponent(QInput))
-      .then((input: VueWrapper<QInput>): string => <string>input.vm.modelValue)
+    cy.then((): InputComponent => Cypress.vueWrapper.findComponent(QInput))
+      .then((input: InputComponent): string => <string>input.vm.modelValue)
       .then((inputValue) => {
         expect(inputValue).to.be.equal(defaultValues.initial)
       })
 
     cy.then(() => Cypress.vueWrapper.setProps({ value: defaultValues.secondary }))
 
-    cy.then((): VueWrapper<QInput> => Cypress.vueWrapper.findComponent(QInput))
-      .then((input: VueWrapper<QInput>): string => <string>input.vm.modelValue)
+    cy.then((): InputComponent => Cypress.vueWrapper.findComponent(QInput))
+      .then((input: InputComponent): string => <string>input.vm.modelValue)
       .then((inputValue) => {
         expect(inputValue).to.be.equal(defaultValues.secondary)
       })
@@ -73,8 +75,8 @@ describe('LoginFormEmailInput', () => {
     }
 
     mount(LoginFormEmailInput)
-      .then((): VueWrapper<QInput> => Cypress.vueWrapper.findComponent(QInput))
-      .then((input: VueWrapper<QInput>) => {
+      .then((): InputComponent => Cypress.vueWrapper.findComponent(QInput))
+      .then((input: InputComponent) => {
         void input.setValue(inputValue.initial)
       })
       .then((): string[][] => {
@@ -88,8 +90,8 @@ describe('LoginFormEmailInput', () => {
         expect(actualUserInput).to.be.equal(inputValue.initial)
       })
 
-    cy.then((): VueWrapper<QInput> => Cypress.vueWrapper.findComponent(QInput))
-      .then((input: VueWrapper<QInput>) => {
+    cy.then((): InputComponent => Cypress.vueWrapper.findComponent(QInput))
+      .then((input: InputComponent) => {
         void input.setValue(inputValue.secondary)
       })
       .then((): string[][] => {
