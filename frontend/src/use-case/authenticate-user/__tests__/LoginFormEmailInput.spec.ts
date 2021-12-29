@@ -5,10 +5,12 @@ import { VueWrapper } from '@vue/test-utils'
 
 type InputComponent = VueWrapper<QInput>
 
+const findInputComponent = () => (): InputComponent => Cypress.vueWrapper.findComponent(QInput)
+
 describe('LoginFormEmailInput', () => {
   it('should render text input', () => {
     mount(LoginFormEmailInput)
-      .then((): InputComponent => Cypress.vueWrapper.findComponent(QInput))
+      .then(findInputComponent())
       .then((input: InputComponent) => {
         expect(input.exists()).to.be.equal(true)
       })
@@ -16,7 +18,7 @@ describe('LoginFormEmailInput', () => {
 
   it('should assist user while typing email', () => {
     mount(LoginFormEmailInput)
-      .then((): InputComponent => Cypress.vueWrapper.findComponent(QInput))
+      .then(findInputComponent())
       .then((input: InputComponent): string => input.props('type') as string)
       .then((type: string) => {
         expect(type).to.be.equal('email')
@@ -25,7 +27,7 @@ describe('LoginFormEmailInput', () => {
 
   it('should have a placeholder', () => {
     mount(LoginFormEmailInput)
-      .then((): InputComponent => Cypress.vueWrapper.findComponent(QInput))
+      .then(findInputComponent())
       .then((input: InputComponent): string => input.props('label') as string ?? '')
       .then((label: string) => {
         expect(label).to.be.equal('E-mail')
@@ -44,7 +46,7 @@ describe('LoginFormEmailInput', () => {
       }
     })
 
-    cy.then((): InputComponent => Cypress.vueWrapper.findComponent(QInput))
+    cy.then(findInputComponent())
       .then((input: InputComponent): string => <string>input.vm.modelValue)
       .then((inputValue) => {
         expect(inputValue).to.be.equal(defaultValues.initial)
@@ -52,7 +54,7 @@ describe('LoginFormEmailInput', () => {
 
     cy.then(() => Cypress.vueWrapper.setProps({ value: defaultValues.secondary }))
 
-    cy.then((): InputComponent => Cypress.vueWrapper.findComponent(QInput))
+    cy.then(findInputComponent())
       .then((input: InputComponent): string => <string>input.vm.modelValue)
       .then((inputValue) => {
         expect(inputValue).to.be.equal(defaultValues.secondary)
@@ -66,7 +68,7 @@ describe('LoginFormEmailInput', () => {
     }
 
     mount(LoginFormEmailInput)
-      .then((): InputComponent => Cypress.vueWrapper.findComponent(QInput))
+      .then(findInputComponent())
       .then((input: InputComponent) => {
         void input.setValue(inputValue.initial)
       })
@@ -81,7 +83,7 @@ describe('LoginFormEmailInput', () => {
         expect(actualUserInput).to.be.equal(inputValue.initial)
       })
 
-    cy.then((): InputComponent => Cypress.vueWrapper.findComponent(QInput))
+    cy.then(findInputComponent())
       .then((input: InputComponent) => {
         void input.setValue(inputValue.secondary)
       })
