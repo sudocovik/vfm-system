@@ -7,6 +7,8 @@ type InputComponent = VueWrapper<QInput>
 
 const findInputComponent = () => (): InputComponent => Cypress.vueWrapper.findComponent(QInput)
 
+const findProperty = (wantedProperty: string) => (input: InputComponent): string => input.props(wantedProperty) as string
+
 describe('LoginFormEmailInput', () => {
   it('should render text input', () => {
     mount(LoginFormEmailInput)
@@ -19,7 +21,7 @@ describe('LoginFormEmailInput', () => {
   it('should assist user while typing email', () => {
     mount(LoginFormEmailInput)
       .then(findInputComponent())
-      .then((input: InputComponent): string => input.props('type') as string)
+      .then(findProperty('type'))
       .then((type: string) => {
         expect(type).to.be.equal('email')
       })
@@ -28,7 +30,7 @@ describe('LoginFormEmailInput', () => {
   it('should have a placeholder', () => {
     mount(LoginFormEmailInput)
       .then(findInputComponent())
-      .then((input: InputComponent): string => input.props('label') as string ?? '')
+      .then(findProperty('label'))
       .then((label: string) => {
         expect(label).to.be.equal('E-mail')
       })
