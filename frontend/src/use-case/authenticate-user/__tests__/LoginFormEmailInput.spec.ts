@@ -59,7 +59,7 @@ describe('LoginFormEmailInput', () => {
 
     mount(LoginFormEmailInput, {
       props: {
-        value: defaultValue
+        modelValue: defaultValue
       }
     })
 
@@ -69,7 +69,7 @@ describe('LoginFormEmailInput', () => {
         expect(inputValue).to.be.equal(defaultValue)
       })
 
-    cy.then(changeComponentProperties({ value: changedValue }))
+    cy.then(changeComponentProperties({ modelValue: changedValue }))
 
     cy.then(findInputComponent())
       .then(returnInputValue())
@@ -85,7 +85,7 @@ describe('LoginFormEmailInput', () => {
     mount(LoginFormEmailInput)
       .then(findInputComponent())
       .then(changeInputValue(firstValue))
-      .then(findEventsByName('update:value'))
+      .then(findEventsByName('update:modelValue'))
       .then(takeLastEvent())
       .then(takeFirstValue())
       .then((actualUserInput: string) => {
@@ -94,7 +94,7 @@ describe('LoginFormEmailInput', () => {
 
       .then(findInputComponent())
       .then(changeInputValue(secondValue))
-      .then(findEventsByName('update:value'))
+      .then(findEventsByName('update:modelValue'))
       .then(takeLastEvent())
       .then(takeFirstValue())
       .then((actualUserInput: string) => {

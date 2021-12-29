@@ -1,10 +1,9 @@
 <template>
   <q-input
-    :model-value="value"
+    v-model="email"
     type="email"
     :label="$t('email')"
     outlined
-    @update:model-value="(value) => $emit('update:value', value)"
   >
     <template #prepend>
       <q-icon name="mdi-account" />
@@ -13,18 +12,29 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, computed } from 'vue'
 
 export default defineComponent({
   name: 'LoginFormEmailInput',
 
   props: {
-    value: {
+    modelValue: {
       type: String,
       required: true
     }
   },
 
-  emits: ['update:value']
+  emits: ['update:modelValue'],
+
+  setup (props, { emit }) {
+    const email = computed({
+      get: () => props.modelValue,
+      set: (value) => emit('update:modelValue', value)
+    })
+
+    return {
+      email
+    }
+  }
 })
 </script>
