@@ -13,6 +13,16 @@ const returnInputValue = () => (input: InputComponent): string => <string>input.
 
 const changeInputValue = (inputValue: string) => (input: InputComponent) => input.setValue(inputValue)
 
+const findEventsByName = (name: string) => (): string[][] => {
+  const eventSequence = <string[][]>Cypress.vueWrapper.emitted(name)
+  if (eventSequence) return eventSequence
+  else throw new Error(`Event '${name}' never occurred`)
+}
+
+const takeLastEvent = () => (eventSequence: string[][]): string[] => eventSequence[eventSequence.length - 1]
+
+const takeFirstValue = () => (eventData: string[]): string => eventData[0]
+
 describe('LoginFormEmailInput', () => {
   it('should render text input', () => {
     mount(LoginFormEmailInput)
@@ -76,27 +86,19 @@ describe('LoginFormEmailInput', () => {
     mount(LoginFormEmailInput)
       .then(findInputComponent())
       .then(changeInputValue(inputValue.initial))
-      .then((): string[][] => {
-        const eventSequence = <string[][]>Cypress.vueWrapper.emitted('update:value')
-        if (eventSequence) return eventSequence
-        else throw new Error('Event \'update:value\' never occurred')
-      })
-      .then((eventSequence: string[][]) => {
-        const lastEvent = eventSequence[eventSequence.length - 1]
-        const actualUserInput: string = lastEvent[0]
+      .then(findEventsByName('update:value'))
+      .then(takeLastEvent())
+      .then(takeFirstValue())
+      .then((actualUserInput: string) => {
         expect(actualUserInput).to.be.equal(inputValue.initial)
       })
 
-    cy.then(findInputComponent())
+      .then(findInputComponent())
       .then(changeInputValue(inputValue.secondary))
-      .then((): string[][] => {
-        const eventSequence = <string[][]>Cypress.vueWrapper.emitted('update:value')
-        if (eventSequence) return eventSequence
-        else throw new Error('Event \'update:value\' never occurred')
-      })
-      .then((eventSequence: string[][]) => {
-        const lastEvent = eventSequence[eventSequence.length - 1]
-        const actualUserInput: string = lastEvent[0]
+      .then(findEventsByName('update:value'))
+      .then(takeLastEvent())
+      .then(takeFirstValue())
+      .then((actualUserInput: string) => {
         expect(actualUserInput).to.be.equal(inputValue.secondary)
       })
   })
