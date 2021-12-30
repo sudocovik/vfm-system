@@ -29,28 +29,20 @@ const changeComponentProperties = (changedProperties: Record<string, unknown>) =
 describe('LoginFormEmailInput', () => {
   it('should render text input', () => {
     mount(LoginFormEmailInput)
-      .then(findInputComponent())
-      .then((input: InputComponent) => {
-        expect(input.exists()).to.be.equal(true)
-      })
+
+    textInputShouldExist()
   })
 
   it('should assist user while typing email', () => {
     mount(LoginFormEmailInput)
-      .then(findInputComponent())
-      .then(findProperty('type'))
-      .then((type: string) => {
-        expect(type).to.be.equal('email')
-      })
+
+    textInputTypeShouldBe('email')
   })
 
   it('should have a placeholder', () => {
     mount(LoginFormEmailInput)
-      .then(findInputComponent())
-      .then(findProperty('label'))
-      .then((label: string) => {
-        expect(label).to.be.equal('E-mail')
-      })
+
+    textInputLabelShouldBe('E-mail')
   })
 
   it('should let parent component control the input value', () => {
@@ -62,20 +54,10 @@ describe('LoginFormEmailInput', () => {
         modelValue: defaultValue
       }
     })
-
-    cy.then(findInputComponent())
-      .then(returnInputValue())
-      .then((inputValue) => {
-        expect(inputValue).to.be.equal(defaultValue)
-      })
+    textInputValueShouldBe(defaultValue)
 
     cy.then(changeComponentProperties({ modelValue: changedValue }))
-
-    cy.then(findInputComponent())
-      .then(returnInputValue())
-      .then((inputValue) => {
-        expect(inputValue).to.be.equal(changedValue)
-      })
+    textInputValueShouldBe(changedValue)
   })
 
   it('should notify parent what the user typed', () => {
@@ -83,22 +65,56 @@ describe('LoginFormEmailInput', () => {
     const secondValue = 'user.email2@example.com'
 
     mount(LoginFormEmailInput)
-      .then(findInputComponent())
-      .then(changeInputValue(firstValue))
-      .then(findEventsByName('update:modelValue'))
-      .then(takeLastEvent())
-      .then(takeFirstValue())
-      .then((actualUserInput: string) => {
-        expect(actualUserInput).to.be.equal(firstValue)
-      })
 
-      .then(findInputComponent())
-      .then(changeInputValue(secondValue))
-      .then(findEventsByName('update:modelValue'))
-      .then(takeLastEvent())
-      .then(takeFirstValue())
-      .then((actualUserInput: string) => {
-        expect(actualUserInput).to.be.equal(secondValue)
-      })
+    textInputChangeValueTo(firstValue)
+    componentModelValueShouldBe(firstValue)
+
+    textInputChangeValueTo(secondValue)
+    componentModelValueShouldBe(secondValue)
   })
 })
+
+const textInputShouldExist = (): void => {
+  cy.then(findInputComponent())
+    .then((input: InputComponent) => {
+      expect(input.exists()).to.be.equal(true)
+    })
+}
+
+const textInputTypeShouldBe = (wantedType: string): void => {
+  cy.then(findInputComponent())
+    .then(findProperty('type'))
+    .then((type: string) => {
+      expect(type).to.be.equal(wantedType)
+    })
+}
+
+const textInputLabelShouldBe = (wantedLabel: string): void => {
+  cy.then(findInputComponent())
+    .then(findProperty('label'))
+    .then((label: string) => {
+      expect(label).to.be.equal(wantedLabel)
+    })
+}
+
+const textInputValueShouldBe = (wantedValue: string): void => {
+  cy.then(findInputComponent())
+    .then(returnInputValue())
+    .then((inputValue: string) => {
+      expect(inputValue).to.be.equal(wantedValue)
+    })
+}
+
+const textInputChangeValueTo = (wantedValue: string): void => {
+  cy.then(findInputComponent())
+    .then(changeInputValue(wantedValue))
+}
+
+const componentModelValueShouldBe = (wantedValue: string): void => {
+  cy.then(findEventsByName('update:modelValue'))
+    .then(takeLastEvent())
+    .then(takeFirstValue())
+    .then((firstValue: string) => {
+      expect(firstValue).to.be.equal(wantedValue)
+    })
+}
