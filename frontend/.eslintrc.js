@@ -107,7 +107,7 @@ module.exports = {
 
   overrides: [
     {
-      files: ['**/*.spec.{js,ts}'],
+      files: ['**/*.spec.{js,ts}', '**/__tests__/*.{js,ts}'],
       extends: [
         // Add Cypress-specific lint rules, globals and Cypress plugin
         // See https://github.com/cypress-io/eslint-plugin-cypress#rules
