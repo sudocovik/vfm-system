@@ -3,6 +3,7 @@
     v-model="password"
     type="password"
     label="Password"
+    outlined
   />
 </template>
 
