@@ -6,11 +6,9 @@ import {
   textInputLabelShouldBe,
   textInputShouldExist,
   textInputTypeShouldBe,
-  textInputValueShouldBe
+  textInputValueShouldBe,
+  changeComponentProperties
 } from 'src/use-case/authenticate-user/__tests__/input-utilities'
-
-const changeComponentProperties = (changedProperties: Record<string, unknown>) =>
-  () => Cypress.vueWrapper.setProps(changedProperties)
 
 describe('LoginFormEmailInput', () => {
   it('should render text input', () => {

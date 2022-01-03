@@ -48,6 +48,9 @@ export const componentModelValueShouldBe = (wantedValue: string): void => {
     })
 }
 
+export const changeComponentProperties = (changedProperties: Record<string, unknown>) =>
+  () => Cypress.vueWrapper.setProps(changedProperties)
+
 const findInputComponent = () => (): InputComponent => Cypress.vueWrapper.findComponent(QInput)
 
 const findProperty = (wantedProperty: string) => (input: InputComponent): string => input.props(wantedProperty) as string
