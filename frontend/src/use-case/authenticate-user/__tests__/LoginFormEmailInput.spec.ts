@@ -8,7 +8,7 @@ import {
   textInputTypeShouldBe,
   textInputValueShouldBe,
   changeComponentProperties
-} from 'src/use-case/authenticate-user/__tests__/input-utilities'
+} from './input-utilities'
 
 describe('LoginFormEmailInput', () => {
   it('should render text input', () => {

@@ -1,12 +1,14 @@
 import { mount } from '@cypress/vue'
 import LoginFormPasswordInput from '../LoginFormPasswordInput.vue'
 import {
-  changeComponentProperties, componentModelValueShouldBe, textInputChangeValueTo,
+  changeComponentProperties,
+  componentModelValueShouldBe,
+  textInputChangeValueTo,
   textInputLabelShouldBe,
   textInputShouldExist,
   textInputTypeShouldBe,
   textInputValueShouldBe
-} from 'src/use-case/authenticate-user/__tests__/input-utilities'
+} from './input-utilities'
 
 describe('LoginFormPasswordInput', () => {
   it('should render text input', () => {
