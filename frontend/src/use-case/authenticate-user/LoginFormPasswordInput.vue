@@ -4,7 +4,11 @@
     type="password"
     label="Password"
     outlined
-  />
+  >
+    <template #prepend>
+      <q-icon name="mdi-lock" />
+    </template>
+  </q-input>
 </template>
 
 <script lang="ts">
