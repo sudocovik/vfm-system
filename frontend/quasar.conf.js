@@ -9,7 +9,7 @@
 /* eslint-env node */
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { configure } = require('quasar/wrappers')
-import path from 'path'
+const path = require('path')
 
 module.exports = configure(function (ctx) {
   return {
