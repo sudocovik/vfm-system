@@ -40,14 +40,14 @@ describe('LoginFormEmailInput', () => {
 
   it('should notify parent what the user typed', () => {
     const typoEmail = 'user..@example.com'
-    const correctedEmail = 'user@example.com'
+    const correctEmail = 'user@example.com'
 
     ComponentUnderTest.is(LoginFormEmailInput).mount()
 
     textInputChangeValueTo(typoEmail)
     ComponentUnderTest.ModelValue.shouldBe(typoEmail)
 
-    textInputChangeValueTo(correctedEmail)
-    ComponentUnderTest.ModelValue.shouldBe(correctedEmail)
+    textInputChangeValueTo(correctEmail)
+    ComponentUnderTest.ModelValue.shouldBe(correctEmail)
   })
 })

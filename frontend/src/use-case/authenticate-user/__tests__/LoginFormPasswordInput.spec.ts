@@ -28,26 +28,26 @@ describe('LoginFormPasswordInput', () => {
   })
 
   it('should let parent component control the input value', () => {
-    const defaultValue = '123456'
-    const changedValue = '12345678'
+    const weakPassword = '123456'
+    const strongPassword = '12345678'
 
-    ComponentUnderTest.is(LoginFormPasswordInput).withModelValue(defaultValue).mount()
-    textInputValueShouldBe(defaultValue)
+    ComponentUnderTest.is(LoginFormPasswordInput).withModelValue(weakPassword).mount()
+    textInputValueShouldBe(weakPassword)
 
-    ComponentUnderTest.ModelValue.changeTo(changedValue)
-    textInputValueShouldBe(changedValue)
+    ComponentUnderTest.ModelValue.changeTo(strongPassword)
+    textInputValueShouldBe(strongPassword)
   })
 
   it('should notify parent what the user typed', () => {
-    const firstValue = 'user.email@example.com'
-    const secondValue = 'user.email2@example.com'
+    const typoPassword = 'my-pass,wrd'
+    const correctPassword = 'my-password'
 
     ComponentUnderTest.is(LoginFormPasswordInput).mount()
 
-    textInputChangeValueTo(firstValue)
-    ComponentUnderTest.ModelValue.shouldBe(firstValue)
+    textInputChangeValueTo(typoPassword)
+    ComponentUnderTest.ModelValue.shouldBe(typoPassword)
 
-    textInputChangeValueTo(secondValue)
-    ComponentUnderTest.ModelValue.shouldBe(secondValue)
+    textInputChangeValueTo(correctPassword)
+    ComponentUnderTest.ModelValue.shouldBe(correctPassword)
   })
 })
