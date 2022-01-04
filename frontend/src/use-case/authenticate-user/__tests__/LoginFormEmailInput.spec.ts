@@ -21,13 +21,13 @@ describe('LoginFormEmailInput', () => {
     textInputTypeShouldBe('email')
   })
 
-  it('should have a placeholder', () => {
+  it('should have a label', () => {
     ComponentUnderTest.is(LoginFormEmailInput).mount()
 
     textInputLabelShouldBe('E-mail')
   })
 
-  it('should let parent component control the input value', () => {
+  it('should let parent component control the email', () => {
     const defaultEmail = 'default@example.com'
     const regularEmail = 'regular@example.com'
 
@@ -38,7 +38,7 @@ describe('LoginFormEmailInput', () => {
     textInputValueShouldBe(regularEmail)
   })
 
-  it('should notify parent what the user typed', () => {
+  it('should tell parent what email the user typed', () => {
     const typoEmail = 'user..@example.com'
     const correctEmail = 'user@example.com'
 

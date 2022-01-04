@@ -21,13 +21,13 @@ describe('LoginFormPasswordInput', () => {
     textInputTypeShouldBe('password')
   })
 
-  it('should have a placeholder', () => {
+  it('should have a label', () => {
     ComponentUnderTest.is(LoginFormPasswordInput).mount()
 
     textInputLabelShouldBe('Password')
   })
 
-  it('should let parent component control the input value', () => {
+  it('should let parent component control the password', () => {
     const weakPassword = '123456'
     const strongPassword = '12345678'
 
@@ -38,7 +38,7 @@ describe('LoginFormPasswordInput', () => {
     textInputValueShouldBe(strongPassword)
   })
 
-  it('should notify parent what the user typed', () => {
+  it('should tell parent what password the user typed', () => {
     const typoPassword = 'my-pass,wrd'
     const correctPassword = 'my-password'
 
