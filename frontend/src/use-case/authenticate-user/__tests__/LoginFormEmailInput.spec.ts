@@ -28,26 +28,26 @@ describe('LoginFormEmailInput', () => {
   })
 
   it('should let parent component control the input value', () => {
-    const defaultValue = 'First default value'
-    const changedValue = 'Second default value'
+    const defaultEmail = 'default@example.com'
+    const regularEmail = 'regular@example.com'
 
-    ComponentUnderTest.is(LoginFormEmailInput).withModelValue(defaultValue).mount()
-    textInputValueShouldBe(defaultValue)
+    ComponentUnderTest.is(LoginFormEmailInput).withModelValue(defaultEmail).mount()
+    textInputValueShouldBe(defaultEmail)
 
-    ComponentUnderTest.ModelValue.changeTo(changedValue)
-    textInputValueShouldBe(changedValue)
+    ComponentUnderTest.ModelValue.changeTo(regularEmail)
+    textInputValueShouldBe(regularEmail)
   })
 
   it('should notify parent what the user typed', () => {
-    const firstValue = 'user.email@example.com'
-    const secondValue = 'user.email2@example.com'
+    const typoEmail = 'user..@example.com'
+    const correctedEmail = 'user@example.com'
 
     ComponentUnderTest.is(LoginFormEmailInput).mount()
 
-    textInputChangeValueTo(firstValue)
-    ComponentUnderTest.ModelValue.shouldBe(firstValue)
+    textInputChangeValueTo(typoEmail)
+    ComponentUnderTest.ModelValue.shouldBe(typoEmail)
 
-    textInputChangeValueTo(secondValue)
-    ComponentUnderTest.ModelValue.shouldBe(secondValue)
+    textInputChangeValueTo(correctedEmail)
+    ComponentUnderTest.ModelValue.shouldBe(correctedEmail)
   })
 })
