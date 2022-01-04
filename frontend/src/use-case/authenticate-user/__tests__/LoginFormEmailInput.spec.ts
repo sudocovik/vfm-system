@@ -1,30 +1,28 @@
-import { mount } from '@cypress/vue'
 import LoginFormEmailInput from '../LoginFormEmailInput.vue'
 import {
-  componentModelValueShouldBe,
   textInputChangeValueTo,
   textInputLabelShouldBe,
   textInputShouldExist,
   textInputTypeShouldBe,
-  textInputValueShouldBe,
-  changeComponentProperties
+  textInputValueShouldBe
 } from './input-utilities'
+import { ComponentUnderTest } from 'test/support/ComponentUnderTest'
 
 describe('LoginFormEmailInput', () => {
   it('should render text input', () => {
-    mount(LoginFormEmailInput)
+    ComponentUnderTest.is(LoginFormEmailInput).mount()
 
     textInputShouldExist()
   })
 
   it('should assist user while typing email', () => {
-    mount(LoginFormEmailInput)
+    ComponentUnderTest.is(LoginFormEmailInput).mount()
 
     textInputTypeShouldBe('email')
   })
 
   it('should have a placeholder', () => {
-    mount(LoginFormEmailInput)
+    ComponentUnderTest.is(LoginFormEmailInput).mount()
 
     textInputLabelShouldBe('E-mail')
   })
@@ -33,14 +31,10 @@ describe('LoginFormEmailInput', () => {
     const defaultValue = 'First default value'
     const changedValue = 'Second default value'
 
-    mount(LoginFormEmailInput, {
-      props: {
-        modelValue: defaultValue
-      }
-    })
+    ComponentUnderTest.is(LoginFormEmailInput).withModelValue(defaultValue).mount()
     textInputValueShouldBe(defaultValue)
 
-    cy.then(changeComponentProperties({ modelValue: changedValue }))
+    ComponentUnderTest.ModelValue.changeTo(changedValue)
     textInputValueShouldBe(changedValue)
   })
 
@@ -48,12 +42,12 @@ describe('LoginFormEmailInput', () => {
     const firstValue = 'user.email@example.com'
     const secondValue = 'user.email2@example.com'
 
-    mount(LoginFormEmailInput)
+    ComponentUnderTest.is(LoginFormEmailInput).mount()
 
     textInputChangeValueTo(firstValue)
-    componentModelValueShouldBe(firstValue)
+    ComponentUnderTest.ModelValue.shouldBe(firstValue)
 
     textInputChangeValueTo(secondValue)
-    componentModelValueShouldBe(secondValue)
+    ComponentUnderTest.ModelValue.shouldBe(secondValue)
   })
 })
