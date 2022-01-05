@@ -10,14 +10,6 @@ export const textInputShouldExist = (): void => {
     })
 }
 
-export const textInputTypeShouldBe = (wantedType: string): void => {
-  cy.then(findInputComponent())
-    .then(findProperty('type'))
-    .then((type: string) => {
-      expect(type).to.be.equal(wantedType)
-    })
-}
-
 export const textInputLabelShouldBe = (wantedLabel: string): void => {
   cy.then(findInputComponent())
     .then(findProperty('label'))

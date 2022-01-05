@@ -2,7 +2,6 @@ import LoginFormEmailInput from '../LoginFormEmailInput.vue'
 import {
   textInputChangeValueTo,
   textInputLabelShouldBe,
-  textInputTypeShouldBe,
   textInputValueShouldBe
 } from './input-utilities'
 import { ComponentUnderTest } from 'test/support/ComponentUnderTest'
@@ -18,7 +17,7 @@ describe('LoginFormEmailInput', () => {
   it('should assist user while typing email', () => {
     ComponentUnderTest.is(LoginFormEmailInput).mount()
 
-    textInputTypeShouldBe('email')
+    InputField.Type.shouldBe('email')
   })
 
   it('should have a label', () => {

@@ -2,7 +2,6 @@ import LoginFormPasswordInput from '../LoginFormPasswordInput.vue'
 import {
   textInputChangeValueTo,
   textInputLabelShouldBe,
-  textInputTypeShouldBe,
   textInputValueShouldBe
 } from './input-utilities'
 import { ComponentUnderTest } from 'test/support/ComponentUnderTest'
@@ -18,7 +17,7 @@ describe('LoginFormPasswordInput', () => {
   it('should mask characters in the text input', () => {
     ComponentUnderTest.is(LoginFormPasswordInput).mount()
 
-    textInputTypeShouldBe('password')
+    InputField.Type.shouldBe('password')
   })
 
   it('should have a label', () => {
