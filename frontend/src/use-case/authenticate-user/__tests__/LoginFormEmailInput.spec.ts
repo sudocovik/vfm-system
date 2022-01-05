@@ -2,17 +2,17 @@ import LoginFormEmailInput from '../LoginFormEmailInput.vue'
 import {
   textInputChangeValueTo,
   textInputLabelShouldBe,
-  textInputShouldExist,
   textInputTypeShouldBe,
   textInputValueShouldBe
 } from './input-utilities'
 import { ComponentUnderTest } from 'test/support/ComponentUnderTest'
+import { InputField } from 'test/support/InputField'
 
 describe('LoginFormEmailInput', () => {
   it('should render text input', () => {
     ComponentUnderTest.is(LoginFormEmailInput).mount()
 
-    textInputShouldExist()
+    InputField.shouldExist()
   })
 
   it('should assist user while typing email', () => {

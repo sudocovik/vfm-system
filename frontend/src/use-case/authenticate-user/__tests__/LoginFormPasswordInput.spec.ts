@@ -2,17 +2,17 @@ import LoginFormPasswordInput from '../LoginFormPasswordInput.vue'
 import {
   textInputChangeValueTo,
   textInputLabelShouldBe,
-  textInputShouldExist,
   textInputTypeShouldBe,
   textInputValueShouldBe
 } from './input-utilities'
-import { ComponentUnderTest } from 'app/test/support/ComponentUnderTest'
+import { ComponentUnderTest } from 'test/support/ComponentUnderTest'
+import { InputField } from 'test/support/InputField'
 
 describe('LoginFormPasswordInput', () => {
   it('should render text input', () => {
     ComponentUnderTest.is(LoginFormPasswordInput).mount()
 
-    textInputShouldExist()
+    InputField.shouldExist()
   })
 
   it('should mask characters in the text input', () => {
