@@ -39,18 +39,6 @@ export const textInputChangeValueTo = (wantedValue: string): void => {
     .then(changeInputValue(wantedValue))
 }
 
-export const componentModelValueShouldBe = (wantedValue: string): void => {
-  cy.then(findEventsByName('update:modelValue'))
-    .then(takeLastEvent())
-    .then(takeFirstValue())
-    .then((firstValue: string) => {
-      expect(firstValue).to.be.equal(wantedValue)
-    })
-}
-
-export const changeComponentProperties = (changedProperties: Record<string, unknown>) =>
-  () => Cypress.vueWrapper.setProps(changedProperties)
-
 const findInputComponent = () => (): InputComponent => Cypress.vueWrapper.findComponent(QInput)
 
 const findProperty = (wantedProperty: string) => (input: InputComponent): string => input.props(wantedProperty) as string
@@ -58,13 +46,3 @@ const findProperty = (wantedProperty: string) => (input: InputComponent): string
 const returnInputValue = () => (input: InputComponent): string => <string>input.vm.modelValue
 
 const changeInputValue = (inputValue: string) => (input: InputComponent) => input.setValue(inputValue)
-
-const findEventsByName = (name: string) => (): string[][] => {
-  const eventSequence = <string[][]>Cypress.vueWrapper.emitted(name)
-  if (eventSequence) return eventSequence
-  else throw new Error(`Event '${name}' never occurred`)
-}
-
-const takeLastEvent = () => (eventSequence: string[][]): string[] => eventSequence[eventSequence.length - 1]
-
-const takeFirstValue = () => (eventData: string[]): string => eventData[0]
