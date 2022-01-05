@@ -1,4 +1,4 @@
-import { WrappedVueComponent } from './WrappedVueComponent'
+import { WrappedVueComponent } from './types'
 
 export class TypeAttribute {
   private readonly findComponent: () => WrappedVueComponent

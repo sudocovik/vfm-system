@@ -1,8 +1,4 @@
 import LoginFormEmailInput from '../LoginFormEmailInput.vue'
-import {
-  textInputChangeValueTo,
-  textInputValueShouldBe
-} from './input-utilities'
 import { ComponentUnderTest } from 'test/support/ComponentUnderTest'
 import { InputField } from 'test/support/InputField'
 
@@ -30,10 +26,10 @@ describe('LoginFormEmailInput', () => {
     const regularEmail = 'regular@example.com'
 
     ComponentUnderTest.is(LoginFormEmailInput).withModelValue(defaultEmail).mount()
-    textInputValueShouldBe(defaultEmail)
+    InputField.Value.shouldBe(defaultEmail)
 
     ComponentUnderTest.ModelValue.changeTo(regularEmail)
-    textInputValueShouldBe(regularEmail)
+    InputField.Value.shouldBe(regularEmail)
   })
 
   it('should tell parent what email the user typed', () => {
@@ -42,10 +38,10 @@ describe('LoginFormEmailInput', () => {
 
     ComponentUnderTest.is(LoginFormEmailInput).mount()
 
-    textInputChangeValueTo(typoEmail)
+    InputField.Value.changeTo(typoEmail)
     ComponentUnderTest.ModelValue.shouldBe(typoEmail)
 
-    textInputChangeValueTo(correctEmail)
+    InputField.Value.changeTo(correctEmail)
     ComponentUnderTest.ModelValue.shouldBe(correctEmail)
   })
 })

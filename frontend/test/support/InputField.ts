@@ -1,7 +1,8 @@
 import { VueWrapper } from '@vue/test-utils'
 import { QInput } from 'quasar'
 import { TypeAttribute } from './TypeAttribute'
-import { LabelAttribute } from 'app/test/support/LabelAttribute'
+import { LabelAttribute } from './LabelAttribute'
+import { ValueAttribute } from './ValueAttribute'
 
 type InputComponent = VueWrapper<QInput>
 
@@ -9,6 +10,8 @@ export class InputField {
   public static Type = new TypeAttribute(InputField.findComponent)
 
   public static Label = new LabelAttribute(InputField.findComponent)
+
+  public static Value = new ValueAttribute(InputField.findComponent)
 
   public static shouldExist () {
     cy.then(InputField.findComponent)

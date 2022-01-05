@@ -1,4 +1,4 @@
-import { WrappedVueComponent } from 'app/test/support/WrappedVueComponent'
+import { WrappedVueComponent } from './types'
 
 export class LabelAttribute {
   private readonly findComponent: () => WrappedVueComponent

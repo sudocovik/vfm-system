@@ -1,8 +1,4 @@
 import LoginFormPasswordInput from '../LoginFormPasswordInput.vue'
-import {
-  textInputChangeValueTo,
-  textInputValueShouldBe
-} from './input-utilities'
 import { ComponentUnderTest } from 'test/support/ComponentUnderTest'
 import { InputField } from 'test/support/InputField'
 
@@ -30,10 +26,10 @@ describe('LoginFormPasswordInput', () => {
     const strongPassword = '12345678'
 
     ComponentUnderTest.is(LoginFormPasswordInput).withModelValue(weakPassword).mount()
-    textInputValueShouldBe(weakPassword)
+    InputField.Value.shouldBe(weakPassword)
 
     ComponentUnderTest.ModelValue.changeTo(strongPassword)
-    textInputValueShouldBe(strongPassword)
+    InputField.Value.shouldBe(strongPassword)
   })
 
   it('should tell parent what password the user typed', () => {
@@ -42,10 +38,10 @@ describe('LoginFormPasswordInput', () => {
 
     ComponentUnderTest.is(LoginFormPasswordInput).mount()
 
-    textInputChangeValueTo(typoPassword)
+    InputField.Value.changeTo(typoPassword)
     ComponentUnderTest.ModelValue.shouldBe(typoPassword)
 
-    textInputChangeValueTo(correctPassword)
+    InputField.Value.changeTo(correctPassword)
     ComponentUnderTest.ModelValue.shouldBe(correctPassword)
   })
 })
