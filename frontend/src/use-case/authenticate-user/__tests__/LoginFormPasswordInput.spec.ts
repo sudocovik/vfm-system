@@ -1,7 +1,6 @@
 import LoginFormPasswordInput from '../LoginFormPasswordInput.vue'
 import {
   textInputChangeValueTo,
-  textInputLabelShouldBe,
   textInputValueShouldBe
 } from './input-utilities'
 import { ComponentUnderTest } from 'test/support/ComponentUnderTest'
@@ -23,7 +22,7 @@ describe('LoginFormPasswordInput', () => {
   it('should have a label', () => {
     ComponentUnderTest.is(LoginFormPasswordInput).mount()
 
-    textInputLabelShouldBe('Password')
+    InputField.Label.shouldBe('Password')
   })
 
   it('should let parent component control the password', () => {

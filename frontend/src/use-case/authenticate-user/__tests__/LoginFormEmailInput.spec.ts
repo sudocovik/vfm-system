@@ -1,7 +1,6 @@
 import LoginFormEmailInput from '../LoginFormEmailInput.vue'
 import {
   textInputChangeValueTo,
-  textInputLabelShouldBe,
   textInputValueShouldBe
 } from './input-utilities'
 import { ComponentUnderTest } from 'test/support/ComponentUnderTest'
@@ -23,7 +22,7 @@ describe('LoginFormEmailInput', () => {
   it('should have a label', () => {
     ComponentUnderTest.is(LoginFormEmailInput).mount()
 
-    textInputLabelShouldBe('E-mail')
+    InputField.Label.shouldBe('E-mail')
   })
 
   it('should let parent component control the email', () => {
