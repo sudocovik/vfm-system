@@ -2,7 +2,7 @@ FROM node:17.1.0-alpine3.14 AS base
 
 COPY --from=pulumi/pulumi-base:3.21.0 /pulumi/bin/pulumi /usr/bin/pulumi
 
-COPY --from=alpine/helm:3.7.1 /usr/bin/helm /usr/bin/helm
+COPY --from=alpine/helm:3.7.2 /usr/bin/helm /usr/bin/helm
 
 ENV PROJECT_ROOT="/app"
 ENV PATH="${PROJECT_ROOT}/bin:${PROJECT_ROOT}/node_modules/.bin:${PATH}"
