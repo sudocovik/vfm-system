@@ -1,4 +1,4 @@
-FROM node:17.1.0-alpine3.14 AS base
+FROM node:17.3.0-alpine3.14 AS base
 # should not be runnable without explicitly defined command
 CMD ["exit", "-1"]
 
