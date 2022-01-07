@@ -7,4 +7,10 @@ describe('LoginFormSubmitButton', () => {
 
     Button.shouldExist()
   })
+
+  it('should be a submit button', () => {
+    ComponentUnderTest.is(LoginFormSubmitButton).mount()
+
+    Button.Type.shouldBe('submit')
+  })
 })

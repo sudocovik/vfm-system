@@ -1,5 +1,9 @@
 <template>
-  <q-btn>todo</q-btn>
+  <q-btn
+    type="submit"
+  >
+    todo
+  </q-btn>
 </template>
 
 <script lang="ts">
