@@ -3,7 +3,7 @@
     type="submit"
     :loading="loading"
   >
-    todo
+    {{ $t('login') }}
   </q-btn>
 </template>
 
