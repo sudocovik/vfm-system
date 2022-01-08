@@ -8,3 +8,5 @@ export interface ModelValueProperty { modelValue: unknown }
 export interface TypeProperty { type?: unknown }
 
 export interface LabelProperty { label?: unknown }
+
+export interface LoadingProperty { loading?: boolean }
