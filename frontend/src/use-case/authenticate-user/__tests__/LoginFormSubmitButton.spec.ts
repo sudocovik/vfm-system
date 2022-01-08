@@ -13,4 +13,18 @@ describe('LoginFormSubmitButton', () => {
 
     Button.Type.shouldBe('submit')
   })
+
+  it('should hide loading spinner on initial render', () => {
+    const inactive = false
+    ComponentUnderTest.is(LoginFormSubmitButton).mount()
+
+    Button.Loading.shouldBe(inactive)
+  })
+
+  it('should show loading spinner on demand', () => {
+    const active = true
+    ComponentUnderTest.is(LoginFormSubmitButton).withProperties({ loading: active }).mount()
+
+    Button.Loading.shouldBe(active)
+  })
 })
