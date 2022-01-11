@@ -1,5 +1,5 @@
 import LoginFormEmailInput from '../LoginFormEmailInput.vue'
-import { ComponentUnderTest, InputField } from 'test/support/api'
+import { ComponentUnderTest, inAllLanguages, InputField } from 'test/support/api'
 
 describe('LoginFormEmailInput', () => {
   it('should render text input', () => {
@@ -14,10 +14,10 @@ describe('LoginFormEmailInput', () => {
     InputField.Type.shouldBe('email')
   })
 
-  it('should have a label', () => {
+  inAllLanguages.it('should have a label', (t) => {
     ComponentUnderTest.is(LoginFormEmailInput).mount()
 
-    InputField.Label.shouldBe('E-mail')
+    InputField.Label.shouldBe(t('email'))
   })
 
   it('should let parent component control the email', () => {
