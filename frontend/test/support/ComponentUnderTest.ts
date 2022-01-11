@@ -8,4 +8,8 @@ export class ComponentUnderTest {
   public static is (component: VueComponent): ComponentToBeMounted {
     return new ComponentToBeMounted(component)
   }
+
+  public static changeProperties (wantedProperties: Properties): void {
+    cy.then(() => Cypress.vueWrapper.setProps(wantedProperties))
+  }
 }
