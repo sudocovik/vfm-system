@@ -33,4 +33,18 @@ describe('LoginFormSubmitButton', () => {
 
     Button.TextContent.shouldBe(t('login'))
   })
+
+  it('should not be disabled on initial render', () => {
+    const inactive = false
+    ComponentUnderTest.is(LoginFormSubmitButton).mount()
+
+    Button.Disable.shouldBe(inactive)
+  })
+
+  it('should be disabled on demand', () => {
+    const active = true
+    ComponentUnderTest.is(LoginFormSubmitButton).withProperties({ disabled: active }).mount()
+
+    Button.Disable.shouldBe(active)
+  })
 })

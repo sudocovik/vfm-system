@@ -3,6 +3,7 @@
     v-model="password"
     type="password"
     :label="$t('password')"
+    :disable="disabled"
     outlined
   >
     <template #prepend>
@@ -21,6 +22,11 @@ export default defineComponent({
     modelValue: {
       type: String,
       required: true
+    },
+
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
 

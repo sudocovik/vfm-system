@@ -3,6 +3,7 @@
     v-model="email"
     type="email"
     :label="$t('email')"
+    :disable="disabled"
     outlined
   >
     <template #prepend>
@@ -21,6 +22,11 @@ export default defineComponent({
     modelValue: {
       type: String,
       required: true
+    },
+
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
 

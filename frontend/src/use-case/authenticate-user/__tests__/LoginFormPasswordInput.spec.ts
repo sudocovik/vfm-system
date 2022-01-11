@@ -43,4 +43,18 @@ describe('LoginFormPasswordInput', () => {
     InputField.Value.changeTo(correctPassword)
     ComponentUnderTest.ModelValue.shouldBe(correctPassword)
   })
+
+  it('should not be disabled on initial render', () => {
+    const inactive = false
+    ComponentUnderTest.is(LoginFormPasswordInput).mount()
+
+    InputField.Disable.shouldBe(inactive)
+  })
+
+  it('should be disabled on demand', () => {
+    const active = true
+    ComponentUnderTest.is(LoginFormPasswordInput).withProperties({ disabled: active }).mount()
+
+    InputField.Disable.shouldBe(active)
+  })
 })

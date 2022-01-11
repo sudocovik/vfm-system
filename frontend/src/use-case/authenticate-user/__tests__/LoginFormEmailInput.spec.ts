@@ -43,4 +43,18 @@ describe('LoginFormEmailInput', () => {
     InputField.Value.changeTo(correctEmail)
     ComponentUnderTest.ModelValue.shouldBe(correctEmail)
   })
+
+  it('should not be disabled on initial render', () => {
+    const inactive = false
+    ComponentUnderTest.is(LoginFormEmailInput).mount()
+
+    InputField.Disable.shouldBe(inactive)
+  })
+
+  it('should be disabled on demand', () => {
+    const active = true
+    ComponentUnderTest.is(LoginFormEmailInput).withProperties({ disabled: active }).mount()
+
+    InputField.Disable.shouldBe(active)
+  })
 })

@@ -2,6 +2,7 @@
   <q-btn
     type="submit"
     :loading="loading"
+    :disable="disabled"
     color="primary"
     flat
   >
@@ -17,6 +18,11 @@ export default defineComponent({
 
   props: {
     loading: {
+      type: Boolean,
+      default: false
+    },
+
+    disabled: {
       type: Boolean,
       default: false
     }
