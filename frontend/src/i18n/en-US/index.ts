@@ -1,4 +1,5 @@
 export default {
   login: 'Login',
-  email: 'E-mail'
+  email: 'E-mail',
+  password: 'Password'
 }
