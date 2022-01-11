@@ -1,10 +1,7 @@
 import { mount } from '@cypress/vue'
+import { Properties, VueComponent } from './types'
 
 type ModelValue = unknown
-
-type Properties = Record<string, unknown>
-
-export type VueComponent = unknown
 
 export class ComponentToBeMounted {
   private readonly component: VueComponent

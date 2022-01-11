@@ -1,6 +1,10 @@
 import { VueWrapper } from '@vue/test-utils'
 import { ComponentPublicInstance } from 'vue'
 
+export type Properties = Record<string, unknown>
+
+export type VueComponent = unknown
+
 export type WrappedVueComponent<T = unknown> = VueWrapper<ComponentPublicInstance & T>
 
 export interface ModelValueProperty { modelValue: unknown }

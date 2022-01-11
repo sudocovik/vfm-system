@@ -1,5 +1,6 @@
-import { ComponentToBeMounted, VueComponent } from 'test/support/ComponentToBeMounted'
+import { ComponentToBeMounted } from 'test/support/ComponentToBeMounted'
 import { ModelValueProperty } from 'test/support/ModelValueProperty'
+import { Properties, VueComponent } from './types'
 
 export class ComponentUnderTest {
   public static ModelValue: ModelValueProperty = new ModelValueProperty()
