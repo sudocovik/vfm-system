@@ -12,3 +12,5 @@ export interface LabelProperty { label?: unknown }
 export interface LoadingProperty { loading?: boolean }
 
 export interface DisableProperty { disabled?: boolean }
+
+export interface ErrorMessageProperty { errorMessage?: string }

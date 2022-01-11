@@ -4,6 +4,7 @@ import { TypeAttribute } from './TypeAttribute'
 import { LabelAttribute } from './LabelAttribute'
 import { ValueAttribute } from './ValueAttribute'
 import { DisableAttribute } from './DisableAttribute'
+import { ErrorMessageAttribute } from './ErrorMessageAttribute'
 
 type InputComponent = VueWrapper<QInput>
 
@@ -15,6 +16,8 @@ export class InputField {
   public static Value = new ValueAttribute(InputField.findComponent)
 
   public static Disable = new DisableAttribute(InputField.findComponent)
+
+  public static ErrorMessage = new ErrorMessageAttribute(InputField.findComponent)
 
   public static shouldExist () {
     cy.then(InputField.findComponent)
