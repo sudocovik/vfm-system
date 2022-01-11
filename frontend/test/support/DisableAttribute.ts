@@ -13,7 +13,6 @@ export class DisableAttribute {
     cy.then(this.findComponent)
       .then((component: WrappedComponentWithDisabledState): boolean => component.props('disable') as boolean)
       .then((loading: boolean) => {
-        console.log(this.findComponent().props())
         expect(loading).to.be.equal(expectedState)
       })
   }
