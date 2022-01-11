@@ -2,7 +2,7 @@
   <q-input
     v-model="password"
     type="password"
-    label="Password"
+    :label="$t('password')"
     outlined
   >
     <template #prepend>
