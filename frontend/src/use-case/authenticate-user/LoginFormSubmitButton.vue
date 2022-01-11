@@ -2,6 +2,8 @@
   <q-btn
     type="submit"
     :loading="loading"
+    color="primary"
+    flat
   >
     {{ $t('login') }}
   </q-btn>
