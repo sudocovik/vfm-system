@@ -1,5 +1,5 @@
 import LoginFormPasswordInput from '../LoginFormPasswordInput.vue'
-import { ComponentUnderTest, InputField } from 'test/support/api'
+import { ComponentUnderTest, inAllLanguages, InputField } from 'test/support/api'
 
 describe('LoginFormPasswordInput', () => {
   it('should render text input', () => {
@@ -14,10 +14,10 @@ describe('LoginFormPasswordInput', () => {
     InputField.Type.shouldBe('password')
   })
 
-  it('should have a label', () => {
+  inAllLanguages.it('should have a label', (t) => {
     ComponentUnderTest.is(LoginFormPasswordInput).mount()
 
-    InputField.Label.shouldBe('Password')
+    InputField.Label.shouldBe(t('password'))
   })
 
   it('should let parent component control the password', () => {
