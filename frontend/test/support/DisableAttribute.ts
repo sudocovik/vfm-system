@@ -12,8 +12,8 @@ export class DisableAttribute {
   public shouldBe (expectedState: boolean): void {
     cy.then(this.findComponent)
       .then((component: WrappedComponentWithDisabledState): boolean => component.props('disable') as boolean)
-      .then((loading: boolean) => {
-        expect(loading).to.be.equal(expectedState)
+      .then((disable: boolean) => {
+        expect(disable).to.be.equal(expectedState)
       })
   }
 }
