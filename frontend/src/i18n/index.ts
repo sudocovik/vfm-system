@@ -1,7 +1,10 @@
+import { LocaleMessages, VueMessageType } from 'vue-i18n'
 import enUS from './en-US'
 import hrHR from './hr-HR'
 
-export default {
+const messages: LocaleMessages<VueMessageType> = {
   'en-US': enUS,
   'hr-HR': hrHR
 }
+
+export default messages
