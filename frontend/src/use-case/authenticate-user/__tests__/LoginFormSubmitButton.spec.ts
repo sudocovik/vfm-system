@@ -1,6 +1,5 @@
 import LoginFormSubmitButton from '../LoginFormSubmitButton.vue'
-import { ComponentUnderTest, Button } from 'test/support/api'
-import { t } from 'boot/i18n'
+import { ComponentUnderTest, Button, inAllLanguages } from 'test/support/api'
 
 describe('LoginFormSubmitButton', () => {
   it('should render a button', () => {
@@ -29,7 +28,7 @@ describe('LoginFormSubmitButton', () => {
     Button.Loading.shouldBe(active)
   })
 
-  it('should have valid content', () => {
+  inAllLanguages.it('should have a valid title', (t) => {
     ComponentUnderTest.is(LoginFormSubmitButton).mount()
 
     Button.TextContent.shouldBe(t('login'))
