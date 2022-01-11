@@ -3,6 +3,7 @@ import { QBtn } from 'quasar'
 import { TypeAttribute } from './TypeAttribute'
 import { LoadingAttribute } from './LoadingAttribute'
 import { TextContent } from './TextContent'
+import { DisableAttribute } from './DisableAttribute'
 
 type ButtonComponent = VueWrapper<QBtn>
 
@@ -12,6 +13,8 @@ export class Button {
   public static Loading = new LoadingAttribute(Button.findComponent)
 
   public static TextContent = new TextContent(Button.findComponent)
+
+  public static Disable = new DisableAttribute(Button.findComponent)
 
   public static shouldExist () {
     cy.then(Button.findComponent)
