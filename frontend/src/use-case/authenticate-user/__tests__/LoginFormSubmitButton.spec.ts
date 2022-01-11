@@ -1,5 +1,5 @@
-import LoginFormSubmitButton from '../LoginFormSubmitButton.vue'
 import { ComponentUnderTest, Button, inAllLanguages } from 'test/support/api'
+import LoginFormSubmitButton from '../LoginFormSubmitButton.vue'
 
 describe('LoginFormSubmitButton', () => {
   it('should render a button', () => {

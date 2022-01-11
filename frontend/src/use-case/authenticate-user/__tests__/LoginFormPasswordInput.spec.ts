@@ -1,5 +1,5 @@
-import LoginFormPasswordInput from '../LoginFormPasswordInput.vue'
 import { ComponentUnderTest, inAllLanguages, InputField } from 'test/support/api'
+import LoginFormPasswordInput from '../LoginFormPasswordInput.vue'
 
 describe('LoginFormPasswordInput', () => {
   it('should render text input', () => {

@@ -1,5 +1,5 @@
-import LoginFormEmailInput from '../LoginFormEmailInput.vue'
 import { ComponentUnderTest, inAllLanguages, InputField } from 'test/support/api'
+import LoginFormEmailInput from '../LoginFormEmailInput.vue'
 
 describe('LoginFormEmailInput', () => {
   it('should render text input', () => {
