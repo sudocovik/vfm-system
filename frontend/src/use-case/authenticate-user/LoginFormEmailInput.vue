@@ -4,6 +4,8 @@
     type="email"
     :label="$t('email')"
     :disable="disabled"
+    :error-message="error"
+    :error="isErrorMessageNotEmpty"
     outlined
   >
     <template #prepend>
@@ -27,6 +29,11 @@ export default defineComponent({
     disabled: {
       type: Boolean,
       default: false
+    },
+
+    error: {
+      type: String,
+      default: ''
     }
   },
 
@@ -38,8 +45,11 @@ export default defineComponent({
       set: (value) => emit('update:modelValue', value)
     })
 
+    const isErrorMessageNotEmpty = computed(() => props.error !== '')
+
     return {
-      email
+      email,
+      isErrorMessageNotEmpty
     }
   }
 })

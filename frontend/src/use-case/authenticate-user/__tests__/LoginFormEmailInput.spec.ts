@@ -57,4 +57,27 @@ describe('LoginFormEmailInput', () => {
 
     InputField.Disable.shouldBe(active)
   })
+
+  it('should have empty error message on initial render', () => {
+    const inactive = false
+    const empty = ''
+
+    ComponentUnderTest.is(LoginFormEmailInput).mount()
+    InputField.Error.shouldBe(inactive)
+    InputField.ErrorMessage.shouldBe(empty)
+  })
+
+  it('should render error message below input field', () => {
+    const active = true
+    const fieldIsRequired = 'This field is required.'
+    const fieldHasMinimumLength = 'This field requires minimum length of X'
+
+    ComponentUnderTest.is(LoginFormEmailInput).withProperties({ error: fieldIsRequired }).mount()
+    InputField.Error.shouldBe(active)
+    InputField.ErrorMessage.shouldBe(fieldIsRequired)
+
+    ComponentUnderTest.changeProperties({ error: fieldHasMinimumLength })
+    InputField.Error.shouldBe(active)
+    InputField.ErrorMessage.shouldBe(fieldHasMinimumLength)
+  })
 })
