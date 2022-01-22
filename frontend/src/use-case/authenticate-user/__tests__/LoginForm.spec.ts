@@ -11,8 +11,8 @@ import LoginFormPasswordInput from '../LoginFormPasswordInput.vue'
 
 ALTERNATIVE API
 
-const failedEmailIsTooShort = State.named('failed-email-is-too-short')
-  .for(LoginFormState.failed().withEmailError('Email is too short.'))
+const failureEmailIsTooShort = State.named('failure-email-is-too-short')
+  .for(LoginFormState.failure().withEmailError('Email is too short.'))
   .validate(
     State.expect().email().notDisabled().hasErrorMessage('Email is too short.'),
     State.expect().password().isDisabled().noErrorMessage(),
@@ -21,8 +21,8 @@ const failedEmailIsTooShort = State.named('failed-email-is-too-short')
 
  */
 
-const initialized = State.named('initialized')
-  .for(LoginFormState.initialized())
+const ready = State.named('ready')
+  .for(LoginFormState.ready())
   .with(
     State.expectation()
       .email(notDisabled, noErrorMessage)
@@ -39,8 +39,8 @@ const inProgress = State.named('in-progress')
       .submitButton(notDisabled, loading)
   )
 
-const completed = State.named('completed')
-  .for(LoginFormState.completed())
+const successful = State.named('successful')
+  .for(LoginFormState.successful())
   .with(
     State.expectation()
       .email(disabled, noErrorMessage)
@@ -48,8 +48,8 @@ const completed = State.named('completed')
       .submitButton(disabled, notLoading)
   )
 
-const failed = State.named('failed')
-  .for(LoginFormState.failed())
+const failure = State.named('failed')
+  .for(LoginFormState.failure())
   .with(
     State.expectation()
       .email(notDisabled, noErrorMessage)
@@ -57,8 +57,8 @@ const failed = State.named('failed')
       .submitButton(notDisabled, notLoading)
   )
 
-const failedEmailIsRequired = State.named('failed=email')
-  .for(LoginFormState.failed().withEmailError('Email is required.'))
+const failureEmailIsRequired = State.named('failure=email')
+  .for(LoginFormState.failure().withEmailError('Email is required.'))
   .with(
     State.expectation()
       .email(notDisabled, hasErrorMessage('Email is required.'))
@@ -66,8 +66,8 @@ const failedEmailIsRequired = State.named('failed=email')
       .submitButton(notDisabled, notLoading)
   )
 
-const failedEmailIsTooShort = State.named('failed=email-alternative')
-  .for(LoginFormState.failed().withEmailError('Email is too short.'))
+const failureEmailIsTooShort = State.named('failure=email-alternative')
+  .for(LoginFormState.failure().withEmailError('Email is too short.'))
   .with(
     State.expectation()
       .email(notDisabled, hasErrorMessage('Email is too short.'))
@@ -75,8 +75,8 @@ const failedEmailIsTooShort = State.named('failed=email-alternative')
       .submitButton(notDisabled, notLoading)
   )
 
-const failedPasswordIsRequired = State.named('failed=password')
-  .for(LoginFormState.failed().withPasswordError('Password is required.'))
+const failurePasswordIsRequired = State.named('failure=password')
+  .for(LoginFormState.failure().withPasswordError('Password is required.'))
   .with(
     State.expectation()
       .email(notDisabled, noErrorMessage)
@@ -84,8 +84,8 @@ const failedPasswordIsRequired = State.named('failed=password')
       .submitButton(notDisabled, notLoading)
   )
 
-const failedPasswordIsTooShort = State.named('failed=password-alternative')
-  .for(LoginFormState.failed().withPasswordError('Password is too short.'))
+const failurePasswordIsTooShort = State.named('failure=password-alternative')
+  .for(LoginFormState.failure().withPasswordError('Password is too short.'))
   .with(
     State.expectation()
       .email(notDisabled, noErrorMessage)
@@ -93,8 +93,8 @@ const failedPasswordIsTooShort = State.named('failed=password-alternative')
       .submitButton(notDisabled, notLoading)
   )
 
-const failedEmailAndPasswordAreRequired = State.named('failed=email-and-password')
-  .for(LoginFormState.failed().withEmailError('Email is required.').withPasswordError('Password is required.'))
+const failureEmailAndPasswordAreRequired = State.named('failure=email-and-password')
+  .for(LoginFormState.failure().withEmailError('Email is required.').withPasswordError('Password is required.'))
   .with(
     State.expectation()
       .email(notDisabled, hasErrorMessage('Email is required.'))
@@ -103,18 +103,18 @@ const failedEmailAndPasswordAreRequired = State.named('failed=email-and-password
   )
 
 const baseStates = [
-  initialized,
+  ready,
   inProgress,
-  completed,
-  failed
+  successful,
+  failure
 ]
 
 const ancillaryStates = [
-  failedEmailIsRequired,
-  failedEmailIsTooShort,
-  failedPasswordIsRequired,
-  failedPasswordIsTooShort,
-  failedEmailAndPasswordAreRequired
+  failureEmailIsRequired,
+  failureEmailIsTooShort,
+  failurePasswordIsRequired,
+  failurePasswordIsTooShort,
+  failureEmailAndPasswordAreRequired
 ]
 
 describe('LoginForm', () => {
@@ -132,8 +132,8 @@ describe('LoginForm', () => {
 
   describe('Behaviour', () => {
     describe('Authentication request', () => {
-      specify('initialized=yes', () => {
-        ComponentUnderTest.is(LoginForm).withProperties({ state: initialized.implementation() }).mount()
+      specify('ready=yes', () => {
+        ComponentUnderTest.is(LoginForm).withProperties({ state: ready.implementation() }).mount()
         const { email, password } = generateRandomEmailAndPassword()
         fillInputFields(email, password)
         submitButtonClick()
@@ -146,14 +146,14 @@ describe('LoginForm', () => {
         assertParentWasNotNotified()
       })
 
-      specify('completed=no', () => {
-        ComponentUnderTest.is(LoginForm).withProperties({ state: completed.implementation() }).mount()
+      specify('successful=no', () => {
+        ComponentUnderTest.is(LoginForm).withProperties({ state: successful.implementation() }).mount()
         submitButtonClick()
         assertParentWasNotNotified()
       })
 
-      specify('failed=yes', () => {
-        ComponentUnderTest.is(LoginForm).withProperties({ state: failed.implementation() }).mount()
+      specify('failure=yes', () => {
+        ComponentUnderTest.is(LoginForm).withProperties({ state: failure.implementation() }).mount()
         const { email, password } = generateRandomEmailAndPassword()
         fillInputFields(email, password)
         submitButtonClick()

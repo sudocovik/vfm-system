@@ -34,7 +34,7 @@
 import { computed, defineComponent, ref } from 'vue'
 import LoginFormEmailInput from './LoginFormEmailInput.vue'
 import LoginFormPasswordInput from './LoginFormPasswordInput.vue'
-import { Completed, Failed, Initialized, InProgress } from './LoginFormState'
+import { Failure, InProgress, Ready, Successful } from './LoginFormState'
 import LoginFormSubmitButton from './LoginFormSubmitButton.vue'
 
 export default defineComponent({
@@ -48,7 +48,7 @@ export default defineComponent({
 
   props: {
     state: {
-      type: [Completed, Failed, Initialized, InProgress],
+      type: [Successful, Failure, Ready, InProgress],
       required: true
     }
   },
@@ -63,7 +63,7 @@ export default defineComponent({
     const passwordError = computed<string>(() => props.state.passwordError())
 
     const formIsInProgress = computed<boolean>(() => props.state instanceof InProgress)
-    const formIsCompleted = computed<boolean>(() => props.state instanceof Completed)
+    const formIsCompleted = computed<boolean>(() => props.state instanceof Successful)
 
     const notifyParentAuthorizationIsRequested = () => emit('authenticate', {
       email: email.value,
