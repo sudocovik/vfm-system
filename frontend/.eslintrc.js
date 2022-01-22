@@ -1,4 +1,4 @@
-const { resolve } = require('path');
+const { resolve } = require('path')
 module.exports = {
   // https://eslint.org/docs/user-guide/configuring#configuration-cascading-and-hierarchy
   // This option interrupts the configuration hierarchy at this file
@@ -17,11 +17,11 @@ module.exports = {
     project: resolve(__dirname, './tsconfig.json'),
     tsconfigRootDir: __dirname,
     ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
-    sourceType: 'module' // Allows for the use of imports
+    sourceType: 'module', // Allows for the use of imports
   },
 
   env: {
-    browser: true
+    browser: true,
   },
 
   // Rules order is important, please avoid shuffling them
@@ -33,7 +33,7 @@ module.exports = {
 
     'plugin:vue/vue3-recommended', // Priority C: Recommended (Minimizing Arbitrary Choices and Cognitive Overhead)
 
-    'standard'
+    'standard',
   ],
 
   plugins: [
@@ -56,7 +56,7 @@ module.exports = {
     __QUASAR_SSR_PWA__: 'readonly',
     process: 'readonly',
     Capacitor: 'readonly',
-    chrome: 'readonly'
+    chrome: 'readonly',
   },
 
   // add your custom rules here
@@ -89,25 +89,25 @@ module.exports = {
     // Additional Vue
     'vue/component-name-in-template-casing': [
       'error',
-      'PascalCase'
+      'PascalCase',
     ],
     'vue/match-component-file-name': [
       'error',
       {
         'extensions': [
-          'vue'
+          'vue',
         ],
-        'shouldMatchCase': true
-      }
+        'shouldMatchCase': true,
+      },
     ],
 
     // Custom Eslint
-    'brace-style': ['error', 'stroustrup']
+    'brace-style': ['error', 'stroustrup'],
   },
 
   overrides: [
     {
-      files: ['**/*.spec.{js,ts}', '**/__tests__/*.{js,ts}', 'test/support/*.{js,ts}'],
+      files: ['**/*.spec.{js,ts}', '**/__tests__/*.spec.{js,ts}', '**/__tests__/helpers/*.{js,ts}', 'test/support/*.{js,ts}'],
       extends: [
         // Add Cypress-specific lint rules, globals and Cypress plugin
         // See https://github.com/cypress-io/eslint-plugin-cypress#rules
