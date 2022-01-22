@@ -6,6 +6,7 @@ import LoginForm from '../LoginForm.vue'
 import LoginFormSubmitButton from '../LoginFormSubmitButton.vue'
 import LoginFormEmailInput from '../LoginFormEmailInput.vue'
 import LoginFormPasswordInput from '../LoginFormPasswordInput.vue'
+import { AuthenticateEventName } from '../AuthenticateEvent'
 
 /*
 
@@ -188,12 +189,12 @@ function submitButtonClick (): void {
 }
 
 function assertParentWasNotified (expectedEmail: string, expectedPassword: string): void {
-  Event.named('authenticate').shouldBeFired().once().withData([{
+  Event.named(AuthenticateEventName).shouldBeFired().once().withData([{
     email: expectedEmail,
     password: expectedPassword
   }])
 }
 
 function assertParentWasNotNotified (): void {
-  Event.named('authenticate').shouldNotBeFired()
+  Event.named(AuthenticateEventName).shouldNotBeFired()
 }

@@ -36,6 +36,7 @@ import LoginFormEmailInput from './LoginFormEmailInput.vue'
 import LoginFormPasswordInput from './LoginFormPasswordInput.vue'
 import { Failure, InProgress, Ready, Successful } from './LoginFormState'
 import LoginFormSubmitButton from './LoginFormSubmitButton.vue'
+import { AuthenticateEventData, AuthenticateEventName } from './AuthenticateEvent'
 
 export default defineComponent({
   name: 'LoginForm',
@@ -53,7 +54,7 @@ export default defineComponent({
     }
   },
 
-  emits: ['authenticate'],
+  emits: [AuthenticateEventName],
 
   setup (props, { emit }) {
     const email = ref<string>('')
@@ -65,10 +66,13 @@ export default defineComponent({
     const formIsInProgress = computed<boolean>(() => props.state instanceof InProgress)
     const formIsCompleted = computed<boolean>(() => props.state instanceof Successful)
 
-    const notifyParentAuthorizationIsRequested = () => emit('authenticate', {
-      email: email.value,
-      password: password.value
-    })
+    const notifyParentAuthorizationIsRequested = () => {
+      const eventData: AuthenticateEventData = {
+        email: email.value,
+        password: password.value
+      }
+      emit(AuthenticateEventName, eventData)
+    }
 
     return {
       email,
