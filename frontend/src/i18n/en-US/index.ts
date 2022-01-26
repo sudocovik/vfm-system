@@ -1,5 +1,8 @@
 export default {
   login: 'Login',
   email: 'E-mail',
-  password: 'Password'
+  password: 'Password',
+  validation: {
+    required: 'Field is required.'
+  }
 }
