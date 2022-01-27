@@ -47,6 +47,9 @@ export default defineComponent({
 
         formState.value = validationError
       }
+      else {
+        formState.value = LoginFormState.inProgress()
+      }
     }
     const formEvents = { [AuthenticateEventName]: handleAuthenticationRequest }
 

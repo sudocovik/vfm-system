@@ -33,6 +33,15 @@ describe('LoginPage', () => {
     submitButtonClick()
     formStateShouldBe(LoginFormState.failure().withEmailError(t('validation.required')).withPasswordError(t('validation.required')))
   })
+
+  it('should be in \'in-progress\' state when validation is ok', () => {
+    cy.spy(LoginFormState, 'inProgress').as('in-progress')
+    mountLoginPage()
+    typeEmail('irrelevant@example.com')
+    typePassword('irrelevant')
+    submitButtonClick()
+    cy.get('@in-progress').should('have.been.calledOnce')
+  })
 })
 
 function typePassword (wantedPassword: string): void {
