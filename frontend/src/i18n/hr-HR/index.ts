@@ -5,5 +5,6 @@ export default {
   validation: {
     required: 'Polje je obavezno.'
   },
-  'wrong-email-and-password': 'Pogrešan email i/ili lozinka'
+  'wrong-email-and-password': 'Pogrešan email i/ili lozinka',
+  'general-server-error': 'Neočekivana greška na serveru. Pokušajte ponovo.'
 }

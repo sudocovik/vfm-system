@@ -5,5 +5,6 @@ export default {
   validation: {
     required: 'Field is required.'
   },
-  'wrong-email-and-password': 'Wrong email and/or password'
+  'wrong-email-and-password': 'Wrong email and/or password',
+  'general-server-error': 'Unexpected server error. Try again.'
 }

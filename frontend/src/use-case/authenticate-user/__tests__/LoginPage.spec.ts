@@ -56,6 +56,16 @@ describe('LoginPage', () => {
     cy.get('body').should('contain.text', t('wrong-email-and-password'))
     formStateShouldBe(LoginFormState.failure())
   })
+
+  inAllLanguages.it('should notify user there are problems with the server', (t) => {
+    mountLoginPage()
+    simulateServerErrorSituation()
+    typeEmail('irrelevant@example.com')
+    typePassword('irrelevant-password')
+    submitButtonClick()
+    cy.get('body').should('contain.text', t('general-server-error'))
+    formStateShouldBe(LoginFormState.failure())
+  })
 })
 
 function typePassword (wantedPassword: string): void {
@@ -111,4 +121,8 @@ function simulateWrongCredentialsSituation (): void {
   cy.intercept('POST', '/session', {
     statusCode: 401
   })
+}
+
+function simulateServerErrorSituation (): void {
+  cy.intercept('POST', '/session', { statusCode: 500 })
 }

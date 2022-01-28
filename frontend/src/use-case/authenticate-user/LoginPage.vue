@@ -17,7 +17,7 @@ import LoginForm from './LoginForm.vue'
 import { FormState, LoginFormState } from './LoginFormState'
 import { AuthenticateEventData, AuthenticateEventName } from './AuthenticateEvent'
 import { t } from 'boot/i18n'
-import { AuthenticationService } from 'src/backend/AuthenticationService'
+import { AuthenticationService, InvalidCredentialsError } from 'src/backend/AuthenticationService'
 
 export default defineComponent({
   name: 'LoginPage',
@@ -56,9 +56,13 @@ export default defineComponent({
         }
         catch (e: unknown) {
           formState.value = LoginFormState.failure()
-          $q.notify({
-            message: t('wrong-email-and-password')
-          })
+
+          if (e instanceof InvalidCredentialsError) {
+            $q.notify(t('wrong-email-and-password'))
+          }
+          else {
+            $q.notify(t('general-server-error'))
+          }
         }
       }
     }
