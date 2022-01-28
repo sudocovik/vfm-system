@@ -27,7 +27,7 @@ import '@quasar/extras/mdi-v6/mdi-v6.css'
 
 import { installQuasarPlugin } from '@quasar/quasar-app-extension-testing-e2e-cypress'
 import { config } from '@vue/test-utils'
-import { Dialog } from 'quasar'
+import { Notify } from 'quasar'
 
 import { i18n } from 'src/boot/i18n'
 
@@ -40,4 +40,4 @@ config.global.mocks = {}
 // We do want transitions to show when doing visual testing :)
 config.global.stubs = {}
 
-installQuasarPlugin({ plugins: { Dialog } })
+installQuasarPlugin({ plugins: { Notify } })

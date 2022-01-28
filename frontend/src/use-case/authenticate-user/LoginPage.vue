@@ -11,12 +11,13 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { useMeta } from 'quasar'
+import { useMeta, useQuasar } from 'quasar'
 import { useI18n } from 'vue-i18n'
 import LoginForm from './LoginForm.vue'
 import { FormState, LoginFormState } from './LoginFormState'
 import { AuthenticateEventData, AuthenticateEventName } from './AuthenticateEvent'
 import { t } from 'boot/i18n'
+import { AuthenticationService } from 'src/backend/AuthenticationService'
 
 export default defineComponent({
   name: 'LoginPage',
@@ -32,8 +33,9 @@ export default defineComponent({
       title: `${translatedTitle} | Zara Fleet`
     })
 
+    const $q = useQuasar()
     const formState = ref<FormState>(LoginFormState.ready())
-    const handleAuthenticationRequest = ({ email, password }: AuthenticateEventData) => {
+    const handleAuthenticationRequest = async ({ email, password }: AuthenticateEventData) => {
       if (email.trim() === '' || password.trim() === '') {
         const validationError = LoginFormState.failure()
 
@@ -49,6 +51,15 @@ export default defineComponent({
       }
       else {
         formState.value = LoginFormState.inProgress()
+        try {
+          await new AuthenticationService().login(email, password)
+        }
+        catch (e: unknown) {
+          formState.value = LoginFormState.failure()
+          $q.notify({
+            message: t('wrong-email-and-password')
+          })
+        }
       }
     }
     const formEvents = { [AuthenticateEventName]: handleAuthenticationRequest }

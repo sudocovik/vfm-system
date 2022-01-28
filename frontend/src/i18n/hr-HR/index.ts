@@ -4,5 +4,6 @@ export default {
   password: 'Lozinka',
   validation: {
     required: 'Polje je obavezno.'
-  }
+  },
+  'wrong-email-and-password': 'Pogrešan email i/ili lozinka'
 }

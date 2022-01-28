@@ -16,6 +16,7 @@ describe('LoginPage', () => {
 
   inAllLanguages.it('should be in \'failed\' state if email is missing', (t) => {
     mountLoginPage()
+    simulateCorrectCredentialsSituation()
     typePassword('irrelevant-password')
     submitButtonClick()
     formStateShouldBe(LoginFormState.failure().withEmailError(t('validation.required')))
@@ -23,6 +24,7 @@ describe('LoginPage', () => {
 
   inAllLanguages.it('should be in \'failed\' state if password is missing', (t) => {
     mountLoginPage()
+    simulateCorrectCredentialsSituation()
     typeEmail('irrelevant@example.com')
     submitButtonClick()
     formStateShouldBe(LoginFormState.failure().withPasswordError(t('validation.required')))
@@ -30,6 +32,7 @@ describe('LoginPage', () => {
 
   inAllLanguages.it('should be in \'failed\' state if email & password are both missing', (t) => {
     mountLoginPage()
+    simulateCorrectCredentialsSituation()
     submitButtonClick()
     formStateShouldBe(LoginFormState.failure().withEmailError(t('validation.required')).withPasswordError(t('validation.required')))
   })
@@ -37,10 +40,21 @@ describe('LoginPage', () => {
   it('should be in \'in-progress\' state when validation is ok', () => {
     cy.spy(LoginFormState, 'inProgress').as('in-progress')
     mountLoginPage()
+    simulateCorrectCredentialsSituation()
     typeEmail('irrelevant@example.com')
     typePassword('irrelevant')
     submitButtonClick()
     cy.get('@in-progress').should('have.been.calledOnce')
+  })
+
+  inAllLanguages.it('should notify user credentials are incorrect', (t) => {
+    mountLoginPage()
+    simulateWrongCredentialsSituation()
+    typeEmail('wrong@example.com')
+    typePassword('wrong-password')
+    submitButtonClick()
+    cy.get('body').should('contain.text', t('wrong-email-and-password'))
+    formStateShouldBe(LoginFormState.failure())
   })
 })
 
@@ -84,5 +98,17 @@ function formStateShouldBe (expectedState: FormState): void {
     expect(currentState.constructor.name).to.be.equal(expectedState.constructor.name)
     expect(currentState.emailError()).to.be.equal(expectedState.emailError())
     expect(currentState.passwordError()).to.be.equal(expectedState.passwordError())
+  })
+}
+
+function simulateCorrectCredentialsSituation (): void {
+  cy.intercept('POST', '/session', {
+    statusCode: 200
+  })
+}
+
+function simulateWrongCredentialsSituation (): void {
+  cy.intercept('POST', '/session', {
+    statusCode: 401
   })
 }

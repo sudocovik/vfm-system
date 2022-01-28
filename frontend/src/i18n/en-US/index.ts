@@ -4,5 +4,6 @@ export default {
   password: 'Password',
   validation: {
     required: 'Field is required.'
-  }
+  },
+  'wrong-email-and-password': 'Wrong email and/or password'
 }
