@@ -134,9 +134,13 @@ function simulateWrongCredentialsSituation (): void {
 }
 
 function simulateServerErrorSituation (): void {
-  cy.intercept('POST', '/session', { statusCode: 500 })
+  cy.intercept('POST', '/session', {
+    statusCode: 500
+  })
 }
 
 function simulateNetworkErrorSituation (): void {
-  cy.intercept('POST', '/session', { forceNetworkError: true })
+  cy.intercept('POST', '/session', {
+    forceNetworkError: true
+  })
 }
