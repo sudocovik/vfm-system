@@ -6,5 +6,6 @@ export default {
     required: 'Field is required.'
   },
   'wrong-email-and-password': 'Wrong email and/or password',
-  'general-server-error': 'Unexpected server error. Try again.'
+  'general-server-error': 'Unexpected server error. Try again.',
+  'network-error': 'Problem with the network. Check your internet connection and try again.'
 }

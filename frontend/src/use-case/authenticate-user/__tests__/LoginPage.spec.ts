@@ -66,6 +66,16 @@ describe('LoginPage', () => {
     cy.get('body').should('contain.text', t('general-server-error'))
     formStateShouldBe(LoginFormState.failure())
   })
+
+  inAllLanguages.it('should notify user there are problems with the network', (t) => {
+    mountLoginPage()
+    simulateNetworkErrorSituation()
+    typeEmail('irrelevant@example.com')
+    typePassword('irrelevant-password')
+    submitButtonClick()
+    cy.get('body').should('contain.text', t('network-error'))
+    formStateShouldBe(LoginFormState.failure())
+  })
 })
 
 function typePassword (wantedPassword: string): void {
@@ -125,4 +135,8 @@ function simulateWrongCredentialsSituation (): void {
 
 function simulateServerErrorSituation (): void {
   cy.intercept('POST', '/session', { statusCode: 500 })
+}
+
+function simulateNetworkErrorSituation (): void {
+  cy.intercept('POST', '/session', { forceNetworkError: true })
 }
