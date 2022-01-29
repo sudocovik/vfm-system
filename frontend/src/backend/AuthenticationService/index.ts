@@ -9,8 +9,9 @@ export class AuthenticationService {
     catch (e) {
       const error = <AxiosError>e
 
-      if (Object.prototype.hasOwnProperty.call(error, 'response')) {
-        if (error.response?.status === 401) {
+      if (error.response) {
+        const { status: statusCode } = error.response
+        if (statusCode === 401) {
           throw new InvalidCredentialsError()
         }
 
