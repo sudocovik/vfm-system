@@ -44,7 +44,7 @@ export class Event {
         ? `Event '${this._name}' should not be fired but was fired (${ACTUAL_TIMES_FIRED}) times`
         : `Event '${this._name}' should be fired (${EXPECTED_TIMES_FIRED}) times but was (${ACTUAL_TIMES_FIRED}) times`
 
-      expect(ACTUAL_TIMES_FIRED, failureMessage).to.be.gte(EXPECTED_TIMES_FIRED) // equal
+      expect(ACTUAL_TIMES_FIRED, failureMessage).to.be.equal(EXPECTED_TIMES_FIRED)
     })
   }
 
