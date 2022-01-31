@@ -7,9 +7,16 @@ import {
 } from 'src/backend/AuthenticationService'
 import MockAdapter from 'axios-mock-adapter'
 import axios from 'axios'
+import { CustomError } from 'ts-custom-error'
 
 describe('AuthenticationService', () => {
   describe('login()', () => {
+    it('should clearly articulate something is wrong in the application', () => {
+      simulateApplicationErrorSituation()
+
+      return expect(() => new AuthenticationService().login('', '')).rejects.toBeInstanceOf(RandomApplicationError)
+    })
+
     it('should clearly articulate something is wrong with the network', () => {
       simulateNetworkErrorSituation()
 
@@ -37,6 +44,16 @@ describe('AuthenticationService', () => {
     })
   })
 })
+
+class RandomApplicationError extends CustomError {
+}
+
+function simulateApplicationErrorSituation (): void {
+  const mock = new MockAdapter(axios)
+  mock.onPost('/session').reply(() => {
+    throw new RandomApplicationError()
+  })
+}
 
 function simulateNetworkErrorSituation (): void {
   const mock = new MockAdapter(axios)

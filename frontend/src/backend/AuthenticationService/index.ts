@@ -20,6 +20,7 @@ export class AuthenticationService {
       else if (error.message === 'Network Error') {
         throw new NetworkError()
       }
+      else throw e
     }
   }
 }
