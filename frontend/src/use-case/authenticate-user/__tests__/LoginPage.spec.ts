@@ -6,6 +6,7 @@ import LoginFormPasswordInput from '../LoginFormPasswordInput.vue'
 import LoginFormSubmitButton from '../LoginFormSubmitButton.vue'
 import LoginFormEmailInput from '../LoginFormEmailInput.vue'
 import { inAllLanguages } from 'test/support/api'
+import { AuthenticationService } from 'src/backend/AuthenticationService'
 
 describe('LoginPage', () => {
   it('should render form in \'ready\' state upon initial render', () => {
@@ -76,6 +77,16 @@ describe('LoginPage', () => {
     cy.get('body').should('contain.text', t('network-error'))
     formStateShouldBe(LoginFormState.failure())
   })
+
+  inAllLanguages.it('should notify user there are problems with the client application', (t) => {
+    mountLoginPage()
+    simulateApplicationErrorSituation()
+    typeEmail('irrelevant@example.com')
+    typePassword('irrelevant-password')
+    submitButtonClick()
+    cy.get('body').should('contain.text', t('general-application-error'))
+    formStateShouldBe(LoginFormState.failure())
+  })
 })
 
 function typePassword (wantedPassword: string): void {
@@ -142,5 +153,11 @@ function simulateServerErrorSituation (): void {
 function simulateNetworkErrorSituation (): void {
   cy.intercept('POST', '/session', {
     forceNetworkError: true
+  })
+}
+
+function simulateApplicationErrorSituation (): void {
+  cy.stub(AuthenticationService, 'login', () => {
+    throw new Error()
   })
 }

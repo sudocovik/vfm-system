@@ -17,7 +17,12 @@ import LoginForm from './LoginForm.vue'
 import { FormState, LoginFormState } from './LoginFormState'
 import { AuthenticateEventData, AuthenticateEventName } from './AuthenticateEvent'
 import { t } from 'boot/i18n'
-import { AuthenticationService, InvalidCredentialsError, UndefinedServerError } from 'src/backend/AuthenticationService'
+import {
+  AuthenticationService,
+  InvalidCredentialsError,
+  NetworkError,
+  UndefinedServerError
+} from 'src/backend/AuthenticationService'
 
 export default defineComponent({
   name: 'LoginPage',
@@ -63,8 +68,11 @@ export default defineComponent({
           else if (e instanceof UndefinedServerError) {
             $q.notify(t('general-server-error'))
           }
-          else {
+          else if (e instanceof NetworkError) {
             $q.notify(t('network-error'))
+          }
+          else {
+            $q.notify(t('general-application-error'))
           }
         }
       }
