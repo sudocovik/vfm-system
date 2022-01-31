@@ -14,32 +14,32 @@ describe('AuthenticationService', () => {
     it('should clearly articulate something is wrong in the application', () => {
       simulateApplicationErrorSituation()
 
-      return expect(() => new AuthenticationService().login('', '')).rejects.toBeInstanceOf(RandomApplicationError)
+      return expect(AuthenticationService.login('', '')).rejects.toBeInstanceOf(RandomApplicationError)
     })
 
     it('should clearly articulate something is wrong with the network', () => {
       simulateNetworkErrorSituation()
 
-      return expect(() => new AuthenticationService().login('', '')).rejects.toBeInstanceOf(NetworkError)
+      return expect(AuthenticationService.login('', '')).rejects.toBeInstanceOf(NetworkError)
     })
 
     it('should clearly articulate something is wrong with the server', () => {
       simulateServerErrorSituation()
 
-      return expect(() => new AuthenticationService().login('', '')).rejects.toBeInstanceOf(UndefinedServerError)
+      return expect(AuthenticationService.login('', '')).rejects.toBeInstanceOf(UndefinedServerError)
     })
 
     it('should clearly articulate given credentials are incorrect', () => {
       simulateWrongCredentialsSituation()
 
-      return expect(() => new AuthenticationService().login('invalid@example.com', 'invalid-password'))
+      return expect(AuthenticationService.login('invalid@example.com', 'invalid-password'))
         .rejects.toBeInstanceOf(InvalidCredentialsError)
     })
 
     it('should exit successfully given correct credentials', () => {
       simulateCorrectCredentialsSituation()
 
-      return expect(new AuthenticationService().login('valid@example.com', 'valid-password'))
+      return expect(AuthenticationService.login('valid@example.com', 'valid-password'))
         .resolves.toBeUndefined()
     })
   })

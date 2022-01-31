@@ -2,7 +2,7 @@ import { InvalidCredentialsError, NetworkError, UndefinedServerError } from './e
 import axios, { AxiosError } from 'axios'
 
 export class AuthenticationService {
-  public async login (email: string, password: string): Promise<void> {
+  public static async login (email: string, password: string): Promise<void> {
     try {
       await axios.post('/session', { email, password })
     }

@@ -52,7 +52,7 @@ export default defineComponent({
       else {
         formState.value = LoginFormState.inProgress()
         try {
-          await new AuthenticationService().login(email, password)
+          await AuthenticationService.login(email, password)
         }
         catch (e: unknown) {
           formState.value = LoginFormState.failure()
