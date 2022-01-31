@@ -23,6 +23,7 @@ import {
   NetworkError,
   UndefinedServerError
 } from 'src/backend/AuthenticationService'
+import { AuthenticationSuccessfulEventName } from './AuthenticationSuccessfulEvent'
 
 export default defineComponent({
   name: 'LoginPage',
@@ -31,7 +32,7 @@ export default defineComponent({
     LoginForm
   },
 
-  setup () {
+  setup (props, { emit }) {
     const translatedTitle: string = useI18n().t('login')
 
     useMeta({
@@ -58,6 +59,8 @@ export default defineComponent({
         formState.value = LoginFormState.inProgress()
         try {
           await AuthenticationService.login(email, password)
+          formState.value = LoginFormState.successful()
+          emit(AuthenticationSuccessfulEventName)
         }
         catch (e: unknown) {
           formState.value = LoginFormState.failure()

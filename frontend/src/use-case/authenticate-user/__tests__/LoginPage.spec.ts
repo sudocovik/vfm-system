@@ -5,8 +5,9 @@ import { FormState, LoginFormState } from '../LoginFormState'
 import LoginFormPasswordInput from '../LoginFormPasswordInput.vue'
 import LoginFormSubmitButton from '../LoginFormSubmitButton.vue'
 import LoginFormEmailInput from '../LoginFormEmailInput.vue'
-import { inAllLanguages } from 'test/support/api'
+import { Event, inAllLanguages } from 'test/support/api'
 import { AuthenticationService } from 'src/backend/AuthenticationService'
+import { AuthenticationSuccessfulEventName as AuthenticationSuccessful } from '../AuthenticationSuccessfulEvent'
 
 describe('LoginPage', () => {
   it('should render form in \'ready\' state upon initial render', () => {
@@ -15,12 +16,23 @@ describe('LoginPage', () => {
     formStateShouldBe(LoginFormState.ready())
   })
 
+  it('should notify parent component authentication was successful', () => {
+    mountLoginPage()
+    simulateCorrectCredentialsSituation()
+    typeEmail('correct@example.com')
+    typePassword('correct-password')
+    submitButtonClick()
+    formStateShouldBe(LoginFormState.successful())
+    authenticationSuccessfulEventShouldBeFired()
+  })
+
   inAllLanguages.it('should be in \'failed\' state if email is missing', (t) => {
     mountLoginPage()
     simulateCorrectCredentialsSituation()
     typePassword('irrelevant-password')
     submitButtonClick()
     formStateShouldBe(LoginFormState.failure().withEmailError(t('validation.required')))
+    authenticationSuccessfulEventShouldNotBeFired()
   })
 
   inAllLanguages.it('should be in \'failed\' state if password is missing', (t) => {
@@ -29,6 +41,7 @@ describe('LoginPage', () => {
     typeEmail('irrelevant@example.com')
     submitButtonClick()
     formStateShouldBe(LoginFormState.failure().withPasswordError(t('validation.required')))
+    authenticationSuccessfulEventShouldNotBeFired()
   })
 
   inAllLanguages.it('should be in \'failed\' state if email & password are both missing', (t) => {
@@ -36,6 +49,7 @@ describe('LoginPage', () => {
     simulateCorrectCredentialsSituation()
     submitButtonClick()
     formStateShouldBe(LoginFormState.failure().withEmailError(t('validation.required')).withPasswordError(t('validation.required')))
+    authenticationSuccessfulEventShouldNotBeFired()
   })
 
   it('should be in \'in-progress\' state when validation is ok', () => {
@@ -56,6 +70,7 @@ describe('LoginPage', () => {
     submitButtonClick()
     cy.get('body').should('contain.text', t('wrong-email-and-password'))
     formStateShouldBe(LoginFormState.failure())
+    authenticationSuccessfulEventShouldNotBeFired()
   })
 
   inAllLanguages.it('should notify user there are problems with the server', (t) => {
@@ -66,6 +81,7 @@ describe('LoginPage', () => {
     submitButtonClick()
     cy.get('body').should('contain.text', t('general-server-error'))
     formStateShouldBe(LoginFormState.failure())
+    authenticationSuccessfulEventShouldNotBeFired()
   })
 
   inAllLanguages.it('should notify user there are problems with the network', (t) => {
@@ -76,6 +92,7 @@ describe('LoginPage', () => {
     submitButtonClick()
     cy.get('body').should('contain.text', t('network-error'))
     formStateShouldBe(LoginFormState.failure())
+    authenticationSuccessfulEventShouldNotBeFired()
   })
 
   inAllLanguages.it('should notify user there are problems with the client application', (t) => {
@@ -86,6 +103,7 @@ describe('LoginPage', () => {
     submitButtonClick()
     cy.get('body').should('contain.text', t('general-application-error'))
     formStateShouldBe(LoginFormState.failure())
+    authenticationSuccessfulEventShouldNotBeFired()
   })
 })
 
@@ -130,6 +148,14 @@ function formStateShouldBe (expectedState: FormState): void {
     expect(currentState.emailError()).to.be.equal(expectedState.emailError())
     expect(currentState.passwordError()).to.be.equal(expectedState.passwordError())
   })
+}
+
+function authenticationSuccessfulEventShouldBeFired (): void {
+  Event.named(AuthenticationSuccessful).shouldBeFired().once()
+}
+
+function authenticationSuccessfulEventShouldNotBeFired (): void {
+  Event.named(AuthenticationSuccessful).shouldNotBeFired()
 }
 
 function simulateCorrectCredentialsSituation (): void {
