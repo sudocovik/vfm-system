@@ -50,27 +50,27 @@ class RandomApplicationError extends CustomError {
 
 function simulateApplicationErrorSituation (): void {
   const mock = new MockAdapter(axios)
-  mock.onPost('/session').reply(() => {
+  mock.onPost(AuthenticationService.loginEndpoint).reply(() => {
     throw new RandomApplicationError()
   })
 }
 
 function simulateNetworkErrorSituation (): void {
   const mock = new MockAdapter(axios)
-  mock.onPost('/session').networkErrorOnce()
+  mock.onPost(AuthenticationService.loginEndpoint).networkErrorOnce()
 }
 
 function simulateServerErrorSituation (): void {
   const mock = new MockAdapter(axios)
-  mock.onPost('/session').replyOnce(500)
+  mock.onPost(AuthenticationService.loginEndpoint).replyOnce(500)
 }
 
 function simulateWrongCredentialsSituation (): void {
   const mock = new MockAdapter(axios)
-  mock.onPost('/session').replyOnce(401)
+  mock.onPost(AuthenticationService.loginEndpoint).replyOnce(401)
 }
 
 function simulateCorrectCredentialsSituation (): void {
   const mock = new MockAdapter(axios)
-  mock.onPost('/session').replyOnce(200)
+  mock.onPost(AuthenticationService.loginEndpoint).replyOnce(200)
 }

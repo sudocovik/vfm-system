@@ -179,25 +179,25 @@ function authenticationSuccessfulEventShouldNotBeFired (): void {
 }
 
 function simulateCorrectCredentialsSituation (): void {
-  cy.intercept('POST', '/session', {
+  cy.intercept('POST', AuthenticationService.loginEndpoint, {
     statusCode: 200
   })
 }
 
 function simulateWrongCredentialsSituation (): void {
-  cy.intercept('POST', '/session', {
+  cy.intercept('POST', AuthenticationService.loginEndpoint, {
     statusCode: 401
   })
 }
 
 function simulateServerErrorSituation (): void {
-  cy.intercept('POST', '/session', {
+  cy.intercept('POST', AuthenticationService.loginEndpoint, {
     statusCode: 500
   })
 }
 
 function simulateNetworkErrorSituation (): void {
-  cy.intercept('POST', '/session', {
+  cy.intercept('POST', AuthenticationService.loginEndpoint, {
     forceNetworkError: true
   })
 }
