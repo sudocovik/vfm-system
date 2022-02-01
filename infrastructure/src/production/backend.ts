@@ -23,32 +23,32 @@ function describeDatabase(kubernetesCluster: pulumi.Output<any>): DatabaseConnec
         version: '8',
         maintenanceWindows: [{
             day: 'sunday',
-            hour: '12:00'
-        }]
+            hour: '12:00',
+        }],
     })
 
     new digitalocean.DatabaseFirewall('database-firewall', {
         clusterId: cluster.id,
         rules: [{
             type: 'k8s',
-            value: kubernetesCluster
-        }]
+            value: kubernetesCluster,
+        }],
     }, {
-        parent: cluster
+        parent: cluster,
     })
 
     const user = new digitalocean.DatabaseUser('database-user', {
         clusterId: cluster.id,
-        name: 'regular'
+        name: 'regular',
     }, {
-        parent: cluster
+        parent: cluster,
     })
 
     const database = new digitalocean.DatabaseDb('database', {
         clusterId: cluster.id,
-        name: 'vfm'
+        name: 'vfm',
     }, {
-        parent: cluster
+        parent: cluster,
     })
 
     return {
@@ -56,18 +56,18 @@ function describeDatabase(kubernetesCluster: pulumi.Output<any>): DatabaseConnec
         port: cluster.port,
         user: user.name,
         password: user.password,
-        database: database.name
+        database: database.name,
     }
 }
 
 function describeApplication(provider: k8s.Provider, namespace: pulumi.Output<any>, databaseConnectionSettings: DatabaseConnection): void {
     const configuration = new k8s.core.v1.ConfigMap('traccar-configuration', {
         metadata: {
-            namespace
+            namespace,
         },
         data: {
             'traccar.xml':
-pulumi.interpolate`<?xml version='1.0' encoding='UTF-8'?>
+                pulumi.interpolate`<?xml version='1.0' encoding='UTF-8'?>
 
 <!DOCTYPE properties SYSTEM 'http://java.sun.com/dtd/properties.dtd'>
 
@@ -98,35 +98,35 @@ pulumi.interpolate`<?xml version='1.0' encoding='UTF-8'?>
   
   <entry key='logger.file'>/proc/1/fd/1</entry>
 
-</properties>`
-        }
+</properties>`,
+        },
     }, {
         provider,
-        parent: provider
+        parent: provider,
     })
 
-    const labels = { app: 'traccar' }
+    const labels = {app: 'traccar'}
     const configurationVolumeName = 'configuration'
 
     const deployment: k8s.apps.v1.Deployment = new k8s.apps.v1.Deployment('traccar', {
         metadata: {
-            namespace
+            namespace,
         },
         spec: {
             selector: {
-                matchLabels: labels
+                matchLabels: labels,
             },
             replicas: 1,
             template: {
                 metadata: {
-                    labels:  labels
+                    labels: labels,
                 },
                 spec: {
                     volumes: [{
-                       name: configurationVolumeName,
-                       configMap: {
-                           name: configuration.metadata.name
-                       }
+                        name: configurationVolumeName,
+                        configMap: {
+                            name: configuration.metadata.name,
+                        },
                     }],
                     restartPolicy: 'Always',
                     containers: [{
@@ -141,17 +141,17 @@ pulumi.interpolate`<?xml version='1.0' encoding='UTF-8'?>
                         ports: [{
                             name: 'api',
                             containerPort: 8082,
-                            protocol: 'TCP'
+                            protocol: 'TCP',
                         }, {
                             name: 'teltonika',
                             containerPort: 5027,
-                            protocol: 'TCP'
+                            protocol: 'TCP',
                         }],
                         startupProbe: {
                             httpGet: {
                                 path: '/',
                                 port: 'api',
-                                scheme: 'HTTP'
+                                scheme: 'HTTP',
                             },
                             failureThreshold: 30,
                             periodSeconds: 30,
@@ -159,23 +159,23 @@ pulumi.interpolate`<?xml version='1.0' encoding='UTF-8'?>
                         volumeMounts: [{
                             name: configurationVolumeName,
                             mountPath: '/opt/traccar/conf-custom',
-                            readOnly: true
-                        }]
-                    }]
-                }
-            }
-        }
+                            readOnly: true,
+                        }],
+                    }],
+                },
+            },
+        },
     }, {
         provider,
-        parent: provider
+        parent: provider,
     })
 
     new k8s.core.v1.Service('traccar-teltonika-service', {
         metadata: {
             namespace,
             annotations: {
-                'kubernetes.digitalocean.com/firewall-managed': 'false'
-            }
+                'kubernetes.digitalocean.com/firewall-managed': 'false',
+            },
         },
         spec: {
             type: 'NodePort',
@@ -185,17 +185,17 @@ pulumi.interpolate`<?xml version='1.0' encoding='UTF-8'?>
                 port: 5027,
                 nodePort: 32027,
                 targetPort: deployment.spec.template.spec.containers[0].ports[1].name,
-                protocol: 'TCP'
-            }]
-        }
+                protocol: 'TCP',
+            }],
+        },
     }, {
         provider,
-        parent: provider
+        parent: provider,
     })
 
     const service: k8s.core.v1.Service = new k8s.core.v1.Service('traccar-http-service', {
         metadata: {
-            namespace
+            namespace,
         },
         spec: {
             selector: labels,
@@ -203,20 +203,20 @@ pulumi.interpolate`<?xml version='1.0' encoding='UTF-8'?>
                 name: 'api',
                 port: 80,
                 targetPort: deployment.spec.template.spec.containers[0].ports[0].name,
-                protocol: 'TCP'
-            }]
-        }
+                protocol: 'TCP',
+            }],
+        },
     }, {
         provider,
-        parent: provider
+        parent: provider,
     })
 
     new k8s.networking.v1.Ingress('traccar-ingress', {
         metadata: {
             namespace,
             annotations: {
-                'pulumi.com/skipAwait': 'true'
-            }
+                'pulumi.com/skipAwait': 'true',
+            },
         },
         spec: {
             rules: [{
@@ -228,12 +228,12 @@ pulumi.interpolate`<?xml version='1.0' encoding='UTF-8'?>
                             service: {
                                 name: service.metadata.name,
                                 port: {
-                                    name: service.spec.ports[0].name
-                                }
-                            }
-                        }
-                    }]
-                }
+                                    name: service.spec.ports[0].name,
+                                },
+                            },
+                        },
+                    }],
+                },
             }, {
                 host: Domain.traccar,
                 http: {
@@ -244,17 +244,33 @@ pulumi.interpolate`<?xml version='1.0' encoding='UTF-8'?>
                             service: {
                                 name: service.metadata.name,
                                 port: {
-                                    name: service.spec.ports[0].name
-                                }
-                            }
-                        }
-                    }]
-                }
-            }]
-        }
+                                    name: service.spec.ports[0].name,
+                                },
+                            },
+                        },
+                    }],
+                },
+            }, {
+                host: Domain.newFrontend,
+                http: {
+                    paths: [{
+                        path: '/api',
+                        pathType: 'Prefix',
+                        backend: {
+                            service: {
+                                name: service.metadata.name,
+                                port: {
+                                    name: service.spec.ports[0].name,
+                                },
+                            },
+                        },
+                    }],
+                },
+            }],
+        },
     }, {
         provider,
-        parent: provider
+        parent: provider,
     })
 }
 
@@ -266,7 +282,7 @@ function describeBackendResources(): void {
 
 
     const provider: k8s.Provider = new k8s.Provider('kubernetes-provider', {
-        kubeconfig
+        kubeconfig,
     })
 
     const databaseConnectionSettings = describeDatabase(kubernetesClusterId)
@@ -275,6 +291,6 @@ function describeBackendResources(): void {
 
 export function deployBackendResources(): void {
     Program.forStack(
-        new Stack('backend-production', describeBackendResources)
+        new Stack('backend-production', describeBackendResources),
     ).execute()
 }
