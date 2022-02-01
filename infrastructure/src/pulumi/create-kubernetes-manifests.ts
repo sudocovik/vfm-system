@@ -18,7 +18,7 @@ function replaceRegistryUrlWithUrlClusterUnderstands(originalImageName: pulumi.O
 }
 
 function createFrontendApplication(provider: k8s.Provider, namespace: pulumi.Output<string>, ingressController: k8s.helm.v3.Chart): void {
-    const labels = { app: 'frontend' }
+    const labels = {app: 'frontend'}
 
     const image = new docker.Image('frontend', {
         imageName: 'localhost:5000/vfm-frontend',
@@ -111,7 +111,7 @@ function createFrontendApplication(provider: k8s.Provider, namespace: pulumi.Out
     }, {
         provider,
         parent: provider,
-        dependsOn: [ ingressController ]
+        dependsOn: [ingressController]
     })
 }
 
@@ -166,7 +166,7 @@ export function createKubernetesManifests(kubeconfig: string): void {
         parent: provider
     })
 
-    const traccarLabels = { app: 'traccar' }
+    const traccarLabels = {app: 'traccar'}
     const configurationVolumeName = 'configuration'
 
     const traccarDeployment: k8s.apps.v1.Deployment = new k8s.apps.v1.Deployment('traccar', {
@@ -180,7 +180,7 @@ export function createKubernetesManifests(kubeconfig: string): void {
             replicas: 1,
             template: {
                 metadata: {
-                    labels:  traccarLabels
+                    labels: traccarLabels
                 },
                 spec: {
                     volumes: [{
@@ -244,7 +244,7 @@ export function createKubernetesManifests(kubeconfig: string): void {
                 protocol: 'TCP'
             }]
         }
-    }, { provider })
+    }, {provider})
 
     new k8s.core.v1.Service('traccar-teltonika-service', {
         metadata: {
@@ -261,7 +261,7 @@ export function createKubernetesManifests(kubeconfig: string): void {
                 protocol: 'TCP'
             }]
         }
-    }, { provider })
+    }, {provider})
 
     const traefik = new k8s.helm.v3.Chart('ingress-controller', {
         chart: 'traefik',
@@ -295,20 +295,20 @@ export function createKubernetesManifests(kubeconfig: string): void {
                 }
             },
         ]
-    }, { provider })
+    }, {provider})
 
-    createFrontendApplication(provider, namespace, traefik)
-
-/*
-    new k8s.networking.v1.Ingress('default-ingress', {
+    new k8s.networking.v1.Ingress('traefik-ingress', {
         metadata: {
-            namespace
+            namespace,
+            annotations: {
+                'pulumi.com/skipAwait': 'true'
+            }
         },
         spec: {
             rules: [{
                 http: {
                     paths: [{
-                        path: '/',
+                        path: '/api',
                         pathType: 'Prefix',
                         backend: {
                             service: {
@@ -323,5 +323,6 @@ export function createKubernetesManifests(kubeconfig: string): void {
             }]
         }
     }, { provider, dependsOn: [ traefik ] })
- */
+
+    createFrontendApplication(provider, namespace, traefik)
 }
