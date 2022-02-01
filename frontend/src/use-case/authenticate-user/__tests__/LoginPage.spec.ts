@@ -71,7 +71,7 @@ describe('LoginPage', () => {
     typePassword('wrong-password')
     submitButtonClick()
 
-    cy.get('body').should('contain.text', t('wrong-email-and-password'))
+    notificationTextShouldBe(t('wrong-email-and-password'))
     assertOrderOfStateChangesFor(LoginFormState.failure())
     formStateShouldBe(LoginFormState.failure())
     authenticationSuccessfulEventShouldNotBeFired()
@@ -86,7 +86,7 @@ describe('LoginPage', () => {
     typePassword('irrelevant-password')
     submitButtonClick()
 
-    cy.get('body').should('contain.text', t('general-server-error'))
+    notificationTextShouldBe(t('general-server-error'))
     assertOrderOfStateChangesFor(LoginFormState.failure())
     formStateShouldBe(LoginFormState.failure())
     authenticationSuccessfulEventShouldNotBeFired()
@@ -101,7 +101,7 @@ describe('LoginPage', () => {
     typePassword('irrelevant-password')
     submitButtonClick()
 
-    cy.get('body').should('contain.text', t('network-error'))
+    notificationTextShouldBe(t('network-error'))
     assertOrderOfStateChangesFor(LoginFormState.failure())
     formStateShouldBe(LoginFormState.failure())
     authenticationSuccessfulEventShouldNotBeFired()
@@ -116,7 +116,7 @@ describe('LoginPage', () => {
     typePassword('irrelevant-password')
     submitButtonClick()
 
-    cy.get('body').should('contain.text', t('general-application-error'))
+    notificationTextShouldBe(t('general-application-error'))
     assertOrderOfStateChangesFor(LoginFormState.failure())
     formStateShouldBe(LoginFormState.failure())
     authenticationSuccessfulEventShouldNotBeFired()
@@ -164,6 +164,10 @@ function formStateShouldBe (expectedState: FormState): void {
     expect(currentState.emailError()).to.be.equal(expectedState.emailError())
     expect(currentState.passwordError()).to.be.equal(expectedState.passwordError())
   })
+}
+
+function notificationTextShouldBe (wantedText: string): void {
+  cy.get('body').should('contain.text', wantedText)
 }
 
 function authenticationSuccessfulEventShouldBeFired (): void {
