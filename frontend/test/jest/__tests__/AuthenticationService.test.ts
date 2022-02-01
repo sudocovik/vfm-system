@@ -42,6 +42,22 @@ describe('AuthenticationService', () => {
       return expect(AuthenticationService.login('valid@example.com', 'valid-password'))
         .resolves.toBeUndefined()
     })
+
+    it('should send request data as application/x-www-form-urlencoded type', async () => {
+      let contentType = ''
+      let data = ''
+
+      const mock = new MockAdapter(axios)
+      mock.onPost(AuthenticationService.loginEndpoint).reply(config => {
+        contentType = config.headers ? config.headers['Content-Type'] : ''
+        data = <string>config.data
+
+        return [200]
+      })
+      await AuthenticationService.login('irrelevant@example.com', 'valid-password')
+      expect(contentType).toEqual('application/x-www-form-urlencoded; charset=utf-8')
+      expect(data).toEqual('email=irrelevant%40example.com&password=valid-password')
+    })
   })
 })
 

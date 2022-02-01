@@ -6,7 +6,11 @@ export class AuthenticationService {
 
   public static async login (email: string, password: string): Promise<void> {
     try {
-      await axios.post(AuthenticationService.loginEndpoint, { email, password })
+      const endpoint = AuthenticationService.loginEndpoint
+      const data = this.encodeRequestData({ email, password })
+      const headers = { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' }
+
+      await axios.post(endpoint, data, { headers })
     }
     catch (e) {
       const error = <AxiosError>e
@@ -24,6 +28,12 @@ export class AuthenticationService {
       }
       else throw e
     }
+  }
+
+  private static encodeRequestData (data: Record<string, string>): string {
+    return Object.keys(data)
+      .map((key) => `${key}=${encodeURIComponent(data[key])}`)
+      .join('&')
   }
 }
 
