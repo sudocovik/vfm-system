@@ -20,9 +20,11 @@ describe('LoginPage', () => {
     const { assertOrderOfStateChangesFor } = setupFormStateSpies()
     mountLoginPage()
     simulateCorrectCredentialsSituation()
+
     typeEmail('correct@example.com')
     typePassword('correct-password')
     submitButtonClick()
+
     assertOrderOfStateChangesFor(LoginFormState.successful())
     formStateShouldBe(LoginFormState.successful())
     authenticationSuccessfulEventShouldBeFired()
@@ -31,8 +33,10 @@ describe('LoginPage', () => {
   inAllLanguages.it('should be in \'failed\' state if email is missing', (t) => {
     mountLoginPage()
     simulateCorrectCredentialsSituation()
+
     typePassword('irrelevant-password')
     submitButtonClick()
+
     formStateShouldBe(LoginFormState.failure().withEmailError(t('validation.required')))
     authenticationSuccessfulEventShouldNotBeFired()
   })
@@ -40,8 +44,10 @@ describe('LoginPage', () => {
   inAllLanguages.it('should be in \'failed\' state if password is missing', (t) => {
     mountLoginPage()
     simulateCorrectCredentialsSituation()
+
     typeEmail('irrelevant@example.com')
     submitButtonClick()
+
     formStateShouldBe(LoginFormState.failure().withPasswordError(t('validation.required')))
     authenticationSuccessfulEventShouldNotBeFired()
   })
@@ -49,7 +55,9 @@ describe('LoginPage', () => {
   inAllLanguages.it('should be in \'failed\' state if email & password are both missing', (t) => {
     mountLoginPage()
     simulateCorrectCredentialsSituation()
+
     submitButtonClick()
+
     formStateShouldBe(LoginFormState.failure().withEmailError(t('validation.required')).withPasswordError(t('validation.required')))
     authenticationSuccessfulEventShouldNotBeFired()
   })
@@ -58,9 +66,11 @@ describe('LoginPage', () => {
     const { assertOrderOfStateChangesFor } = setupFormStateSpies()
     mountLoginPage()
     simulateWrongCredentialsSituation()
+
     typeEmail('wrong@example.com')
     typePassword('wrong-password')
     submitButtonClick()
+
     cy.get('body').should('contain.text', t('wrong-email-and-password'))
     assertOrderOfStateChangesFor(LoginFormState.failure())
     formStateShouldBe(LoginFormState.failure())
@@ -71,9 +81,11 @@ describe('LoginPage', () => {
     const { assertOrderOfStateChangesFor } = setupFormStateSpies()
     mountLoginPage()
     simulateServerErrorSituation()
+
     typeEmail('irrelevant@example.com')
     typePassword('irrelevant-password')
     submitButtonClick()
+
     cy.get('body').should('contain.text', t('general-server-error'))
     assertOrderOfStateChangesFor(LoginFormState.failure())
     formStateShouldBe(LoginFormState.failure())
@@ -84,9 +96,11 @@ describe('LoginPage', () => {
     const { assertOrderOfStateChangesFor } = setupFormStateSpies()
     mountLoginPage()
     simulateNetworkErrorSituation()
+
     typeEmail('irrelevant@example.com')
     typePassword('irrelevant-password')
     submitButtonClick()
+
     cy.get('body').should('contain.text', t('network-error'))
     assertOrderOfStateChangesFor(LoginFormState.failure())
     formStateShouldBe(LoginFormState.failure())
@@ -97,9 +111,11 @@ describe('LoginPage', () => {
     const { assertOrderOfStateChangesFor } = setupFormStateSpies()
     mountLoginPage()
     simulateApplicationErrorSituation()
+
     typeEmail('irrelevant@example.com')
     typePassword('irrelevant-password')
     submitButtonClick()
+
     cy.get('body').should('contain.text', t('general-application-error'))
     assertOrderOfStateChangesFor(LoginFormState.failure())
     formStateShouldBe(LoginFormState.failure())
