@@ -17,11 +17,13 @@ describe('LoginPage', () => {
   })
 
   it('should notify parent component authentication was successful', () => {
+    const { assertOrderOfStateChangesFor } = setupFormStateSpies()
     mountLoginPage()
     simulateCorrectCredentialsSituation()
     typeEmail('correct@example.com')
     typePassword('correct-password')
     submitButtonClick()
+    assertOrderOfStateChangesFor(LoginFormState.successful())
     formStateShouldBe(LoginFormState.successful())
     authenticationSuccessfulEventShouldBeFired()
   })
@@ -52,56 +54,54 @@ describe('LoginPage', () => {
     authenticationSuccessfulEventShouldNotBeFired()
   })
 
-  it('should be in \'in-progress\' state when validation is ok', () => {
-    cy.spy(LoginFormState, 'inProgress').as('in-progress')
-    mountLoginPage()
-    simulateCorrectCredentialsSituation()
-    typeEmail('irrelevant@example.com')
-    typePassword('irrelevant')
-    submitButtonClick()
-    cy.get('@in-progress').should('have.been.calledOnce')
-  })
-
   inAllLanguages.it('should notify user credentials are incorrect', (t) => {
+    const { assertOrderOfStateChangesFor } = setupFormStateSpies()
     mountLoginPage()
     simulateWrongCredentialsSituation()
     typeEmail('wrong@example.com')
     typePassword('wrong-password')
     submitButtonClick()
     cy.get('body').should('contain.text', t('wrong-email-and-password'))
+    assertOrderOfStateChangesFor(LoginFormState.failure())
     formStateShouldBe(LoginFormState.failure())
     authenticationSuccessfulEventShouldNotBeFired()
   })
 
   inAllLanguages.it('should notify user there are problems with the server', (t) => {
+    const { assertOrderOfStateChangesFor } = setupFormStateSpies()
     mountLoginPage()
     simulateServerErrorSituation()
     typeEmail('irrelevant@example.com')
     typePassword('irrelevant-password')
     submitButtonClick()
     cy.get('body').should('contain.text', t('general-server-error'))
+    assertOrderOfStateChangesFor(LoginFormState.failure())
     formStateShouldBe(LoginFormState.failure())
     authenticationSuccessfulEventShouldNotBeFired()
   })
 
   inAllLanguages.it('should notify user there are problems with the network', (t) => {
+    const { assertOrderOfStateChangesFor } = setupFormStateSpies()
     mountLoginPage()
     simulateNetworkErrorSituation()
     typeEmail('irrelevant@example.com')
     typePassword('irrelevant-password')
     submitButtonClick()
     cy.get('body').should('contain.text', t('network-error'))
+    assertOrderOfStateChangesFor(LoginFormState.failure())
     formStateShouldBe(LoginFormState.failure())
     authenticationSuccessfulEventShouldNotBeFired()
   })
 
   inAllLanguages.it('should notify user there are problems with the client application', (t) => {
+    const { assertOrderOfStateChangesFor } = setupFormStateSpies()
     mountLoginPage()
     simulateApplicationErrorSituation()
     typeEmail('irrelevant@example.com')
     typePassword('irrelevant-password')
     submitButtonClick()
     cy.get('body').should('contain.text', t('general-application-error'))
+    assertOrderOfStateChangesFor(LoginFormState.failure())
     formStateShouldBe(LoginFormState.failure())
     authenticationSuccessfulEventShouldNotBeFired()
   })
@@ -186,4 +186,24 @@ function simulateApplicationErrorSituation (): void {
   cy.stub(AuthenticationService, 'login', () => {
     throw new Error()
   })
+}
+
+function setupFormStateSpies () {
+  const ready = cy.spy(LoginFormState, 'ready').as('ready')
+  const inProgress = cy.spy(LoginFormState, 'inProgress').as('in-progress')
+  const successful = cy.spy(LoginFormState, 'successful').as('successful')
+  const failure = cy.spy(LoginFormState, 'failure').as('failure')
+
+  return {
+    assertOrderOfStateChangesFor: (state: FormState): void => {
+      cy.then(() => {
+        expect(inProgress).to.be.calledAfter(ready)
+
+        const finalState = state instanceof LoginFormState.successful().constructor
+          ? successful
+          : failure
+        expect(finalState).to.be.calledAfter(inProgress)
+      })
+    }
+  }
 }
