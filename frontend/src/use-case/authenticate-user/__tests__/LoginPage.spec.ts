@@ -30,7 +30,7 @@ describe('LoginPage', () => {
     authenticationSuccessfulEventShouldBeFired()
   })
 
-  inAllLanguages.it('should be in \'failed\' state if email is missing', (t) => {
+  inAllLanguages.it('should tell user if email is missing', (t) => {
     mountLoginPage()
     simulateCorrectCredentialsSituation()
 
@@ -41,7 +41,7 @@ describe('LoginPage', () => {
     authenticationSuccessfulEventShouldNotBeFired()
   })
 
-  inAllLanguages.it('should be in \'failed\' state if password is missing', (t) => {
+  inAllLanguages.it('should tell user if password is missing', (t) => {
     mountLoginPage()
     simulateCorrectCredentialsSituation()
 
@@ -52,7 +52,7 @@ describe('LoginPage', () => {
     authenticationSuccessfulEventShouldNotBeFired()
   })
 
-  inAllLanguages.it('should be in \'failed\' state if email & password are both missing', (t) => {
+  inAllLanguages.it('should tell user if email & password are both missing', (t) => {
     mountLoginPage()
     simulateCorrectCredentialsSituation()
 
