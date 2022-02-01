@@ -23,7 +23,7 @@ describe('LoginPage', () => {
 
     typeEmail('correct@example.com')
     typePassword('correct-password')
-    submitButtonClick()
+    submitForm()
 
     assertOrderOfStateChangesFor(LoginFormState.successful())
     formStateShouldBe(LoginFormState.successful())
@@ -35,7 +35,7 @@ describe('LoginPage', () => {
     simulateCorrectCredentialsSituation()
 
     typePassword('irrelevant-password')
-    submitButtonClick()
+    submitForm()
 
     formStateShouldBe(LoginFormState.failure().withEmailError(t('validation.required')))
     authenticationSuccessfulEventShouldNotBeFired()
@@ -46,7 +46,7 @@ describe('LoginPage', () => {
     simulateCorrectCredentialsSituation()
 
     typeEmail('irrelevant@example.com')
-    submitButtonClick()
+    submitForm()
 
     formStateShouldBe(LoginFormState.failure().withPasswordError(t('validation.required')))
     authenticationSuccessfulEventShouldNotBeFired()
@@ -56,7 +56,7 @@ describe('LoginPage', () => {
     mountLoginPage()
     simulateCorrectCredentialsSituation()
 
-    submitButtonClick()
+    submitForm()
 
     formStateShouldBe(LoginFormState.failure().withEmailError(t('validation.required')).withPasswordError(t('validation.required')))
     authenticationSuccessfulEventShouldNotBeFired()
@@ -69,7 +69,7 @@ describe('LoginPage', () => {
 
     typeEmail('wrong@example.com')
     typePassword('wrong-password')
-    submitButtonClick()
+    submitForm()
 
     notificationTextShouldBe(t('wrong-email-and-password'))
     assertOrderOfStateChangesFor(LoginFormState.failure())
@@ -84,7 +84,7 @@ describe('LoginPage', () => {
 
     typeEmail('irrelevant@example.com')
     typePassword('irrelevant-password')
-    submitButtonClick()
+    submitForm()
 
     notificationTextShouldBe(t('general-server-error'))
     assertOrderOfStateChangesFor(LoginFormState.failure())
@@ -99,7 +99,7 @@ describe('LoginPage', () => {
 
     typeEmail('irrelevant@example.com')
     typePassword('irrelevant-password')
-    submitButtonClick()
+    submitForm()
 
     notificationTextShouldBe(t('network-error'))
     assertOrderOfStateChangesFor(LoginFormState.failure())
@@ -114,7 +114,7 @@ describe('LoginPage', () => {
 
     typeEmail('irrelevant@example.com')
     typePassword('irrelevant-password')
-    submitButtonClick()
+    submitForm()
 
     notificationTextShouldBe(t('general-application-error'))
     assertOrderOfStateChangesFor(LoginFormState.failure())
@@ -137,7 +137,7 @@ function typeEmail (wantedEmail: string): void {
   })
 }
 
-function submitButtonClick (): void {
+function submitForm (): void {
   cy.then(() => {
     const submitButton = Cypress.vueWrapper.findComponent(LoginFormSubmitButton)
     cy.wrap(submitButton.element).click()
