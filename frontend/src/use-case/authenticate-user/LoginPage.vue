@@ -12,18 +12,17 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { useMeta, useQuasar } from 'quasar'
-import { useI18n } from 'vue-i18n'
+import { t } from 'boot/i18n'
 import LoginForm from './LoginForm.vue'
 import { FormState, LoginFormState } from './LoginFormState'
 import { AuthenticateEventData, AuthenticateEventName } from './AuthenticateEvent'
-import { t } from 'boot/i18n'
+import { AuthenticationSuccessfulEventName } from './AuthenticationSuccessfulEvent'
 import {
   AuthenticationService,
   InvalidCredentialsError,
   NetworkError,
   UndefinedServerError
 } from 'src/backend/AuthenticationService'
-import { AuthenticationSuccessfulEventName } from './AuthenticationSuccessfulEvent'
 
 export default defineComponent({
   name: 'LoginPage',
@@ -33,7 +32,7 @@ export default defineComponent({
   },
 
   setup (props, { emit }) {
-    const translatedTitle: string = useI18n().t('login')
+    const translatedTitle: string = t('login')
 
     useMeta({
       title: `${translatedTitle} | Zara Fleet`
