@@ -59,6 +59,31 @@ describe('AuthenticationService', () => {
       expect(data).toEqual('email=irrelevant%40example.com&password=valid-password')
     })
   })
+
+  describe('check()', () => {
+    it('should return true when user is authenticated', () => {
+      const mock = new MockAdapter(axios)
+      mock.onGet(AuthenticationService.sessionEndpoint).replyOnce(204)
+
+      return expect(AuthenticationService.check()).resolves.toEqual(true)
+    })
+
+    it('should return false when user is not authenticated', () => {
+      const mock = new MockAdapter(axios)
+      mock.onGet(AuthenticationService.sessionEndpoint).replyOnce(404)
+
+      return expect(AuthenticationService.check()).resolves.toEqual(false)
+    })
+
+    it('should return undefined if error occurs', () => {
+      const mock = new MockAdapter(axios)
+      mock.onGet(AuthenticationService.sessionEndpoint).replyOnce(() => {
+        throw new Error()
+      })
+
+      return expect(AuthenticationService.check()).resolves.toEqual(undefined)
+    })
+  })
 })
 
 class RandomApplicationError extends CustomError {

@@ -3,6 +3,7 @@ import axios, { AxiosError } from 'axios'
 
 export class AuthenticationService {
   public static loginEndpoint = '/api/session'
+  public static sessionEndpoint = '/api/session'
 
   public static async login (email: string, password: string): Promise<void> {
     try {
@@ -34,6 +35,20 @@ export class AuthenticationService {
     return Object.keys(data)
       .map((key) => `${key}=${encodeURIComponent(data[key])}`)
       .join('&')
+  }
+
+  public static async check (): Promise<boolean | undefined> {
+    try {
+      await axios.get(AuthenticationService.sessionEndpoint)
+      return true
+    }
+    catch (e) {
+      const error = <AxiosError>e
+      if (error.response?.status === 404) {
+        return false
+      }
+      else return undefined
+    }
   }
 }
 
