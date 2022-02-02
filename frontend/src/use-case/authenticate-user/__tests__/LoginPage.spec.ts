@@ -149,7 +149,7 @@ function mountLoginPage (): void {
     global: {
       renderStubDefaultSlot: true,
       stubs: {
-        QPage: true
+        CenteredLayout: true
       }
     }
   })

@@ -1,18 +1,19 @@
 <template>
-  <q-page class="row items-center justify-center">
+  <CenteredLayout>
     <div class="col col-11 col-sm-7 col-md-4 col-lg-3">
       <LoginForm
         :state="formState"
         v-on="formEvents"
       />
     </div>
-  </q-page>
+  </CenteredLayout>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { useMeta, useQuasar } from 'quasar'
 import { t } from 'boot/i18n'
+import CenteredLayout from 'layouts/CenteredLayout.vue'
 import LoginForm from './LoginForm.vue'
 import { FormState, LoginFormState } from './LoginFormState'
 import { AuthenticateEventData, AuthenticateEventName } from './AuthenticateEvent'
@@ -28,6 +29,7 @@ export default defineComponent({
   name: 'LoginPage',
 
   components: {
+    CenteredLayout,
     LoginForm
   },
 
