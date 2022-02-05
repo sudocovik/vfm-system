@@ -1,68 +1,61 @@
-import { mount } from '@cypress/vue'
-import AuthenticationManager from '../AuthenticationManager.vue'
+import { ComponentUnderTest } from 'test/support/api'
+import AuthenticationManagerWrapper from './AuthenticationManagerWrapper.vue'
 import { AuthenticationService } from 'src/backend/AuthenticationService'
+
+const PossibleSlots = {
+  Loading: 'div#loading',
+  Authenticated: 'div#authenticated',
+  Unauthenticated: 'div#unauthenticated'
+}
 
 describe('AuthenticationManager', () => {
   it('should render #loading slot while checking for authentication status', () => {
     const waitForAuthenticationCheck = simulateUserIsAuthenticated()
 
-    const { loading } = mountAuthenticationManager()
-    contentShouldBe(loading)
+    ComponentUnderTest.is(AuthenticationManagerWrapper).mount()
+    activeSlotShouldBe(PossibleSlots.Loading)
 
     waitForAuthenticationCheck()
-    contentShouldNotBe(loading)
+    activeSlotShouldNotBe(PossibleSlots.Loading)
   })
 
   it('should render #unauthenticated slot when user is not logged in', () => {
-    simulateUserIsNotAuthenticated()
-    const { unauthenticated } = mountAuthenticationManager()
+    const waitForAuthenticationCheck = simulateUserIsNotAuthenticated()
 
-    contentShouldBe(unauthenticated)
+    ComponentUnderTest.is(AuthenticationManagerWrapper).mount()
+    waitForAuthenticationCheck()
+
+    activeSlotShouldBe(PossibleSlots.Unauthenticated)
   })
 
   it('should render #authenticated slot when user is logged in', () => {
-    simulateUserIsAuthenticated()
-    const { authenticated } = mountAuthenticationManager()
+    const waitForAuthenticationCheck = simulateUserIsAuthenticated()
 
-    contentShouldBe(authenticated)
+    ComponentUnderTest.is(AuthenticationManagerWrapper).mount()
+    waitForAuthenticationCheck()
+
+    activeSlotShouldBe(PossibleSlots.Authenticated)
+  })
+
+  it('should let #unauthenticated slot programmatically switch to #authenticated slot', () => {
+    const waitForAuthenticationCheck = simulateUserIsNotAuthenticated()
+
+    ComponentUnderTest.is(AuthenticationManagerWrapper).mount()
+    waitForAuthenticationCheck()
+    activeSlotShouldBe(PossibleSlots.Unauthenticated)
+
+    programmaticallySwitchToAuthenticatedSlot()
+
+    activeSlotShouldBe(PossibleSlots.Authenticated)
   })
 })
 
-function mountAuthenticationManager () {
-  const content = {
-    authenticated: 'Authenticated slot rendered',
-    unauthenticated: 'Unauthenticated slot rendered',
-    loading: 'Loading slot rendered'
-  }
-
-  const createSlotContent = (content: string) => ({ render: () => content })
-  mount(AuthenticationManager, {
-    slots: {
-      authenticated: createSlotContent(content.authenticated),
-      unauthenticated: createSlotContent(content.unauthenticated),
-      loading: createSlotContent(content.loading)
-    }
-  })
-
-  return content
-}
-
-function contentShouldBe (wantedContent: string): void {
-  cy.then(() => {
-    cy.wrap(Cypress.vueWrapper.element).should('have.text', wantedContent)
-  })
-}
-
-function contentShouldNotBe (wantedContent: string): void {
-  cy.then(() => {
-    cy.wrap(Cypress.vueWrapper.element).should('not.have.text', wantedContent)
-  })
-}
-
-function simulateUserIsNotAuthenticated (): void {
+function simulateUserIsNotAuthenticated (): () => void {
   cy.intercept('GET', AuthenticationService.sessionEndpoint, {
     statusCode: 404
-  })
+  }).as('failure')
+
+  return () => void cy.wait('@failure')
 }
 
 function simulateUserIsAuthenticated (): () => void {
@@ -71,4 +64,20 @@ function simulateUserIsAuthenticated (): () => void {
   }).as('success')
 
   return () => void cy.wait('@success')
+}
+
+function activeSlotShouldBe (wantedSlot: string): void {
+  Object.values(PossibleSlots).forEach(slot => {
+    cy.get(slot).should(
+      slot === wantedSlot ? 'exist' : 'not.exist'
+    )
+  })
+}
+
+function activeSlotShouldNotBe (wantedSlot: string): void {
+  cy.get(wantedSlot).should('not.exist')
+}
+
+function programmaticallySwitchToAuthenticatedSlot (): void {
+  cy.get(PossibleSlots.Unauthenticated).dblclick()
 }
