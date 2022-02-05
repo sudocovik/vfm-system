@@ -6,8 +6,11 @@
       </div>
     </template>
 
-    <template #authenticated>
-      <div id="authenticated">
+    <template #authenticated="{ setUnauthenticated }">
+      <div
+        id="authenticated"
+        @dblclick="setUnauthenticated"
+      >
         AUTHENTICATED
       </div>
     </template>

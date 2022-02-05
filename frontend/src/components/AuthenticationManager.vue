@@ -2,6 +2,7 @@
   <slot
     v-if="isAuthenticated"
     name="authenticated"
+    :setUnauthenticated="setUnauthenticated"
   />
   <slot
     v-else-if="isNotAuthenticated"
@@ -40,11 +41,13 @@ export default {
     const isNotAuthenticated = computed(() => state.value === State.Unauthenticated)
 
     const setAuthenticated = () => (state.value = State.Authenticated)
+    const setUnauthenticated = () => (state.value = State.Unauthenticated)
 
     return {
       isAuthenticated,
       isNotAuthenticated,
-      setAuthenticated
+      setAuthenticated,
+      setUnauthenticated
     }
   }
 }

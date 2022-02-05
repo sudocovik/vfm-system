@@ -45,8 +45,18 @@ describe('AuthenticationManager', () => {
     activeSlotShouldBe(PossibleSlots.Unauthenticated)
 
     programmaticallySwitchToAuthenticatedSlot()
-
     activeSlotShouldBe(PossibleSlots.Authenticated)
+  })
+
+  it('should let #authenticated slot programmatically switch to #unauthenticated slot', () => {
+    const waitForAuthenticationCheck = simulateUserIsAuthenticated()
+
+    ComponentUnderTest.is(AuthenticationManagerWrapper).mount()
+    waitForAuthenticationCheck()
+    activeSlotShouldBe(PossibleSlots.Authenticated)
+
+    programmaticallySwitchToUnauthenticatedSlot()
+    activeSlotShouldBe(PossibleSlots.Unauthenticated)
   })
 })
 
@@ -80,4 +90,8 @@ function activeSlotShouldNotBe (wantedSlot: string): void {
 
 function programmaticallySwitchToAuthenticatedSlot (): void {
   cy.get(PossibleSlots.Unauthenticated).dblclick()
+}
+
+function programmaticallySwitchToUnauthenticatedSlot (): void {
+  cy.get(PossibleSlots.Authenticated).dblclick()
 }
