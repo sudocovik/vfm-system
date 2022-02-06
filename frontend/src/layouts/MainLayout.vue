@@ -1,17 +1,24 @@
 <template>
-  <q-layout view="hHh Lpr lFf">
-    <q-header>
-      <q-toolbar>
+  <q-layout view="lHh Lpr lFf">
+    <q-header
+      class="q-pa-md"
+      style="background-color: transparent"
+    >
+      <q-toolbar
+        class="rounded-borders shadow-1"
+        style="color: #5E6367; background-color: #fff"
+      >
         <q-btn
           flat
           dense
           round
-          icon="menu"
+          icon="mdi-menu"
           aria-label="Menu"
+          style="color: #3B4042"
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title>
+        <q-toolbar-title class="text-subtitle1">
           Quasar App
         </q-toolbar-title>
 
@@ -22,20 +29,39 @@
     <q-drawer
       v-model="leftDrawerOpen"
       show-if-above
-      bordered
+      :breakpoint="1023"
+      class="bg-white shadow-1"
     >
-      <q-list>
-        <q-item-label
-          header
-        >
-          Essential Links
-        </q-item-label>
-
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
+      <div
+        class="row items-center q-px-md"
+        style="height: 82px"
+      >
+        <q-icon
+          name="mdi-map-marker-radius-outline"
+          size="md"
+          color="primary"
         />
+        <span
+          class="text-h5 q-pl-sm"
+          style="color: #555;"
+        >Zara Fleet</span>
+      </div>
+
+      <q-separator />
+
+      <q-list>
+        <q-item to="asd">
+          <q-item-section
+            avatar
+          >
+            <q-icon
+              name="mdi-truck"
+              size="sm"
+            />
+          </q-item-section>
+
+          <q-item-section>Vozila</q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
 
@@ -47,65 +73,14 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import EssentialLink from 'components/EssentialLink.vue'
-
-const linksList = [
-  {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev'
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework'
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev'
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev'
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
-  }
-]
 
 export default defineComponent({
   name: 'MainLayout',
-
-  components: {
-    EssentialLink
-  },
 
   setup () {
     const leftDrawerOpen = ref(false)
 
     return {
-      essentialLinks: linksList,
       leftDrawerOpen,
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
