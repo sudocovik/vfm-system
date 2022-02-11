@@ -14,4 +14,4 @@ build:
 
 .PHONY: exec
 exec:
-	@docker exec -it $(CONTAINER_NAME) bash
+	@./exec.sh $(IMAGE_NAME) $(CONTAINER_NAME)
