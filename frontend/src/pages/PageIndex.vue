@@ -54,6 +54,22 @@
           <span>Ažurirano prije {{ 5 + (Math.floor(Math.random() * 60)) }} sekundi</span>
         </div>
       </q-card-section>
+
+      <q-separator />
+
+      <q-card-actions>
+        <q-btn
+          flat
+          color="primary"
+          :to="'/vehicle/' + i + '/history'"
+        >
+          <q-icon
+            name="mdi-history"
+            left
+          />
+          <span>Povijest</span>
+        </q-btn>
+      </q-card-actions>
     </q-card>
   </q-page>
 </template>

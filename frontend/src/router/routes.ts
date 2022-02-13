@@ -11,6 +11,12 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../use-case/authenticate-user/LoginPage.vue')
   },
 
+  {
+    path: '/vehicle/:vehicleId/history',
+    component: () => import('../pages/VehicleRouteHistory.vue'),
+    props: true
+  },
+
   // Always leave this as last one,
   // but you can also remove it
   {
