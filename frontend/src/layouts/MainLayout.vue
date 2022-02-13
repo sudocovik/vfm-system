@@ -120,7 +120,7 @@ export default defineComponent({
       },
       {
         fullPath: '/reminders',
-        icon: 'mdi-calendar-text',
+        icon: 'mdi-alarm',
         title: 'Podsjetnici'
       }
     ]
