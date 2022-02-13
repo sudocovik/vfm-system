@@ -12,17 +12,6 @@ build:
 	@docker cp $(CONTAINER_ID):/app/node_modules ./infrastructure/.
 	@docker rm $(CONTAINER_ID) > /dev/null
 
-.PHONY: dev
-dev:
-	@docker run -it \
-			--rm \
-			--network host \
-			--name $(CONTAINER_NAME) \
-			-v $$(pwd)/infrastructure:/app \
-			-v $$(pwd)/frontend:/frontend \
-			-v /var/run/docker.sock:/var/run/docker.sock \
-		$(IMAGE_NAME)
-
 .PHONY: exec
 exec:
-	@docker exec -it $(CONTAINER_NAME) bash
+	@./exec.sh $(IMAGE_NAME) $(CONTAINER_NAME)
