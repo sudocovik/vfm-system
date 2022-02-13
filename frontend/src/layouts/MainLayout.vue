@@ -44,16 +44,15 @@
     >
       <div
         class="row items-center q-px-md"
-        style="height: 82px"
+        style="color: #555; height: 82px"
       >
         <q-icon
           name="mdi-map-marker-radius-outline"
           size="md"
-          color="primary"
+          left
         />
         <span
           class="text-h5 q-pl-sm"
-          style="color: #555;"
         >Zara Fleet</span>
       </div>
 
