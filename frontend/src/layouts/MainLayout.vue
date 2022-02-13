@@ -1,8 +1,10 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-header
-      class="q-pa-md"
+      class="q-px-md q-pt-md"
       style="background-color: transparent"
+      reveal
+      :reveal-offset="60"
     >
       <q-toolbar
         class="rounded-borders shadow-1"
@@ -19,10 +21,18 @@
         />
 
         <q-toolbar-title class="text-subtitle1">
-          Quasar App
+          Vozila
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <q-btn
+          flat
+          round
+        >
+          <q-icon
+            name="mdi-account-circle"
+            size="sm"
+          />
+        </q-btn>
       </q-toolbar>
     </q-header>
 
@@ -50,17 +60,23 @@
       <q-separator />
 
       <q-list>
-        <q-item to="asd">
+        <q-item
+          v-for="item in drawerItems"
+          :key="item.fullPath"
+          :to="item.fullPath"
+          class="q-ma-sm rounded-borders"
+          active-class="navigation-drawer-active-item"
+        >
           <q-item-section
             avatar
           >
             <q-icon
-              name="mdi-truck"
+              :name="item.icon"
               size="sm"
             />
           </q-item-section>
 
-          <q-item-section>Vozila</q-item-section>
+          <q-item-section>{{ item.title }}</q-item-section>
         </q-item>
       </q-list>
     </q-drawer>
@@ -74,17 +90,47 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 
+interface NavigationItem {
+  fullPath: string
+  icon: string
+  title: string
+}
+
 export default defineComponent({
   name: 'MainLayout',
 
   setup () {
     const leftDrawerOpen = ref(false)
 
+    const drawerItems: NavigationItem[] = [
+      {
+        fullPath: '/',
+        icon: 'mdi-truck',
+        title: 'Vozila'
+      },
+      {
+        fullPath: '/trailers',
+        icon: 'mdi-truck-trailer',
+        title: 'Prikolice'
+      },
+      {
+        fullPath: '/drivers',
+        icon: 'mdi-account-tie',
+        title: 'Vozači'
+      },
+      {
+        fullPath: '/reminders',
+        icon: 'mdi-calendar-text',
+        title: 'Podsjetnici'
+      }
+    ]
+
     return {
       leftDrawerOpen,
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
-      }
+      },
+      drawerItems
     }
   }
 })

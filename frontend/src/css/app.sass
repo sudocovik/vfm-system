@@ -1,2 +1,15 @@
-body, .q-drawer
+body, .q-header
   background-color: #EDEFF0 !important
+
+.q-drawer
+  z-index: 3000 // otherwise .q-header masks the drawer's shadow
+
+.navigation-drawer-active-item
+  color: var(--q-primary)
+
+  > .q-focus-helper
+    background-color: currentColor
+    opacity: 0.15 !important
+
+.gm-style-cc
+  display: none
