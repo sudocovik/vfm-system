@@ -14,14 +14,7 @@ const path = require('path')
 module.exports = configure(function (ctx) {
   return {
     // https://quasar.dev/quasar-cli/supporting-ts
-    supportTS: {
-      tsCheckerConfig: {
-        eslint: {
-          enabled: true,
-          files: './src/**/*.{ts,tsx,js,jsx,vue}'
-        }
-      }
-    },
+    supportTS: true,
 
     // https://quasar.dev/quasar-cli/prefetch-feature
     // preFetch: true,
