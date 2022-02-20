@@ -1,3 +1,7 @@
+<template>
+  <q-header>ASD</q-header>
+</template>
+
 <script lang="ts">
 import { defineComponent } from 'vue'
 
