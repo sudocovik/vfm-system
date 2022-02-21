@@ -1,7 +1,8 @@
 import MainLayout from '../MainLayout.vue'
 import { mount } from '@cypress/vue'
 import TheHeader from 'components/TheHeader.vue'
-import { QBtn, QDrawer } from 'quasar'
+import HamburgerIcon from 'components/HamburgerIcon.vue'
+import { QDrawer } from 'quasar'
 
 describe('MainLayout', () => {
   it('should render header', () => {
@@ -35,7 +36,7 @@ function getDrawerState (): boolean {
 
 function toggleDrawer (): void {
   const ignoreDrawerOverlay = { force: true }
-  cy.wrap(Cypress.vueWrapper.findComponent(QBtn).element).click(ignoreDrawerOverlay)
+  cy.wrap(Cypress.vueWrapper.findComponent(HamburgerIcon).element).click(ignoreDrawerOverlay)
 }
 
 function drawerStateShouldBe (expectedState: boolean): void {

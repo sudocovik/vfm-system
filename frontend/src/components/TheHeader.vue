@@ -4,11 +4,10 @@
       class="rounded-borders shadow-1 bg-white"
       style="color: #5E6367"
     >
-      <q-btn
+      <HamburgerIcon
         flat
         dense
         round
-        icon="mdi-menu"
         style="color: #3B4042"
         @click="notifyParentMenuToggleWasRequested"
       />
@@ -19,9 +18,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { MenuToggleEventName } from './MenuToggleEvent'
+import HamburgerIcon from './HamburgerIcon.vue'
 
 export default defineComponent({
   name: 'TheHeader',
+
+  components: { HamburgerIcon },
 
   emits: [MenuToggleEventName],
 

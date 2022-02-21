@@ -1,8 +1,9 @@
 import { mount } from '@cypress/vue'
-import { QBtn, QHeader } from 'quasar'
+import { QHeader } from 'quasar'
 import TheHeaderWrapper from './TheHeaderWrapper.vue'
 import { Event } from 'test/support/api'
 import { MenuToggleEventName as MenuToggle } from '../MenuToggleEvent'
+import HamburgerIcon from '../HamburgerIcon.vue'
 
 describe('TheHeader', () => {
   it('should mount', () => {
@@ -34,7 +35,7 @@ function mountHeader (): void {
 
 function clickOnMenuToggleIcon (): void {
   cy.then(() => {
-    const menuToggleIcon = Cypress.vueWrapper.findComponent(QBtn)
+    const menuToggleIcon = Cypress.vueWrapper.findComponent(HamburgerIcon)
     cy.wrap(menuToggleIcon.element).click()
   })
 }
