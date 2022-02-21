@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHh Lpr lFf">
-    <TheHeader />
+    <TheHeader @[MenuToggle]="toggleLeftDrawer" />
 
     <q-drawer
       v-model="leftDrawerOpen"
@@ -32,6 +32,7 @@
 import { defineComponent, ref } from 'vue'
 import EssentialLink from 'components/EssentialLink.vue'
 import TheHeader from 'components/TheHeader.vue'
+import { MenuToggleEventName as MenuToggle } from 'components/MenuToggleEvent'
 
 const linksList = [
   {
@@ -94,7 +95,8 @@ export default defineComponent({
       leftDrawerOpen,
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
-      }
+      },
+      MenuToggle
     }
   }
 })
