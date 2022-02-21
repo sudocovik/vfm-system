@@ -1,23 +1,6 @@
 <template>
   <q-layout view="hHh Lpr lFf">
-    <q-header>
-      <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-        />
-
-        <q-toolbar-title>
-          Quasar App
-        </q-toolbar-title>
-
-        <div>Quasar v{{ $q.version }}</div>
-      </q-toolbar>
-    </q-header>
+    <TheHeader />
 
     <q-drawer
       v-model="leftDrawerOpen"
@@ -48,6 +31,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import EssentialLink from 'components/EssentialLink.vue'
+import TheHeader from 'components/TheHeader.vue'
 
 const linksList = [
   {
@@ -98,6 +82,7 @@ export default defineComponent({
   name: 'MainLayout',
 
   components: {
+    TheHeader,
     EssentialLink
   },
 
