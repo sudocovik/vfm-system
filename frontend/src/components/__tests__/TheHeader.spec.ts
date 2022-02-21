@@ -1,7 +1,8 @@
-import TheHeader from '../TheHeader.vue'
-import { QHeader } from 'quasar'
 import { mount } from '@cypress/vue'
-import FakeLayout from './FakeLayout.vue'
+import { QBtn, QHeader } from 'quasar'
+import TheHeaderWrapper from './TheHeaderWrapper.vue'
+import { Event } from 'test/support/api'
+import { MenuToggleEventName as MenuToggle } from '../MenuToggleEvent'
 
 describe('TheHeader', () => {
   it('should mount', () => {
@@ -16,12 +17,24 @@ describe('TheHeader', () => {
       expect(qHeader.exists()).to.be.equal(true)
     })
   })
+
+  it('should notify parent menu toggle was requested', () => {
+    mountHeader()
+    Event.named(MenuToggle).shouldNotBeFired()
+
+    clickOnMenuToggleIcon()
+
+    Event.named(MenuToggle).shouldBeFired().once()
+  })
 })
 
 function mountHeader (): void {
-  mount(FakeLayout, {
-    slots: {
-      default: TheHeader
-    }
+  mount(TheHeaderWrapper)
+}
+
+function clickOnMenuToggleIcon (): void {
+  cy.then(() => {
+    const menuToggleIcon = Cypress.vueWrapper.findComponent(QBtn)
+    cy.wrap(menuToggleIcon.element).click()
   })
 }
