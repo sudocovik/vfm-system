@@ -1,11 +1,46 @@
 <template>
   <q-page class="q-px-md q-pt-md">
-    <q-card
-      v-for="i in 5"
-      :key="i"
-      class="q-mb-md full-height"
-    >
-      <div style="overflow: hidden">
+    <template v-if="isLoading">
+      <q-card
+        v-for="i in 3"
+        :key="i"
+        class="q-mb-md full-height"
+      >
+        <q-skeleton
+          type="rect"
+          height="200px"
+        />
+        <q-card-section>
+          <q-skeleton
+            type="text"
+            width="150px"
+            height="40px"
+          />
+          <q-skeleton
+            type="text"
+            width="200px"
+          />
+          <q-skeleton
+            type="text"
+            width="200px"
+          />
+        </q-card-section>
+        <q-separator />
+        <q-card-actions>
+          <q-skeleton
+            type="QBtn"
+            width="120px"
+          />
+        </q-card-actions>
+      </q-card>
+    </template>
+
+    <template v-else>
+      <q-card
+        v-for="i in 5"
+        :key="i"
+        class="q-mb-md"
+      >
         <GoogleMap
           ref="mapReference"
           style="width: 100%; height: 200px; overflow: hidden;"
@@ -29,47 +64,48 @@
           <!-- <Marker :options="{ position: { lat: 44.107666, lng: 15.242819 } }" /> -->
         </GoogleMap>
 
-      <q-card-section>
-        <div class="row justify-between items-center q-mb-sm">
-          <div class="text-h6 text-green-7">
-            <q-icon
-              name="mdi-truck-fast"
-              size="sm"
-              left
-            />
-            <span style="vertical-align: middle">ZD{{ i }}00{{ ['', ''].map(() => String.fromCharCode(64 + i)).join('') }}</span>
+        <q-card-section>
+          <div class="row justify-between items-center q-mb-sm">
+            <div class="text-h6 text-green-7">
+              <q-icon
+                name="mdi-truck-fast"
+                size="sm"
+                left
+              />
+              <span style="vertical-align: middle">ZD{{ i }}00{{ ['', ''].map(() => String.fromCharCode(64 + i)).join('') }}</span>
+            </div>
+            <div>
+              <span style="display: none; vertical-align: middle">U pokretu</span>
+            </div>
+          </div>
+
+          <div>
+            <span>Ulica Ante Starčevića 6</span>
+            <span> &bullet; </span>
+            <span>30 km/h</span>
           </div>
           <div>
-            <span style="display: none; vertical-align: middle">U pokretu</span>
+            <span>Ažurirano prije {{ 5 + (Math.floor(Math.random() * 60)) }} sekundi</span>
           </div>
-        </div>
+        </q-card-section>
 
-        <div>
-          <span>Ulica Ante Starčevića 6</span>
-          <span> &bullet; </span>
-          <span>30 km/h</span>
-        </div>
-        <div>
-          <span>Ažurirano prije {{ 5 + (Math.floor(Math.random() * 60)) }} sekundi</span>
-        </div>
-      </q-card-section>
+        <q-separator />
 
-      <q-separator />
-
-      <q-card-actions>
-        <q-btn
-          flat
-          color="primary"
-          :to="'/vehicle/' + i + '/history'"
-        >
-          <q-icon
-            name="mdi-history"
-            left
-          />
-          <span>Povijest</span>
-        </q-btn>
-      </q-card-actions>
-    </q-card>
+        <q-card-actions>
+          <q-btn
+            flat
+            color="primary"
+            :to="'/vehicle/' + i + '/history'"
+          >
+            <q-icon
+              name="mdi-history"
+              left
+            />
+            <span>Povijest</span>
+          </q-btn>
+        </q-card-actions>
+      </q-card>
+    </template>
   </q-page>
 </template>
 
@@ -136,7 +172,11 @@ export default defineComponent({
       }, 5000)
     })
 
-    return { mapReference, markerOptions, center }
+    const isLoading = ref(true)
+
+    setTimeout(() => (isLoading.value = false), 1000)
+
+    return { mapReference, markerOptions, center, isLoading }
   }
 })
 </script>
