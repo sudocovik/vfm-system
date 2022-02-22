@@ -8,7 +8,7 @@
       <div style="overflow: hidden">
         <GoogleMap
           ref="mapReference"
-          style="width: 100%; height: 200px"
+          style="width: 100%; height: 200px; overflow: hidden;"
           api-key="AIzaSyAAuB9sJjZZpvBj6jd7czdJSPangVxKZaU"
           :center="center"
           :zoom="9"
@@ -28,7 +28,6 @@
 
           <!-- <Marker :options="{ position: { lat: 44.107666, lng: 15.242819 } }" /> -->
         </GoogleMap>
-      </div>
 
       <q-card-section>
         <div class="row justify-between items-center q-mb-sm">
