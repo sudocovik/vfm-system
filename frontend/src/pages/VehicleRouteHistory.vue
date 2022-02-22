@@ -1,94 +1,92 @@
 <template>
-  <q-page class="q-px-md q-pt-md">
-    <div
-      v-if="false"
-      class="row justify-between"
-    >
-      <div class="col col-12 col-sm-5">
-        <q-input
-          v-model="from"
-          outlined
-          bg-color="white"
-          @focus="showFromDatePicker = true"
-          @blur="showFromDatePicker = false"
-        >
-          <template #append>
-            <div
-              v-show="showFromDatePicker"
-              style="position: absolute; left: 0; right: 0; top: 56px;"
-            >
-              <q-date
-                v-model="from"
-                minimal
-                class="full-width"
-                bordered
-                flat
-              />
-            </div>
-          </template>
-        </q-input>
-      </div>
+  <q-page class="q-px-md q-pt-md column">
+    <template v-if="isLoading">
+      <q-skeleton type="QInput" />
 
-      <div class="col col-12 col-sm-5 offset-sm-2">
-        <q-input
-          v-model="from"
-          outlined
-          bg-color="white"
-          @focus="showToDatePicker = true"
-          @blur="showToDatePicker = false"
-        >
-          <template #append>
-            <div
-              v-show="showToDatePicker"
-              style="position: absolute; left: 0; right: 0; top: 56px;"
-            >
-              <q-date
-                v-model="from"
-                minimal
-                class="full-width"
-                bordered
-                flat
-              />
-            </div>
-          </template>
-        </q-input>
-      </div>
-    </div>
-
-    <div
-      class="full-width bg-red hidden"
-      style="height: 400px;"
-    />
-
-    <div>
       <q-card
-        class="q-pa-md shadow-1"
+        class="q-my-md q-pa-md flex"
+        style="flex: 1"
+      >
+        <q-skeleton
+          type="rect"
+          style="flex: 1"
+        />
+      </q-card>
+    </template>
+    <template v-else>
+      <q-card
+        class="q-pa-md shadow-1 bg-primary text-white cursor-pointer"
+        role="button"
         @click="dialog = true"
       >
-        Od 13.02.2022. do 14.02.2022.
+        <q-icon
+          name="mdi-calendar"
+          size="sm"
+          left
+        />
+        <span class="vertical-middle">
+          <span class="text-weight-bold">Veljača 13, 2022</span> do <span class="text-weight-bold">Veljača 14, 2022</span>
+        </span>
       </q-card>
-    </div>
 
-    <q-dialog
-      v-model="dialog"
-      :maximized="isMobile"
-      :transition-show="isMobile ? 'slide-up' : 'flip-up'"
-      :transition-hide="isMobile ? 'slide-down' : 'flip-down'"
-    >
-      <q-date
-        v-model="range"
-        range
-      />
-    </q-dialog>
+      <q-card
+        class="q-my-md q-pa-md flex"
+        style="flex: 1"
+      >
+        <div
+          class="relative-position"
+          style="flex: 1"
+        >
+          <GoogleMap
+            :center="{ lat: 44.107666, lng: 15.242819 }"
+            :zoom="9"
+            api-key="AIzaSyAAuB9sJjZZpvBj6jd7czdJSPangVxKZaU"
+            style="position: absolute; top: 0; left: 0; bottom: 0; right: 0"
+          />
+        </div>
+      </q-card>
+
+      <q-dialog
+        v-model="dialog"
+        :maximized="isMobile"
+        :transition-show="isMobile ? 'slide-up' : undefined"
+        :transition-hide="isMobile ? 'slide-down' : undefined"
+      >
+        <q-date
+          v-model="range"
+          range
+        >
+          <div class="flex">
+            <q-space />
+            <q-btn
+              color="primary"
+              flat
+              @click="dialog = false"
+            >
+              Odustani
+            </q-btn>
+            <q-btn
+              color="primary"
+              flat
+            >
+              Spremi
+            </q-btn>
+          </div>
+        </q-date>
+      </q-dialog>
+    </template>
   </q-page>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { useQuasar } from 'quasar'
+import { GoogleMap } from 'vue3-google-map'
 
 export default defineComponent({
   name: 'VehicleRouteHistory',
+
+  components: { GoogleMap },
 
   props: {
     vehicleId: {
@@ -104,6 +102,10 @@ export default defineComponent({
     const $q = useQuasar()
     const isMobile = $q.screen.lt.md
 
+    const isLoading = ref(true)
+
+    setTimeout(() => (isLoading.value = false), 1000)
+
     return {
       from,
       to,
@@ -111,7 +113,8 @@ export default defineComponent({
       showToDatePicker: ref(false),
       dialog: ref(false),
       range: ref({ from, to }),
-      isMobile
+      isMobile,
+      isLoading
     }
   }
 })
