@@ -3,8 +3,6 @@
     <q-header
       class="q-px-md q-pt-md"
       style="background-color: transparent"
-      reveal
-      :reveal-offset="60"
     >
       <q-toolbar
         class="rounded-borders shadow-1"
