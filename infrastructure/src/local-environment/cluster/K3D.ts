@@ -4,7 +4,7 @@ import { exec as callbackBasedExec } from 'child_process'
 
 const exec = promisify(callbackBasedExec)
 
-export class k3dCluster implements LocalCluster {
+export class K3D implements LocalCluster {
   public async create (): Promise<void> {
     const options = [
       '--wait',

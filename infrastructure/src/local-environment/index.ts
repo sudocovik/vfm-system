@@ -1,6 +1,6 @@
 import { COLORS, Stdout, UNICODE } from '../utilities/terminal'
 import { LocalClusterManager } from './LocalClusterManager'
-import { k3dCluster } from './cluster'
+import { K3D } from './cluster'
 import { createKubernetesManifests } from '../pulumi/create-kubernetes-manifests'
 import { LocalProgram } from '../pulumi/Program'
 import { Stack } from '../pulumi/Stack'
@@ -25,7 +25,7 @@ function startHotReload () {
   })
 }
 
-const cluster = new LocalClusterManager(new k3dCluster())
+const cluster = new LocalClusterManager(new K3D())
 const local = new Stack('local', async () => {
   createKubernetesManifests(await cluster.kubeconfig())
 })
