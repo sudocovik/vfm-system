@@ -3,6 +3,7 @@ import { LocalCluster } from './cluster'
 export class LocalClusterIsMissingException extends Error {}
 
 export class LocalClusterManager {
+  // eslint-disable-next-line no-useless-constructor
   public constructor (
         private cluster: LocalCluster
   ) {}
