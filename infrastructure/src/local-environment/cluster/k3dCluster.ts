@@ -1,6 +1,8 @@
 import { promisify } from 'util'
 import { LocalCluster } from './LocalCluster'
-const exec = promisify(require('child_process').exec)
+import { exec as callbackBasedExec } from 'child_process'
+
+const exec = promisify(callbackBasedExec)
 
 export class k3dCluster implements LocalCluster {
   public async create (): Promise<void> {
