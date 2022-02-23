@@ -3,37 +3,36 @@ import { LocalCluster } from './cluster'
 export class LocalClusterIsMissingException extends Error {}
 
 export class LocalClusterManager {
-    public constructor(
+  public constructor (
         private cluster: LocalCluster
-    ) {}
+  ) {}
 
-    public async launch(): Promise<void> {
-        if (await this.cluster.exists() === false) {
-            await this.cluster.create()
-            return
-        }
-
-        await this.cluster.start()
+  public async launch (): Promise<void> {
+    if (await this.cluster.exists() === false) {
+      await this.cluster.create()
+      return
     }
 
-    public async destroy(): Promise<void> {
-        if (await this.cluster.exists() === false) {
-            throw new LocalClusterIsMissingException()
-        }
+    await this.cluster.start()
+  }
 
-        await this.cluster.destroy()
+  public async destroy (): Promise<void> {
+    if (await this.cluster.exists() === false) {
+      throw new LocalClusterIsMissingException()
     }
 
-    public async stop(): Promise<void> {
-        await this.cluster.stop()
+    await this.cluster.destroy()
+  }
+
+  public async stop (): Promise<void> {
+    await this.cluster.stop()
+  }
+
+  public async kubeconfig (): Promise<string> {
+    if (await this.cluster.exists() === false) {
+      throw new LocalClusterIsMissingException()
     }
 
-    public async kubeconfig(): Promise<string> {
-        if (await this.cluster.exists() === false) {
-            throw new LocalClusterIsMissingException()
-        }
-
-        return await this.cluster.kubeconfig()
-    }
+    return await this.cluster.kubeconfig()
+  }
 }
-

@@ -12,29 +12,29 @@ export enum COLORS {
 }
 
 export const UNICODE = {
-    FULL_CIRCLE: String.fromCharCode(0x23FA),
-    CHECK_MARK: String.fromCharCode(0x2713),
-    CROSS_MARK: String.fromCharCode(0x2716),
+  FULL_CIRCLE: String.fromCharCode(0x23FA),
+  CHECK_MARK: String.fromCharCode(0x2713),
+  CROSS_MARK: String.fromCharCode(0x2716)
 }
 
 export class Stdout {
-    static write(text: string): void {
-        process.stdout.write(text)
-    }
+  static write (text: string): void {
+    process.stdout.write(text)
+  }
 
-    static writeLine(text: string): void {
-        Stdout.write(text + SPECIAL_CHARS.NEWLINE)
-    }
+  static writeLine (text: string): void {
+    Stdout.write(text + SPECIAL_CHARS.NEWLINE)
+  }
 
-    static clearAll(): void {
-        Stdout.write(SPECIAL_CHARS.CLEAR_EVERYTHING)
-    }
+  static clearAll (): void {
+    Stdout.write(SPECIAL_CHARS.CLEAR_EVERYTHING)
+  }
 
-    static clearLastLine(): void {
-        Stdout.write(SPECIAL_CHARS.CLEAR_LAST_LINE)
-    }
+  static clearLastLine (): void {
+    Stdout.write(SPECIAL_CHARS.CLEAR_LAST_LINE)
+  }
 
-    static colorize(color: COLORS, text: string): string {
-        return `${color}${text}${COLORS.DEFAULT}`
-    }
+  static colorize (color: COLORS, text: string): string {
+    return `${color}${text}${COLORS.DEFAULT}`
+  }
 }

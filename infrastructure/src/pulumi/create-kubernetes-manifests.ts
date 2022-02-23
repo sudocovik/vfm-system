@@ -3,131 +3,131 @@ import * as pulumi from '@pulumi/pulumi'
 import * as docker from '@pulumi/docker'
 import { Kubernetes } from '../../config'
 
-function createNamespace(provider: k8s.Provider): k8s.core.v1.Namespace {
-    return new k8s.core.v1.Namespace('vfm', {
-        metadata: {
-            name: 'vfm'
-        }
-    }, {
-        provider
-    })
+function createNamespace (provider: k8s.Provider): k8s.core.v1.Namespace {
+  return new k8s.core.v1.Namespace('vfm', {
+    metadata: {
+      name: 'vfm'
+    }
+  }, {
+    provider
+  })
 }
 
-function replaceRegistryUrlWithUrlClusterUnderstands(originalImageName: pulumi.Output<string>): pulumi.Output<string> {
-    return originalImageName.apply(imageName => imageName.replace(/^localhost/, 'vfm-registry'))
+function replaceRegistryUrlWithUrlClusterUnderstands (originalImageName: pulumi.Output<string>): pulumi.Output<string> {
+  return originalImageName.apply(imageName => imageName.replace(/^localhost/, 'vfm-registry'))
 }
 
-function createFrontendApplication(provider: k8s.Provider, namespace: pulumi.Output<string>, ingressController: k8s.helm.v3.Chart): void {
-    const labels = {app: 'frontend'}
+function createFrontendApplication (provider: k8s.Provider, namespace: pulumi.Output<string>, ingressController: k8s.helm.v3.Chart): void {
+  const labels = { app: 'frontend' }
 
-    const image = new docker.Image('frontend', {
-        imageName: 'localhost:5000/vfm-frontend',
-        build: {
-            context: '/frontend',
-            target: 'development-environment',
-            env: {
-                'DOCKER_BUILDKIT': '1'
-            }
-        }
-    })
-    const imageName = replaceRegistryUrlWithUrlClusterUnderstands(image.imageName)
+  const image = new docker.Image('frontend', {
+    imageName: 'localhost:5000/vfm-frontend',
+    build: {
+      context: '/frontend',
+      target: 'development-environment',
+      env: {
+        DOCKER_BUILDKIT: '1'
+      }
+    }
+  })
+  const imageName = replaceRegistryUrlWithUrlClusterUnderstands(image.imageName)
 
-    const deployment = new k8s.apps.v1.Deployment('new-application', {
+  const deployment = new k8s.apps.v1.Deployment('new-application', {
+    metadata: {
+      namespace
+    },
+    spec: {
+      selector: {
+        matchLabels: labels
+      },
+      replicas: 1,
+      template: {
         metadata: {
-            namespace
+          labels
         },
         spec: {
-            selector: {
-                matchLabels: labels
-            },
-            replicas: 1,
-            template: {
-                metadata: {
-                    labels
-                },
-                spec: {
-                    restartPolicy: 'Always',
-                    containers: [{
-                        name: 'webserver',
-                        image: imageName,
-                        imagePullPolicy: 'IfNotPresent',
-                        ports: [{
-                            name: 'http',
-                            containerPort: 8080,
-                            protocol: 'TCP'
-                        }]
-                    }]
-                }
-            }
-        }
-    }, {
-        provider,
-        parent: provider
-    })
-
-    const service = new k8s.core.v1.Service('new-web', {
-        metadata: {
-            namespace
-        },
-        spec: {
-            selector: labels,
+          restartPolicy: 'Always',
+          containers: [{
+            name: 'webserver',
+            image: imageName,
+            imagePullPolicy: 'IfNotPresent',
             ports: [{
-                name: 'http',
-                port: 80,
-                targetPort: deployment.spec.template.spec.containers[0].ports[0].name,
-                protocol: 'TCP'
+              name: 'http',
+              containerPort: 8080,
+              protocol: 'TCP'
             }]
+          }]
         }
-    }, {
-        provider,
-        parent: provider
-    })
+      }
+    }
+  }, {
+    provider,
+    parent: provider
+  })
 
-    new k8s.networking.v1.Ingress('new-web-access', {
-        metadata: {
-            namespace,
-            annotations: {
-                'pulumi.com/skipAwait': 'true'
-            }
-        },
-        spec: {
-            rules: [{
-                http: {
-                    paths: [{
-                        path: '/',
-                        pathType: 'Prefix',
-                        backend: {
-                            service: {
-                                name: service.metadata.name,
-                                port: {
-                                    name: service.spec.ports[0].name
-                                }
-                            }
-                        }
-                    }]
+  const service = new k8s.core.v1.Service('new-web', {
+    metadata: {
+      namespace
+    },
+    spec: {
+      selector: labels,
+      ports: [{
+        name: 'http',
+        port: 80,
+        targetPort: deployment.spec.template.spec.containers[0].ports[0].name,
+        protocol: 'TCP'
+      }]
+    }
+  }, {
+    provider,
+    parent: provider
+  })
+
+  new k8s.networking.v1.Ingress('new-web-access', {
+    metadata: {
+      namespace,
+      annotations: {
+        'pulumi.com/skipAwait': 'true'
+      }
+    },
+    spec: {
+      rules: [{
+        http: {
+          paths: [{
+            path: '/',
+            pathType: 'Prefix',
+            backend: {
+              service: {
+                name: service.metadata.name,
+                port: {
+                  name: service.spec.ports[0].name
                 }
-            }]
+              }
+            }
+          }]
         }
-    }, {
-        provider,
-        parent: provider,
-        dependsOn: [ingressController]
-    })
+      }]
+    }
+  }, {
+    provider,
+    parent: provider,
+    dependsOn: [ingressController]
+  })
 }
 
-export function createKubernetesManifests(kubeconfig: string): void {
-    const provider: k8s.Provider = new k8s.Provider('main-kubernetes-provider', {
-        kubeconfig
-    })
+export function createKubernetesManifests (kubeconfig: string): void {
+  const provider: k8s.Provider = new k8s.Provider('main-kubernetes-provider', {
+    kubeconfig
+  })
 
-    const namespace = createNamespace(provider).metadata.name
+  const namespace = createNamespace(provider).metadata.name
 
-    const configuration = new k8s.core.v1.ConfigMap('traccar-configuration', {
-        metadata: {
-            namespace
-        },
-        data: {
-            'traccar.xml':
+  const configuration = new k8s.core.v1.ConfigMap('traccar-configuration', {
+    metadata: {
+      namespace
+    },
+    data: {
+      'traccar.xml':
                 pulumi.interpolate`<?xml version='1.0' encoding='UTF-8'?>
 
 <!DOCTYPE properties SYSTEM 'http://java.sun.com/dtd/properties.dtd'>
@@ -160,169 +160,169 @@ export function createKubernetesManifests(kubeconfig: string): void {
   <entry key='logger.file'>/proc/1/fd/1</entry>
 
 </properties>`
-        }
-    }, {
-        provider,
-        parent: provider
-    })
+    }
+  }, {
+    provider,
+    parent: provider
+  })
 
-    const traccarLabels = {app: 'traccar'}
-    const configurationVolumeName = 'configuration'
+  const traccarLabels = { app: 'traccar' }
+  const configurationVolumeName = 'configuration'
 
-    const traccarDeployment: k8s.apps.v1.Deployment = new k8s.apps.v1.Deployment('traccar', {
+  const traccarDeployment: k8s.apps.v1.Deployment = new k8s.apps.v1.Deployment('traccar', {
+    metadata: {
+      namespace
+    },
+    spec: {
+      selector: {
+        matchLabels: traccarLabels
+      },
+      replicas: 1,
+      template: {
         metadata: {
-            namespace
+          labels: traccarLabels
         },
         spec: {
-            selector: {
-                matchLabels: traccarLabels
-            },
-            replicas: 1,
-            template: {
-                metadata: {
-                    labels: traccarLabels
-                },
-                spec: {
-                    volumes: [{
-                        name: configurationVolumeName,
-                        configMap: {
-                            name: configuration.metadata.name
-                        }
-                    }],
-                    restartPolicy: 'Always',
-                    containers: [{
-                        name: 'backend',
-                        image: 'traccar/traccar:4.13-alpine',
-                        imagePullPolicy: 'IfNotPresent',
-                        args: [
-                            '-jar',
-                            'tracker-server.jar',
-                            'conf-custom/traccar.xml',
-                        ],
-                        ports: [{
-                            name: 'api',
-                            containerPort: 8082,
-                            protocol: 'TCP'
-                        }, {
-                            name: 'teltonika',
-                            containerPort: 5027,
-                            protocol: 'TCP'
-                        }],
-                        startupProbe: {
-                            httpGet: {
-                                path: '/',
-                                port: 'api',
-                                scheme: 'HTTP'
-                            },
-                            failureThreshold: 30,
-                            periodSeconds: 30,
-                        },
-                        volumeMounts: [{
-                            name: configurationVolumeName,
-                            mountPath: '/opt/traccar/conf-custom',
-                            readOnly: true
-                        }]
-                    }]
-                }
+          volumes: [{
+            name: configurationVolumeName,
+            configMap: {
+              name: configuration.metadata.name
             }
-        }
-    }, {
-        provider,
-        parent: provider
-    })
-
-    const traccarApiService: k8s.core.v1.Service = new k8s.core.v1.Service('traccar-api-service', {
-        metadata: {
-            namespace
-        },
-        spec: {
-            selector: traccarLabels,
+          }],
+          restartPolicy: 'Always',
+          containers: [{
+            name: 'backend',
+            image: 'traccar/traccar:4.13-alpine',
+            imagePullPolicy: 'IfNotPresent',
+            args: [
+              '-jar',
+              'tracker-server.jar',
+              'conf-custom/traccar.xml'
+            ],
             ports: [{
-                name: 'api',
-                port: 80,
-                targetPort: traccarDeployment.spec.template.spec.containers[0].ports[0].name,
-                protocol: 'TCP'
-            }]
-        }
-    }, {provider})
-
-    new k8s.core.v1.Service('traccar-teltonika-service', {
-        metadata: {
-            namespace
-        },
-        spec: {
-            type: 'NodePort',
-            selector: traccarLabels,
-            ports: [{
-                name: 'teltonika',
-                port: 5027,
-                nodePort: 32027,
-                targetPort: traccarDeployment.spec.template.spec.containers[0].ports[1].name,
-                protocol: 'TCP'
-            }]
-        }
-    }, {provider})
-
-    const traefik = new k8s.helm.v3.Chart('ingress-controller', {
-        chart: 'traefik',
-        version: Kubernetes.traefikVersion,
-        fetchOpts: {
-            repo: 'https://helm.traefik.io/traefik',
-        },
-        namespace: namespace,
-        values: {
-            ingressRoute: {
-                dashboard: {
-                    enabled: false
-                }
+              name: 'api',
+              containerPort: 8082,
+              protocol: 'TCP'
+            }, {
+              name: 'teltonika',
+              containerPort: 5027,
+              protocol: 'TCP'
+            }],
+            startupProbe: {
+              httpGet: {
+                path: '/',
+                port: 'api',
+                scheme: 'HTTP'
+              },
+              failureThreshold: 30,
+              periodSeconds: 30
             },
-            service: {
-                type: 'NodePort'
-            },
-            ports: {
-                web: {
-                    nodePort: 32080
-                },
-                websecure: {
-                    expose: false
+            volumeMounts: [{
+              name: configurationVolumeName,
+              mountPath: '/opt/traccar/conf-custom',
+              readOnly: true
+            }]
+          }]
+        }
+      }
+    }
+  }, {
+    provider,
+    parent: provider
+  })
+
+  const traccarApiService: k8s.core.v1.Service = new k8s.core.v1.Service('traccar-api-service', {
+    metadata: {
+      namespace
+    },
+    spec: {
+      selector: traccarLabels,
+      ports: [{
+        name: 'api',
+        port: 80,
+        targetPort: traccarDeployment.spec.template.spec.containers[0].ports[0].name,
+        protocol: 'TCP'
+      }]
+    }
+  }, { provider })
+
+  new k8s.core.v1.Service('traccar-teltonika-service', {
+    metadata: {
+      namespace
+    },
+    spec: {
+      type: 'NodePort',
+      selector: traccarLabels,
+      ports: [{
+        name: 'teltonika',
+        port: 5027,
+        nodePort: 32027,
+        targetPort: traccarDeployment.spec.template.spec.containers[0].ports[1].name,
+        protocol: 'TCP'
+      }]
+    }
+  }, { provider })
+
+  const traefik = new k8s.helm.v3.Chart('ingress-controller', {
+    chart: 'traefik',
+    version: Kubernetes.traefikVersion,
+    fetchOpts: {
+      repo: 'https://helm.traefik.io/traefik'
+    },
+    namespace: namespace,
+    values: {
+      ingressRoute: {
+        dashboard: {
+          enabled: false
+        }
+      },
+      service: {
+        type: 'NodePort'
+      },
+      ports: {
+        web: {
+          nodePort: 32080
+        },
+        websecure: {
+          expose: false
+        }
+      }
+    },
+    transformations: [
+      (obj: any) => {
+        if (obj.kind === 'Service') {
+          obj.metadata.namespace = namespace
+        }
+      }
+    ]
+  }, { provider })
+
+  new k8s.networking.v1.Ingress('traefik-ingress', {
+    metadata: {
+      namespace,
+      annotations: {
+        'pulumi.com/skipAwait': 'true'
+      }
+    },
+    spec: {
+      rules: [{
+        http: {
+          paths: [{
+            path: '/api',
+            pathType: 'Prefix',
+            backend: {
+              service: {
+                name: traccarApiService.metadata.name,
+                port: {
+                  name: traccarApiService.spec.ports[0].name
                 }
+              }
             }
-        },
-        transformations: [
-            (obj: any) => {
-                if (obj.kind === 'Service') {
-                    obj.metadata.namespace = namespace
-                }
-            },
-        ]
-    }, {provider})
-
-    new k8s.networking.v1.Ingress('traefik-ingress', {
-        metadata: {
-            namespace,
-            annotations: {
-                'pulumi.com/skipAwait': 'true'
-            }
-        },
-        spec: {
-            rules: [{
-                http: {
-                    paths: [{
-                        path: '/api',
-                        pathType: 'Prefix',
-                        backend: {
-                            service: {
-                                name: traccarApiService.metadata.name,
-                                port: {
-                                    name: traccarApiService.spec.ports[0].name
-                                }
-                            }
-                        }
-                    }]
-                }
-            }]
+          }]
         }
-    }, { provider, dependsOn: [ traefik ] })
+      }]
+    }
+  }, { provider, dependsOn: [traefik] })
 
-    createFrontendApplication(provider, namespace, traefik)
+  createFrontendApplication(provider, namespace, traefik)
 }

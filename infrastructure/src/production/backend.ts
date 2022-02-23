@@ -13,60 +13,60 @@ type DatabaseConnection = {
     database: pulumi.Output<string>
 }
 
-function describeDatabase(kubernetesCluster: pulumi.Output<any>): DatabaseConnection {
-    const cluster = new digitalocean.DatabaseCluster('database-cluster', {
-        name: 'vfm',
-        region: 'fra1',
-        size: 'db-s-1vcpu-1gb',
-        nodeCount: 1,
-        engine: 'mysql',
-        version: '8',
-        maintenanceWindows: [{
-            day: 'sunday',
-            hour: '12:00',
-        }],
-    })
+function describeDatabase (kubernetesCluster: pulumi.Output<any>): DatabaseConnection {
+  const cluster = new digitalocean.DatabaseCluster('database-cluster', {
+    name: 'vfm',
+    region: 'fra1',
+    size: 'db-s-1vcpu-1gb',
+    nodeCount: 1,
+    engine: 'mysql',
+    version: '8',
+    maintenanceWindows: [{
+      day: 'sunday',
+      hour: '12:00'
+    }]
+  })
 
-    new digitalocean.DatabaseFirewall('database-firewall', {
-        clusterId: cluster.id,
-        rules: [{
-            type: 'k8s',
-            value: kubernetesCluster,
-        }],
-    }, {
-        parent: cluster,
-    })
+  new digitalocean.DatabaseFirewall('database-firewall', {
+    clusterId: cluster.id,
+    rules: [{
+      type: 'k8s',
+      value: kubernetesCluster
+    }]
+  }, {
+    parent: cluster
+  })
 
-    const user = new digitalocean.DatabaseUser('database-user', {
-        clusterId: cluster.id,
-        name: 'regular',
-    }, {
-        parent: cluster,
-    })
+  const user = new digitalocean.DatabaseUser('database-user', {
+    clusterId: cluster.id,
+    name: 'regular'
+  }, {
+    parent: cluster
+  })
 
-    const database = new digitalocean.DatabaseDb('database', {
-        clusterId: cluster.id,
-        name: 'vfm',
-    }, {
-        parent: cluster,
-    })
+  const database = new digitalocean.DatabaseDb('database', {
+    clusterId: cluster.id,
+    name: 'vfm'
+  }, {
+    parent: cluster
+  })
 
-    return {
-        host: cluster.privateHost,
-        port: cluster.port,
-        user: user.name,
-        password: user.password,
-        database: database.name,
-    }
+  return {
+    host: cluster.privateHost,
+    port: cluster.port,
+    user: user.name,
+    password: user.password,
+    database: database.name
+  }
 }
 
-function describeApplication(provider: k8s.Provider, namespace: pulumi.Output<any>, databaseConnectionSettings: DatabaseConnection): void {
-    const configuration = new k8s.core.v1.ConfigMap('traccar-configuration', {
-        metadata: {
-            namespace,
-        },
-        data: {
-            'traccar.xml':
+function describeApplication (provider: k8s.Provider, namespace: pulumi.Output<any>, databaseConnectionSettings: DatabaseConnection): void {
+  const configuration = new k8s.core.v1.ConfigMap('traccar-configuration', {
+    metadata: {
+      namespace
+    },
+    data: {
+      'traccar.xml':
                 pulumi.interpolate`<?xml version='1.0' encoding='UTF-8'?>
 
 <!DOCTYPE properties SYSTEM 'http://java.sun.com/dtd/properties.dtd'>
@@ -98,199 +98,198 @@ function describeApplication(provider: k8s.Provider, namespace: pulumi.Output<an
   
   <entry key='logger.file'>/proc/1/fd/1</entry>
 
-</properties>`,
-        },
-    }, {
-        provider,
-        parent: provider,
-    })
+</properties>`
+    }
+  }, {
+    provider,
+    parent: provider
+  })
 
-    const labels = {app: 'traccar'}
-    const configurationVolumeName = 'configuration'
+  const labels = { app: 'traccar' }
+  const configurationVolumeName = 'configuration'
 
-    const deployment: k8s.apps.v1.Deployment = new k8s.apps.v1.Deployment('traccar', {
+  const deployment: k8s.apps.v1.Deployment = new k8s.apps.v1.Deployment('traccar', {
+    metadata: {
+      namespace
+    },
+    spec: {
+      selector: {
+        matchLabels: labels
+      },
+      replicas: 1,
+      template: {
         metadata: {
-            namespace,
+          labels: labels
         },
         spec: {
-            selector: {
-                matchLabels: labels,
-            },
-            replicas: 1,
-            template: {
-                metadata: {
-                    labels: labels,
-                },
-                spec: {
-                    volumes: [{
-                        name: configurationVolumeName,
-                        configMap: {
-                            name: configuration.metadata.name,
-                        },
-                    }],
-                    restartPolicy: 'Always',
-                    containers: [{
-                        name: 'backend',
-                        image: 'traccar/traccar:4.13-alpine',
-                        imagePullPolicy: 'IfNotPresent',
-                        args: [
-                            '-jar',
-                            'tracker-server.jar',
-                            'conf-custom/traccar.xml',
-                        ],
-                        ports: [{
-                            name: 'api',
-                            containerPort: 8082,
-                            protocol: 'TCP',
-                        }, {
-                            name: 'teltonika',
-                            containerPort: 5027,
-                            protocol: 'TCP',
-                        }],
-                        startupProbe: {
-                            httpGet: {
-                                path: '/',
-                                port: 'api',
-                                scheme: 'HTTP',
-                            },
-                            failureThreshold: 30,
-                            periodSeconds: 30,
-                        },
-                        volumeMounts: [{
-                            name: configurationVolumeName,
-                            mountPath: '/opt/traccar/conf-custom',
-                            readOnly: true,
-                        }],
-                    }],
-                },
-            },
-        },
-    }, {
-        provider,
-        parent: provider,
-    })
-
-    new k8s.core.v1.Service('traccar-teltonika-service', {
-        metadata: {
-            namespace,
-            annotations: {
-                'kubernetes.digitalocean.com/firewall-managed': 'false',
-            },
-        },
-        spec: {
-            type: 'NodePort',
-            selector: labels,
+          volumes: [{
+            name: configurationVolumeName,
+            configMap: {
+              name: configuration.metadata.name
+            }
+          }],
+          restartPolicy: 'Always',
+          containers: [{
+            name: 'backend',
+            image: 'traccar/traccar:4.13-alpine',
+            imagePullPolicy: 'IfNotPresent',
+            args: [
+              '-jar',
+              'tracker-server.jar',
+              'conf-custom/traccar.xml'
+            ],
             ports: [{
-                name: 'teltonika',
-                port: 5027,
-                nodePort: 32027,
-                targetPort: deployment.spec.template.spec.containers[0].ports[1].name,
-                protocol: 'TCP',
+              name: 'api',
+              containerPort: 8082,
+              protocol: 'TCP'
+            }, {
+              name: 'teltonika',
+              containerPort: 5027,
+              protocol: 'TCP'
             }],
-        },
-    }, {
-        provider,
-        parent: provider,
-    })
-
-    const service: k8s.core.v1.Service = new k8s.core.v1.Service('traccar-http-service', {
-        metadata: {
-            namespace,
-        },
-        spec: {
-            selector: labels,
-            ports: [{
-                name: 'api',
-                port: 80,
-                targetPort: deployment.spec.template.spec.containers[0].ports[0].name,
-                protocol: 'TCP',
-            }],
-        },
-    }, {
-        provider,
-        parent: provider,
-    })
-
-    new k8s.networking.v1.Ingress('traccar-ingress', {
-        metadata: {
-            namespace,
-            annotations: {
-                'pulumi.com/skipAwait': 'true',
+            startupProbe: {
+              httpGet: {
+                path: '/',
+                port: 'api',
+                scheme: 'HTTP'
+              },
+              failureThreshold: 30,
+              periodSeconds: 30
             },
-        },
-        spec: {
-            rules: [{
-                http: {
-                    paths: [{
-                        path: '/api',
-                        pathType: 'Prefix',
-                        backend: {
-                            service: {
-                                name: service.metadata.name,
-                                port: {
-                                    name: service.spec.ports[0].name,
-                                },
-                            },
-                        },
-                    }],
-                },
-            }, {
-                host: Domain.traccar,
-                http: {
-                    paths: [{
-                        path: '/',
-                        pathType: 'Prefix',
-                        backend: {
-                            service: {
-                                name: service.metadata.name,
-                                port: {
-                                    name: service.spec.ports[0].name,
-                                },
-                            },
-                        },
-                    }],
-                },
-            }, {
-                host: Domain.newFrontend,
-                http: {
-                    paths: [{
-                        path: '/api',
-                        pathType: 'Prefix',
-                        backend: {
-                            service: {
-                                name: service.metadata.name,
-                                port: {
-                                    name: service.spec.ports[0].name,
-                                },
-                            },
-                        },
-                    }],
-                },
-            }],
-        },
-    }, {
-        provider,
-        parent: provider,
-    })
+            volumeMounts: [{
+              name: configurationVolumeName,
+              mountPath: '/opt/traccar/conf-custom',
+              readOnly: true
+            }]
+          }]
+        }
+      }
+    }
+  }, {
+    provider,
+    parent: provider
+  })
+
+  new k8s.core.v1.Service('traccar-teltonika-service', {
+    metadata: {
+      namespace,
+      annotations: {
+        'kubernetes.digitalocean.com/firewall-managed': 'false'
+      }
+    },
+    spec: {
+      type: 'NodePort',
+      selector: labels,
+      ports: [{
+        name: 'teltonika',
+        port: 5027,
+        nodePort: 32027,
+        targetPort: deployment.spec.template.spec.containers[0].ports[1].name,
+        protocol: 'TCP'
+      }]
+    }
+  }, {
+    provider,
+    parent: provider
+  })
+
+  const service: k8s.core.v1.Service = new k8s.core.v1.Service('traccar-http-service', {
+    metadata: {
+      namespace
+    },
+    spec: {
+      selector: labels,
+      ports: [{
+        name: 'api',
+        port: 80,
+        targetPort: deployment.spec.template.spec.containers[0].ports[0].name,
+        protocol: 'TCP'
+      }]
+    }
+  }, {
+    provider,
+    parent: provider
+  })
+
+  new k8s.networking.v1.Ingress('traccar-ingress', {
+    metadata: {
+      namespace,
+      annotations: {
+        'pulumi.com/skipAwait': 'true'
+      }
+    },
+    spec: {
+      rules: [{
+        http: {
+          paths: [{
+            path: '/api',
+            pathType: 'Prefix',
+            backend: {
+              service: {
+                name: service.metadata.name,
+                port: {
+                  name: service.spec.ports[0].name
+                }
+              }
+            }
+          }]
+        }
+      }, {
+        host: Domain.traccar,
+        http: {
+          paths: [{
+            path: '/',
+            pathType: 'Prefix',
+            backend: {
+              service: {
+                name: service.metadata.name,
+                port: {
+                  name: service.spec.ports[0].name
+                }
+              }
+            }
+          }]
+        }
+      }, {
+        host: Domain.newFrontend,
+        http: {
+          paths: [{
+            path: '/api',
+            pathType: 'Prefix',
+            backend: {
+              service: {
+                name: service.metadata.name,
+                port: {
+                  name: service.spec.ports[0].name
+                }
+              }
+            }
+          }]
+        }
+      }]
+    }
+  }, {
+    provider,
+    parent: provider
+  })
 }
 
-function describeBackendResources(): void {
-    const backbone = new pulumi.StackReference('covik/vfm/backbone-production')
-    const kubeconfig = backbone.getOutput('kubeconfig')
-    const namespaceName = backbone.getOutput('namespaceName')
-    const kubernetesClusterId = backbone.getOutput('clusterId')
+function describeBackendResources (): void {
+  const backbone = new pulumi.StackReference('covik/vfm/backbone-production')
+  const kubeconfig = backbone.getOutput('kubeconfig')
+  const namespaceName = backbone.getOutput('namespaceName')
+  const kubernetesClusterId = backbone.getOutput('clusterId')
 
+  const provider: k8s.Provider = new k8s.Provider('kubernetes-provider', {
+    kubeconfig
+  })
 
-    const provider: k8s.Provider = new k8s.Provider('kubernetes-provider', {
-        kubeconfig,
-    })
-
-    const databaseConnectionSettings = describeDatabase(kubernetesClusterId)
-    describeApplication(provider, namespaceName, databaseConnectionSettings)
+  const databaseConnectionSettings = describeDatabase(kubernetesClusterId)
+  describeApplication(provider, namespaceName, databaseConnectionSettings)
 }
 
-export function deployBackendResources(): void {
-    Program.forStack(
-        new Stack('backend-production', describeBackendResources),
-    ).execute()
+export function deployBackendResources (): void {
+  Program.forStack(
+    new Stack('backend-production', describeBackendResources)
+  ).execute()
 }

@@ -1,6 +1,6 @@
 export class Domain {
-    public static primary: string = 'zarafleet.com'
-    public static frontend: string = 'app.zarafleet.com'
-    public static traccar: string = 'old.zarafleet.com'
-    public static newFrontend: string = 'new.zarafleet.com'
+    public static primary = 'zarafleet.com'
+    public static frontend = 'app.zarafleet.com'
+    public static traccar = 'old.zarafleet.com'
+    public static newFrontend = 'new.zarafleet.com'
 }

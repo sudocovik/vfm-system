@@ -1,8 +1,8 @@
 export class Project {
-    public static nameLowercase: string = 'vfm'
-    public static nameUppercase: string = 'VFM'
-    public static description: string = 'Infrastructure for Vehicle Fleet Management system'
-    public static environment: string = 'Production'
-    public static purpose: string = 'Web Application'
-    public static region: string = 'fra1'
+    public static nameLowercase = 'vfm'
+    public static nameUppercase = 'VFM'
+    public static description = 'Infrastructure for Vehicle Fleet Management system'
+    public static environment = 'Production'
+    public static purpose = 'Web Application'
+    public static region = 'fra1'
 }
