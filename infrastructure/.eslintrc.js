@@ -14,6 +14,10 @@ module.exports = {
     '@typescript-eslint'
   ],
 
+  rules: {
+    'no-new': 'off' // Remove once all pulumi objects get created and returned by a function
+  },
+
   overrides: [
     {
       files: ['**/__tests__/**.{unit,integration}.{js,ts}'],
