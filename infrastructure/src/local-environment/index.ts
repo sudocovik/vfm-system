@@ -37,7 +37,7 @@ export async function start (): Promise<void> {
     await writeKubeconfigToFile(process.env.KUBECONFIG ?? '', await cluster.kubeconfig())
     Stdout.clearLastLine()
     Stdout.writeLine(Stdout.colorize(COLORS.GREEN, UNICODE.CHECK_MARK) + ' Cluster running')
-  } catch (e: any) {
+  } catch (e: unknown) {
     Stdout.clearLastLine()
     Stdout.writeLine(Stdout.colorize(COLORS.RED, UNICODE.CROSS_MARK) + ' Failed to start cluster')
     throw e
@@ -48,7 +48,7 @@ export async function start (): Promise<void> {
     await LocalProgram.forStack(local).execute()
     Stdout.clearLastLine()
     Stdout.writeLine(Stdout.colorize(COLORS.GREEN, UNICODE.CHECK_MARK) + ' Apps deployed')
-  } catch (e: any) {
+  } catch (e: unknown) {
     Stdout.clearLastLine()
     Stdout.writeLine(Stdout.colorize(COLORS.RED, UNICODE.CROSS_MARK) + ' Failed to deploy apps')
     throw e
@@ -64,7 +64,7 @@ export async function stop (): Promise<void> {
     await cluster.stop()
     Stdout.clearLastLine()
     Stdout.writeLine(Stdout.colorize(COLORS.GREEN, UNICODE.CHECK_MARK) + ' Cluster stopped')
-  } catch (e: any) {
+  } catch (e: unknown) {
     Stdout.clearLastLine()
     Stdout.writeLine(Stdout.colorize(COLORS.RED, UNICODE.CROSS_MARK) + ' Failed to stop cluster')
     throw e
