@@ -1,10 +1,12 @@
+import { PulumiFn } from '@pulumi/pulumi/automation'
+
 const stringRepresentationOfVariableType = (value: unknown) => {
   // typeof null returns 'object' so null has to be given special treatment...
   if (value === null) return 'null'
   return typeof value
 }
 
-type ResourceFn = () => Promise<never | void>
+type ResourceFn = PulumiFn
 
 export class EmptyValueError extends Error {}
 

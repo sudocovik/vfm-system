@@ -40,7 +40,7 @@ export const describeBackboneResources = (
   loadBalancerConfiguration: LoadBalancerConfiguration,
   clusterConfiguration: ClusterConfiguration,
   projectConfiguration: ProjectConfiguration
-) => () => {
+) => async () => {
   const domain = new digitalocean.Domain('primary-domain', {
     name: domainConfiguration.name
   })
