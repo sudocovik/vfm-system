@@ -36,6 +36,9 @@ jobs:
       - name: "Build image"
         run: make
 
+      - name: "Lint"
+        run: make lint
+
       - name: "Run unit tests"
         run: make unit-test
 

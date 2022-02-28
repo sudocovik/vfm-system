@@ -5,6 +5,10 @@ IMAGE_NAME=ghcr.io/covik/vfm-infrastructure:$(IMAGE_VERSION)
 build:
 	@docker buildx build --target=production --tag=$(IMAGE_NAME) .
 
+.PHONY: lint
+lint:
+	@docker run $(IMAGE_NAME) yarn lint
+
 .PHONY: unit-test
 unit-test:
 	@docker run $(IMAGE_NAME) vfm test:unit
