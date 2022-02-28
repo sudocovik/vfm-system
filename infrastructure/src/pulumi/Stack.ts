@@ -4,13 +4,15 @@ const stringRepresentationOfVariableType = (value: unknown) => {
   return typeof value
 }
 
+type ResourceFn = () => Promise<never | void>
+
 export class EmptyValueError extends Error {}
 
 export class Stack {
     private readonly _name: string
-    private readonly _resources: () => never
+    private readonly _resources: ResourceFn
 
-    constructor (name: string, resources: () => never) {
+    constructor (name: string, resources: ResourceFn) {
       if (typeof name !== 'string') { throw new TypeError('Stack name should be string, got ' + stringRepresentationOfVariableType(name)) }
 
       name = name.trim()
@@ -27,7 +29,7 @@ export class Stack {
       return this._name
     }
 
-    public resources (): () => never {
+    public resources (): ResourceFn {
       return this._resources
     }
 }

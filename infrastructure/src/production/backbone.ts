@@ -40,7 +40,7 @@ export const describeBackboneResources = (
   loadBalancerConfiguration: LoadBalancerConfiguration,
   clusterConfiguration: ClusterConfiguration,
   projectConfiguration: ProjectConfiguration
-) => (): any => {
+) => () => {
   const domain = new digitalocean.Domain('primary-domain', {
     name: domainConfiguration.name
   })
@@ -169,7 +169,7 @@ export const describeBackboneResources = (
       }
     },
     transformations: [
-      (obj: any) => {
+      obj => {
         if (obj.kind === 'Service') {
           obj.metadata.namespace = namespaceName
           obj.metadata.annotations = {

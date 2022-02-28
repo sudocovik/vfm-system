@@ -2,6 +2,8 @@ import { Program } from '../Program'
 import { Stack } from '../Stack'
 import { StackExecutor } from '../StackExecutor'
 
+const noResources = async () => { /* empty because test's do not need resources */ }
+
 const errorShouldBeInstanceOfTypeError = (error: Error) => {
   expect(error).toBeInstanceOf(TypeError)
 }
@@ -13,7 +15,7 @@ type FactoryArguments = {
 
 const factory = ({ stack, executor }: FactoryArguments = {}) => {
   return new Program(
-    stack ?? new Stack('testing', () => {}),
+    stack ?? new Stack('testing', noResources),
     executor ?? new FakeStackExecutor()
   )
 }
@@ -24,7 +26,7 @@ class FakeStackExecutor implements StackExecutor {
     public stateRefreshed = false
     public deployedResources = false
 
-    public async select (stack: Stack): Promise<void> {
+    public async select (): Promise<void> {
       this.stackSelected = true
     }
 
@@ -53,7 +55,7 @@ describe('#Program', () => {
       { type: 'false', value: false },
       { type: 'bigint', value: 22n ** 53n },
       { type: 'symbol', value: Symbol('test') },
-      { type: 'function', value: () => {} },
+      { type: 'function', value: () => { /* empty because the test does nothing with function body */ } },
       { type: 'string', value: 'test' },
       { type: 'object', value: {} }
     ]
@@ -62,9 +64,10 @@ describe('#Program', () => {
       it(`argument 'stack' should not accept '${type}'`, () => {
         expect.assertions(1)
         try {
-          new Program(value as any, new FakeStackExecutor())
-        } catch (e: any) {
-          errorShouldBeInstanceOfTypeError(e)
+          new Program(value as never, new FakeStackExecutor())
+        } catch (e: unknown) {
+          const error = <Error>e
+          errorShouldBeInstanceOfTypeError(error)
         }
       })
     })

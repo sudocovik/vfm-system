@@ -3,11 +3,12 @@ import * as k8s from '@pulumi/kubernetes'
 import { Stack } from '../pulumi/Stack'
 import { Program } from '../pulumi/Program'
 import { Domain } from '../../config'
+import { Output } from '@pulumi/pulumi'
 
 function describeOldFrontend (
   provider: k8s.Provider,
-  namespace: pulumi.Output<any>,
-  containerRegistrySecret: pulumi.Output<any>
+  namespace: pulumi.Output<string>,
+  containerRegistrySecret: pulumi.Output<string>
 ): void {
   const labels = { app: 'old-frontend' }
 
@@ -96,8 +97,8 @@ function describeOldFrontend (
 
 function describeNewFrontend (
   provider: k8s.Provider,
-  namespace: pulumi.Output<any>,
-  containerRegistrySecret: pulumi.Output<any>,
+  namespace: pulumi.Output<string>,
+  containerRegistrySecret: pulumi.Output<string>,
   version: string
 ): void {
   const labels = { app: 'new-frontend' }
@@ -186,13 +187,11 @@ function describeNewFrontend (
   })
 }
 
-export const describeFrontendResources = (applicationVersion: string) => (): void => {
+export const describeFrontendResources = (applicationVersion: string): () => Promise<void> => async () => {
   const backbone = new pulumi.StackReference('covik/vfm/backbone-production')
   const kubeconfig = backbone.getOutput('kubeconfig')
-  const namespace = backbone.getOutput('namespaceName')
-  const domain = backbone.getOutput('domainName')
-  const subdomain = domain.apply(domainName => `app.${domainName}`)
-  const containerRegistrySecret = backbone.getOutput('containerRegistryCredentialsName')
+  const namespace = <Output<string>>backbone.getOutput('namespaceName')
+  const containerRegistrySecret = <Output<string>>backbone.getOutput('containerRegistryCredentialsName')
 
   const provider: k8s.Provider = new k8s.Provider('kubernetes-provider', {
     kubeconfig

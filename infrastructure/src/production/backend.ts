@@ -4,6 +4,7 @@ import * as k8s from '@pulumi/kubernetes'
 import { Program } from '../pulumi/Program'
 import { Stack } from '../pulumi/Stack'
 import { Domain } from '../../config'
+import { Output } from '@pulumi/pulumi'
 
 type DatabaseConnection = {
     host: pulumi.Output<string>
@@ -13,7 +14,7 @@ type DatabaseConnection = {
     database: pulumi.Output<string>
 }
 
-function describeDatabase (kubernetesCluster: pulumi.Output<any>): DatabaseConnection {
+function describeDatabase (kubernetesCluster: pulumi.Output<string>): DatabaseConnection {
   const cluster = new digitalocean.DatabaseCluster('database-cluster', {
     name: 'vfm',
     region: 'fra1',
@@ -60,7 +61,7 @@ function describeDatabase (kubernetesCluster: pulumi.Output<any>): DatabaseConne
   }
 }
 
-function describeApplication (provider: k8s.Provider, namespace: pulumi.Output<any>, databaseConnectionSettings: DatabaseConnection): void {
+function describeApplication (provider: k8s.Provider, namespace: pulumi.Output<string>, databaseConnectionSettings: DatabaseConnection): void {
   const configuration = new k8s.core.v1.ConfigMap('traccar-configuration', {
     metadata: {
       namespace
@@ -95,7 +96,7 @@ function describeApplication (provider: k8s.Provider, namespace: pulumi.Output<a
 
   <entry key='filter.enable'>true</entry>
   <entry key='filter.zero'>true</entry>
-  
+
   <entry key='logger.file'>/proc/1/fd/1</entry>
 
 </properties>`
@@ -274,11 +275,11 @@ function describeApplication (provider: k8s.Provider, namespace: pulumi.Output<a
   })
 }
 
-function describeBackendResources (): void {
+async function describeBackendResources (): Promise<void> {
   const backbone = new pulumi.StackReference('covik/vfm/backbone-production')
   const kubeconfig = backbone.getOutput('kubeconfig')
-  const namespaceName = backbone.getOutput('namespaceName')
-  const kubernetesClusterId = backbone.getOutput('clusterId')
+  const namespaceName = <Output<string>>backbone.getOutput('namespaceName')
+  const kubernetesClusterId = <Output<string>>backbone.getOutput('clusterId')
 
   const provider: k8s.Provider = new k8s.Provider('kubernetes-provider', {
     kubeconfig

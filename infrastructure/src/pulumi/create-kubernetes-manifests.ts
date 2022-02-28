@@ -156,7 +156,7 @@ export function createKubernetesManifests (kubeconfig: string): void {
 
   <entry key='filter.enable'>true</entry>
   <entry key='filter.zero'>true</entry>
-  
+
   <entry key='logger.file'>/proc/1/fd/1</entry>
 
 </properties>`
@@ -289,7 +289,7 @@ export function createKubernetesManifests (kubeconfig: string): void {
       }
     },
     transformations: [
-      (obj: any) => {
+      obj => {
         if (obj.kind === 'Service') {
           obj.metadata.namespace = namespace
         }
