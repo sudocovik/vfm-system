@@ -8,15 +8,16 @@ const errorShouldBeInstanceOfEmptyValueError = (error: Error) => {
   expect(error).toBeInstanceOf(EmptyValueError)
 }
 
-const errorMessageShouldEndWith = (error: Error, substring: string) => {
+const errorMessageShouldEndWith = (message: string, substring: string) => {
   const endsWith = (value: string): RegExp => new RegExp('' + value + '$')
 
-  expect(error.message).toMatch(endsWith(substring))
+  expect(message).toMatch(endsWith(substring))
 }
 
 describe('#Stack', () => {
-  const instantiateProductionStackWithDefaultResources = (value: any) => new Stack(value as any, async () => {})
-  const instantiateProductionStackWithDefaultName = (value: any) => new Stack('test', value as any)
+  const noResources = async () => { /* resources are irrelevant in these tests */ }
+  const instantiateProductionStackWithDefaultResources = (value: unknown) => new Stack(value as never, noResources)
+  const instantiateProductionStackWithDefaultName = (value: unknown) => new Stack('test', value as never)
 
   describe('- constructor()', () => {
     const forbiddenTypes = [
@@ -30,7 +31,7 @@ describe('#Stack', () => {
       { type: 'false', value: false },
       { type: 'bigint', value: 22n ** 53n },
       { type: 'symbol', value: Symbol('test') },
-      { type: 'function', value: () => {} },
+      { type: 'function', value: () => { /* empty because the test does nothing with function body */ } },
       { type: 'string', value: 'test' }
     ]
 
@@ -39,11 +40,12 @@ describe('#Stack', () => {
         expect.assertions(2)
         try {
           instantiateProductionStackWithDefaultResources(value)
-        } catch (e: any) {
+        } catch (e: unknown) {
+          const error = <Error>e
           const stringRepresentationOfVariableType: string = value === null ? 'null' : typeof value
 
-          errorShouldBeInstanceOfTypeError(e)
-          errorMessageShouldEndWith(e, stringRepresentationOfVariableType)
+          errorShouldBeInstanceOfTypeError(error)
+          errorMessageShouldEndWith(error.message, stringRepresentationOfVariableType)
         }
       })
     })
@@ -61,8 +63,9 @@ describe('#Stack', () => {
         expect.assertions(1)
         try {
           instantiateProductionStackWithDefaultResources(value)
-        } catch (e: any) {
-          errorShouldBeInstanceOfEmptyValueError(e)
+        } catch (e: unknown) {
+          const error = <Error>e
+          errorShouldBeInstanceOfEmptyValueError(error)
         }
       })
     })
@@ -72,11 +75,12 @@ describe('#Stack', () => {
         expect.assertions(2)
         try {
           instantiateProductionStackWithDefaultName(value)
-        } catch (e: any) {
+        } catch (e: unknown) {
+          const error = <Error>e
           const stringRepresentationOfVariableType: string = value === null ? 'null' : typeof value
 
-          errorShouldBeInstanceOfTypeError(e)
-          errorMessageShouldEndWith(e, stringRepresentationOfVariableType)
+          errorShouldBeInstanceOfTypeError(error)
+          errorMessageShouldEndWith(error.message, stringRepresentationOfVariableType)
         }
       })
     })
@@ -94,7 +98,7 @@ describe('#Stack', () => {
 
   describe('- resources()', () => {
     it('should return a function', () => {
-      const stack = instantiateProductionStackWithDefaultName(() => {})
+      const stack = instantiateProductionStackWithDefaultName(noResources)
 
       const resources = stack.resources()
 
