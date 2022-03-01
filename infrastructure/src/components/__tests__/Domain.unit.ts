@@ -1,22 +1,8 @@
 import { createDomain } from '../Domain'
-import * as pulumi from '@pulumi/pulumi'
 import { Domain } from '../../../config'
+import { mockPulumiEngine, outputOf } from '../../utilities/testing/pulumi'
 
-pulumi.runtime.setMocks({
-  newResource: function (args: pulumi.runtime.MockResourceArgs) {
-    return {
-      id: args.inputs.name + '_id',
-      state: args.inputs
-    }
-  },
-  call: function (args: pulumi.runtime.MockCallArgs) {
-    return args.inputs
-  }
-})
-
-function outputOf<T> (output: pulumi.Output<T>): Promise<T> {
-  return new Promise(resolve => output.apply(resolve))
-}
+mockPulumiEngine()
 
 describe('Domain', () => {
   it('should have a unique resource ID', async () => {
