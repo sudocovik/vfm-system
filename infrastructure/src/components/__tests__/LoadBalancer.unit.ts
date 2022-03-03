@@ -52,6 +52,34 @@ describe('LoadBalancer', () => {
     expect(dropletTag).toEqual(Cluster.nodePool.tag)
   })
 
+  it('should use Round Robin as load balancing algorithm', async () => {
+    const { loadBalancer } = loadBalancerFactory()
+
+    const algorithm = await outputOf(loadBalancer.algorithm)
+    expect(algorithm).toEqual('round_robin')
+  })
+
+  it('should not maintain KeepAlive connection to droplets', async () => {
+    const { loadBalancer } = loadBalancerFactory()
+
+    const enableBackendKeepalive = await outputOf(loadBalancer.enableBackendKeepalive)
+    expect(enableBackendKeepalive).toBeFalsy()
+  })
+
+  it('should not enable PROXY protocol', async () => {
+    const { loadBalancer } = loadBalancerFactory()
+
+    const enableProxyProtocol = await outputOf(loadBalancer.enableProxyProtocol)
+    expect(enableProxyProtocol).toBeFalsy()
+  })
+
+  it('should not have sticky sessions', async () => {
+    const { loadBalancer } = loadBalancerFactory()
+
+    const stickySessions = await outputOf(loadBalancer.stickySessions)
+    expect(stickySessions).not.toBeDefined()
+  })
+
   describe('Rules', () => {
     it('should have only 3 rules', async () => {
       const { loadBalancer } = loadBalancerFactory()

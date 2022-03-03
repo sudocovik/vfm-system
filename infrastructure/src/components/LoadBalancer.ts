@@ -8,6 +8,7 @@ export function createLoadBalancer (certificate: digitalocean.Certificate) {
     size: LoadBalancer.size,
     dropletTag: Cluster.nodePool.tag,
     redirectHttpToHttps: true,
+    algorithm: 'round_robin',
     forwardingRules: [
       {
         entryProtocol: 'http',
