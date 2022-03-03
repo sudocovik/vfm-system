@@ -103,4 +103,55 @@ describe('LoadBalancer', () => {
       expect(redirectHttpToHttps).toBe(true)
     })
   })
+
+  describe('Health Check', () => {
+    it('should be performed on HTTP protocol', async () => {
+      const { loadBalancer } = loadBalancerFactory()
+
+      const { protocol } = await outputOf(loadBalancer.healthcheck)
+      expect(protocol).toEqual('http')
+    })
+
+    it('should be performed on internal HTTP port', async () => {
+      const { loadBalancer } = loadBalancerFactory()
+
+      const { port } = await outputOf(loadBalancer.healthcheck)
+      expect(port).toEqual(LoadBalancer.ports.http.internal)
+    })
+
+    it('should be performed on root path (/)', async () => {
+      const { loadBalancer } = loadBalancerFactory()
+
+      const { path } = await outputOf(loadBalancer.healthcheck)
+      expect(path).toEqual('/')
+    })
+
+    it('should be performed every 10 seconds', async () => {
+      const { loadBalancer } = loadBalancerFactory()
+
+      const { checkIntervalSeconds } = await outputOf(loadBalancer.healthcheck)
+      expect(checkIntervalSeconds).toEqual(10)
+    })
+
+    it('should wait for the response up to 5 seconds', async () => {
+      const { loadBalancer } = loadBalancerFactory()
+
+      const { responseTimeoutSeconds } = await outputOf(loadBalancer.healthcheck)
+      expect(responseTimeoutSeconds).toEqual(5)
+    })
+
+    it('should mark droplet as "unhealthy" after 3 consecutive failed health checks', async () => {
+      const { loadBalancer } = loadBalancerFactory()
+
+      const { unhealthyThreshold } = await outputOf(loadBalancer.healthcheck)
+      expect(unhealthyThreshold).toEqual(3)
+    })
+
+    it('should mark droplet as "healthy" after 3 consecutive successful health checks', async () => {
+      const { loadBalancer } = loadBalancerFactory()
+
+      const { healthyThreshold } = await outputOf(loadBalancer.healthcheck)
+      expect(healthyThreshold).toEqual(3)
+    })
+  })
 })

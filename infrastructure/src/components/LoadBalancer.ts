@@ -28,6 +28,15 @@ export function createLoadBalancer (certificate: digitalocean.Certificate) {
         entryPort: LoadBalancer.ports.teltonika.external,
         targetPort: LoadBalancer.ports.teltonika.internal
       }
-    ]
+    ],
+    healthcheck: {
+      port: LoadBalancer.ports.http.internal,
+      protocol: 'http',
+      path: '/',
+      checkIntervalSeconds: 10,
+      responseTimeoutSeconds: 5,
+      unhealthyThreshold: 3,
+      healthyThreshold: 3
+    }
   })
 }
