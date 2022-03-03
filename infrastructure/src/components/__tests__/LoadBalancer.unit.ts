@@ -1,6 +1,6 @@
 import { mockPulumiEngine, outputOf } from '../../utilities/testing/pulumi'
 import { createLoadBalancer } from '../LoadBalancer'
-import { LoadBalancer } from '../../../config'
+import { Cluster, Kubernetes, LoadBalancer } from '../../../config'
 
 mockPulumiEngine()
 
@@ -31,5 +31,12 @@ describe('LoadBalancer', () => {
 
     const size = await outputOf(loadBalancer.size)
     expect(size).toEqual(LoadBalancer.size)
+  })
+
+  it('should route traffic to cluster droplets', async () => {
+    const loadBalancer = createLoadBalancer()
+
+    const dropletTag = await outputOf(loadBalancer.dropletTag)
+    expect(dropletTag).toEqual(Cluster.nodePool.tag)
   })
 })
