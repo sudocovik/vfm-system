@@ -1,9 +1,10 @@
 import * as pulumi from '@pulumi/pulumi'
+import { Output } from '@pulumi/pulumi'
 import * as k8s from '@pulumi/kubernetes'
 import { Stack } from '../pulumi/Stack'
 import { Program } from '../pulumi/Program'
 import { Domain } from '../../config'
-import { Output } from '@pulumi/pulumi'
+import { createKubernetesProvider } from '../components/KubernetesProvider'
 
 function describeOldFrontend (
   provider: k8s.Provider,
@@ -193,9 +194,7 @@ export const describeFrontendResources = (applicationVersion: string): () => Pro
   const namespace = <Output<string>>backbone.getOutput('namespaceName')
   const containerRegistrySecret = <Output<string>>backbone.getOutput('containerRegistryCredentialsName')
 
-  const provider: k8s.Provider = new k8s.Provider('kubernetes-provider', {
-    kubeconfig
-  })
+  const provider = createKubernetesProvider(kubeconfig)
 
   describeOldFrontend(provider, namespace, containerRegistrySecret)
   describeNewFrontend(provider, namespace, containerRegistrySecret, applicationVersion)

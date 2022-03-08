@@ -1,10 +1,11 @@
 import * as pulumi from '@pulumi/pulumi'
+import { Output } from '@pulumi/pulumi'
 import * as digitalocean from '@pulumi/digitalocean'
 import * as k8s from '@pulumi/kubernetes'
 import { Program } from '../pulumi/Program'
 import { Stack } from '../pulumi/Stack'
 import { Domain } from '../../config'
-import { Output } from '@pulumi/pulumi'
+import { createKubernetesProvider } from '../components/KubernetesProvider'
 
 type DatabaseConnection = {
     host: pulumi.Output<string>
@@ -281,9 +282,7 @@ async function describeBackendResources (): Promise<void> {
   const namespaceName = <Output<string>>backbone.getOutput('namespaceName')
   const kubernetesClusterId = <Output<string>>backbone.getOutput('clusterId')
 
-  const provider: k8s.Provider = new k8s.Provider('kubernetes-provider', {
-    kubeconfig
-  })
+  const provider = createKubernetesProvider(kubeconfig)
 
   const databaseConnectionSettings = describeDatabase(kubernetesClusterId)
   describeApplication(provider, namespaceName, databaseConnectionSettings)

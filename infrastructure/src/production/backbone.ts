@@ -10,6 +10,7 @@ import { createProject } from '../components/Project'
 import { Cluster, Kubernetes, LoadBalancer } from '../../config'
 import { Program } from '../pulumi/Program'
 import { Stack } from '../pulumi/Stack'
+import { createKubernetesProvider } from '../components/KubernetesProvider'
 
 export function generateKubeconfig (
   cluster: digitalocean.KubernetesCluster,
@@ -49,11 +50,7 @@ async function describeBackboneResources () {
 
   const kubeconfig = generateKubeconfig(cluster, 'admin', Cluster.readToken)
 
-  const provider: k8s.Provider = new k8s.Provider('kubernetes-provider', {
-    kubeconfig
-  }, {
-    parent: cluster
-  })
+  const provider = createKubernetesProvider(kubeconfig, { parent: cluster })
 
   const namespace = new k8s.core.v1.Namespace('primary-namespace', {
     metadata: {
