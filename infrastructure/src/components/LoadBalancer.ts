@@ -18,7 +18,7 @@ export function createLoadBalancer (certificate: digitalocean.Certificate) {
       },
       {
         entryProtocol: 'https',
-        targetProtocol: 'https',
+        targetProtocol: 'http',
         entryPort: LoadBalancer.ports.https.external,
         targetPort: LoadBalancer.ports.https.internal,
         certificateName: certificate.name

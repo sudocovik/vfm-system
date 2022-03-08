@@ -103,7 +103,7 @@ describe('LoadBalancer', () => {
       const { certificate, loadBalancer } = loadBalancerFactory()
 
       const rules = await outputOf(loadBalancer.forwardingRules)
-      const httpsRule = rules.find(rule => rule.entryProtocol === 'https' && rule.targetProtocol === 'https')
+      const httpsRule = rules.find(rule => rule.entryProtocol === 'https' && rule.targetProtocol === 'http')
       expect(httpsRule).toBeDefined()
 
       expect(httpsRule?.entryPort).toEqual(LoadBalancer.ports.https.external)
