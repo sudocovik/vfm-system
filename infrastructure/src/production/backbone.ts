@@ -7,6 +7,11 @@ import type {
 import * as pulumi from '@pulumi/pulumi'
 import * as digitalocean from '@pulumi/digitalocean'
 import * as k8s from '@pulumi/kubernetes'
+import { createDomain } from '../components/Domain'
+import { createCertificate } from '../components/Certificate'
+import { createLoadBalancer } from '../components/LoadBalancer'
+import { createWildcardSubdomain } from '../components/Subdomain'
+import { createCluster } from '../components/Cluster'
 
 export function generateKubeconfig (
   cluster: digitalocean.KubernetesCluster,
@@ -41,76 +46,11 @@ export const describeBackboneResources = (
   clusterConfiguration: ClusterConfiguration,
   projectConfiguration: ProjectConfiguration
 ) => async () => {
-  const domain = new digitalocean.Domain('primary-domain', {
-    name: domainConfiguration.name
-  })
-
-  const certificate = new digitalocean.Certificate('certificate', {
-    type: 'lets_encrypt',
-    domains: [
-      domain.name,
-      domain.name.apply(domainName => `*.${domainName}`)
-    ]
-  }, {
-    parent: domain
-  })
-
-  const loadBalancer = new digitalocean.LoadBalancer('primary-load-balancer', {
-    name: loadBalancerConfiguration.name,
-    size: loadBalancerConfiguration.size,
-    region: loadBalancerConfiguration.region,
-    dropletTag: clusterConfiguration.nodePool.tag,
-    redirectHttpToHttps: true,
-    forwardingRules: [{
-      entryPort: loadBalancerConfiguration.ports.http.external,
-      entryProtocol: 'http',
-      targetPort: loadBalancerConfiguration.ports.http.internal,
-      targetProtocol: 'http'
-    }, {
-      entryPort: loadBalancerConfiguration.ports.https.external,
-      entryProtocol: 'https',
-      targetPort: loadBalancerConfiguration.ports.https.internal,
-      targetProtocol: 'http',
-      certificateName: certificate.name
-    }, {
-      entryPort: loadBalancerConfiguration.ports.teltonika.external,
-      entryProtocol: 'tcp',
-      targetPort: loadBalancerConfiguration.ports.teltonika.internal,
-      targetProtocol: 'tcp'
-    }],
-    healthcheck: {
-      path: '/',
-      port: loadBalancerConfiguration.ports.http.internal,
-      protocol: 'http',
-      checkIntervalSeconds: 10,
-      responseTimeoutSeconds: 5,
-      unhealthyThreshold: 3,
-      healthyThreshold: 5
-    }
-  })
-
-  new digitalocean.DnsRecord('wildcard-subdomain', {
-    domain: domain.name,
-    name: '*',
-    type: 'A',
-    value: loadBalancer.ip
-  }, {
-    parent: domain
-  })
-
-  const cluster = new digitalocean.KubernetesCluster('primary-cluster', {
-    name: clusterConfiguration.name,
-    version: clusterConfiguration.version,
-    region: clusterConfiguration.region,
-    autoUpgrade: false,
-    nodePool: {
-      name: clusterConfiguration.nodePool.name,
-      size: clusterConfiguration.nodePool.size,
-      autoScale: false,
-      nodeCount: clusterConfiguration.nodePool.count,
-      tags: [clusterConfiguration.nodePool.tag]
-    }
-  })
+  const domain = createDomain()
+  const certificate = createCertificate(domain)
+  const loadBalancer = createLoadBalancer(certificate)
+  createWildcardSubdomain(domain, loadBalancer.ip)
+  const cluster = createCluster()
 
   new digitalocean.Project('primary-project', {
     name: projectConfiguration.name,
