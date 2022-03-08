@@ -1,6 +1,5 @@
 import type {
   ClusterConfiguration,
-  DomainConfiguration,
   LoadBalancerConfiguration,
   ProjectConfiguration
 } from './backbone-types'
@@ -41,7 +40,6 @@ users:
 }
 
 export const describeBackboneResources = (
-  domainConfiguration: DomainConfiguration,
   loadBalancerConfiguration: LoadBalancerConfiguration,
   clusterConfiguration: ClusterConfiguration,
   projectConfiguration: ProjectConfiguration

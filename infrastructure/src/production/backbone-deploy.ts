@@ -1,19 +1,14 @@
 import { describeBackboneResources } from './backbone'
 import {
   ClusterConfiguration,
-  DomainConfiguration,
   LoadBalancerConfiguration,
   ProjectConfiguration
 } from './backbone-types'
 import { Stack } from '../pulumi/Stack'
 import { Program } from '../pulumi/Program'
-import { Cluster, Domain, Kubernetes, LoadBalancer, Project } from '../../config'
+import { Cluster, Kubernetes, LoadBalancer, Project } from '../../config'
 
 export function deployBackboneResources (): void {
-  const domainConfiguration: DomainConfiguration = {
-    name: Domain.primary
-  }
-
   const loadBalancerConfiguration: LoadBalancerConfiguration = {
     name: LoadBalancer.title,
     size: LoadBalancer.size,
@@ -60,7 +55,6 @@ export function deployBackboneResources (): void {
 
   Program.forStack(
     new Stack('backbone-production', describeBackboneResources(
-      domainConfiguration,
       loadBalancerConfiguration,
       clusterConfiguration,
       projectConfiguration

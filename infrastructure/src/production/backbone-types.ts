@@ -1,7 +1,3 @@
-export type DomainConfiguration = {
-    name: string
-}
-
 type SinglePort = {
     external: number,
     internal: number
