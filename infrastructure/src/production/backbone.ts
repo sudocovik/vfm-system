@@ -48,7 +48,39 @@ export const describeBackboneResources = (
 ) => async () => {
   const domain = createDomain()
   const certificate = createCertificate(domain)
-  const loadBalancer = createLoadBalancer(certificate)
+  const loadBalancer = new digitalocean.LoadBalancer('primary-load-balancer', {
+    name: loadBalancerConfiguration.name,
+    size: loadBalancerConfiguration.size,
+    region: loadBalancerConfiguration.region,
+    dropletTag: clusterConfiguration.nodePool.tag,
+    redirectHttpToHttps: true,
+    forwardingRules: [{
+      entryPort: loadBalancerConfiguration.ports.http.external,
+      entryProtocol: 'http',
+      targetPort: loadBalancerConfiguration.ports.http.internal,
+      targetProtocol: 'http'
+    }, {
+      entryPort: loadBalancerConfiguration.ports.https.external,
+      entryProtocol: 'https',
+      targetPort: loadBalancerConfiguration.ports.https.internal,
+      targetProtocol: 'http',
+      certificateName: certificate.name
+    }, {
+      entryPort: loadBalancerConfiguration.ports.teltonika.external,
+      entryProtocol: 'tcp',
+      targetPort: loadBalancerConfiguration.ports.teltonika.internal,
+      targetProtocol: 'tcp'
+    }],
+    healthcheck: {
+      path: '/',
+      port: loadBalancerConfiguration.ports.http.internal,
+      protocol: 'http',
+      checkIntervalSeconds: 10,
+      responseTimeoutSeconds: 5,
+      unhealthyThreshold: 3,
+      healthyThreshold: 5
+    }
+  })
   createWildcardSubdomain(domain, loadBalancer.ip)
   const cluster = createCluster()
 
