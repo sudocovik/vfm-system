@@ -11,6 +11,7 @@ import { Cluster, Kubernetes, LoadBalancer } from '../../config'
 import { Program } from '../pulumi/Program'
 import { Stack } from '../pulumi/Stack'
 import { createKubernetesProvider } from '../components/KubernetesProvider'
+import { createNamespace } from '../components/Namespace'
 
 export function generateKubeconfig (
   cluster: digitalocean.KubernetesCluster,
@@ -52,11 +53,7 @@ async function describeBackboneResources () {
 
   const provider = createKubernetesProvider(kubeconfig, { parent: cluster })
 
-  const namespace = new k8s.core.v1.Namespace('primary-namespace', {
-    metadata: {
-      name: Kubernetes.namespace
-    }
-  }, {
+  const namespace = createNamespace({
     provider,
     parent: provider
   })
