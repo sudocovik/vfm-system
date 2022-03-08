@@ -1,5 +1,4 @@
 import type {
-  ClusterConfiguration,
   ProjectConfiguration
 } from './backbone-types'
 import * as pulumi from '@pulumi/pulumi'
@@ -10,7 +9,7 @@ import { createCertificate } from '../components/Certificate'
 import { createLoadBalancer } from '../components/LoadBalancer'
 import { createWildcardSubdomain } from '../components/Subdomain'
 import { createCluster } from '../components/Cluster'
-import { LoadBalancer } from '../../config'
+import { Cluster, Kubernetes, LoadBalancer } from '../../config'
 
 export function generateKubeconfig (
   cluster: digitalocean.KubernetesCluster,
@@ -40,7 +39,6 @@ users:
 }
 
 export const describeBackboneResources = (
-  clusterConfiguration: ClusterConfiguration,
   projectConfiguration: ProjectConfiguration
 ) => async () => {
   const domain = createDomain()
@@ -61,7 +59,7 @@ export const describeBackboneResources = (
     ]
   })
 
-  const kubeconfig = generateKubeconfig(cluster, 'admin', clusterConfiguration.tokenForKubeconfig)
+  const kubeconfig = generateKubeconfig(cluster, 'admin', Cluster.readToken)
 
   const provider: k8s.Provider = new k8s.Provider('kubernetes-provider', {
     kubeconfig
@@ -71,7 +69,7 @@ export const describeBackboneResources = (
 
   const namespace = new k8s.core.v1.Namespace('primary-namespace', {
     metadata: {
-      name: clusterConfiguration.namespace
+      name: Kubernetes.namespace
     }
   }, {
     provider,
@@ -82,7 +80,7 @@ export const describeBackboneResources = (
 
   new k8s.helm.v3.Chart('ingress-controller', {
     chart: 'traefik',
-    version: clusterConfiguration.traefikVersion,
+    version: Kubernetes.traefikVersion,
     fetchOpts: {
       repo: 'https://helm.traefik.io/traefik'
     },
@@ -123,7 +121,7 @@ export const describeBackboneResources = (
   const dockerLogin = {
     auths: {
       'ghcr.io': {
-        auth: Buffer.from('covik:' + clusterConfiguration.containerRegistryToken).toString('base64')
+        auth: Buffer.from('covik:' + Kubernetes.containerRegistryCredentials).toString('base64')
       }
     }
   }
@@ -143,7 +141,7 @@ export const describeBackboneResources = (
 
   new k8s.helm.v3.Chart('kube-state-metrics', {
     chart: 'kube-state-metrics',
-    version: clusterConfiguration.kubeStateMetricsVersion,
+    version: Kubernetes.kubeStateMetricsVersion,
     fetchOpts: {
       repo: 'https://prometheus-community.github.io/helm-charts'
     },
