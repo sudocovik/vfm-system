@@ -8,6 +8,8 @@ import { createWildcardSubdomain } from '../components/Subdomain'
 import { createCluster } from '../components/Cluster'
 import { createProject } from '../components/Project'
 import { Cluster, Kubernetes, LoadBalancer } from '../../config'
+import { Program } from '../pulumi/Program'
+import { Stack } from '../pulumi/Stack'
 
 export function generateKubeconfig (
   cluster: digitalocean.KubernetesCluster,
@@ -36,8 +38,7 @@ users:
 `
 }
 
-export const describeBackboneResources = (
-) => async () => {
+async function describeBackboneResources () {
   const domain = createDomain()
   const certificate = createCertificate(domain)
   const loadBalancer = createLoadBalancer(certificate)
@@ -145,4 +146,10 @@ export const describeBackboneResources = (
     containerRegistryCredentialsName: containerRegistryCredentials.metadata.name,
     clusterId: cluster.id
   }
+}
+
+export function deployBackboneResources (): void {
+  Program.forStack(
+    new Stack('backbone-production', describeBackboneResources)
+  ).execute()
 }

@@ -7,7 +7,7 @@ import {
   unitTest as runUnitTests,
   integrationTest as runIntegrationTests
 } from './unit-tests'
-import { deployBackboneResources } from '../production/backbone-deploy'
+import { deployBackboneResources } from '../production/backbone'
 import { deployFrontendResources } from '../production/frontend'
 import { deployBackendResources } from '../production/backend'
 
