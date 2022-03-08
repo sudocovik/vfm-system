@@ -1,21 +1,3 @@
-type SinglePort = {
-    external: number,
-    internal: number
-}
-
-type Ports = {
-    http: SinglePort
-    https: SinglePort
-    teltonika: SinglePort
-}
-
-export type LoadBalancerConfiguration = {
-    name: string
-    size: string
-    region: string
-    ports: Ports
-}
-
 type NodePool = {
     name: string
     size: string

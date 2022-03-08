@@ -1,6 +1,5 @@
 import type {
   ClusterConfiguration,
-  LoadBalancerConfiguration,
   ProjectConfiguration
 } from './backbone-types'
 import * as pulumi from '@pulumi/pulumi'
@@ -11,6 +10,7 @@ import { createCertificate } from '../components/Certificate'
 import { createLoadBalancer } from '../components/LoadBalancer'
 import { createWildcardSubdomain } from '../components/Subdomain'
 import { createCluster } from '../components/Cluster'
+import { LoadBalancer } from '../../config'
 
 export function generateKubeconfig (
   cluster: digitalocean.KubernetesCluster,
@@ -40,7 +40,6 @@ users:
 }
 
 export const describeBackboneResources = (
-  loadBalancerConfiguration: LoadBalancerConfiguration,
   clusterConfiguration: ClusterConfiguration,
   projectConfiguration: ProjectConfiguration
 ) => async () => {
@@ -99,7 +98,7 @@ export const describeBackboneResources = (
       },
       ports: {
         web: {
-          nodePort: loadBalancerConfiguration.ports.http.internal
+          nodePort: LoadBalancer.ports.http.internal
         },
         websecure: {
           expose: false

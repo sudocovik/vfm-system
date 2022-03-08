@@ -1,34 +1,13 @@
 import { describeBackboneResources } from './backbone'
 import {
   ClusterConfiguration,
-  LoadBalancerConfiguration,
   ProjectConfiguration
 } from './backbone-types'
 import { Stack } from '../pulumi/Stack'
 import { Program } from '../pulumi/Program'
-import { Cluster, Kubernetes, LoadBalancer, Project } from '../../config'
+import { Cluster, Kubernetes, Project } from '../../config'
 
 export function deployBackboneResources (): void {
-  const loadBalancerConfiguration: LoadBalancerConfiguration = {
-    name: LoadBalancer.title,
-    size: LoadBalancer.size,
-    region: LoadBalancer.region,
-    ports: {
-      http: {
-        external: 80,
-        internal: 32080
-      },
-      https: {
-        external: 443,
-        internal: 32080
-      },
-      teltonika: {
-        external: 5027,
-        internal: 32027
-      }
-    }
-  }
-
   const clusterConfiguration: ClusterConfiguration = {
     name: Cluster.title,
     region: Cluster.region,
@@ -55,7 +34,6 @@ export function deployBackboneResources (): void {
 
   Program.forStack(
     new Stack('backbone-production', describeBackboneResources(
-      loadBalancerConfiguration,
       clusterConfiguration,
       projectConfiguration
     ))
