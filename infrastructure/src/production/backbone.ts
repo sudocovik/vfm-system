@@ -1,6 +1,3 @@
-import type {
-  ProjectConfiguration
-} from './backbone-types'
 import * as pulumi from '@pulumi/pulumi'
 import * as digitalocean from '@pulumi/digitalocean'
 import * as k8s from '@pulumi/kubernetes'
@@ -9,6 +6,7 @@ import { createCertificate } from '../components/Certificate'
 import { createLoadBalancer } from '../components/LoadBalancer'
 import { createWildcardSubdomain } from '../components/Subdomain'
 import { createCluster } from '../components/Cluster'
+import { createProject } from '../components/Project'
 import { Cluster, Kubernetes, LoadBalancer } from '../../config'
 
 export function generateKubeconfig (
@@ -39,7 +37,6 @@ users:
 }
 
 export const describeBackboneResources = (
-  projectConfiguration: ProjectConfiguration
 ) => async () => {
   const domain = createDomain()
   const certificate = createCertificate(domain)
@@ -47,17 +44,7 @@ export const describeBackboneResources = (
   createWildcardSubdomain(domain, loadBalancer.ip)
   const cluster = createCluster()
 
-  new digitalocean.Project('primary-project', {
-    name: projectConfiguration.name,
-    environment: projectConfiguration.environment,
-    description: projectConfiguration.description,
-    purpose: projectConfiguration.purpose,
-    resources: [
-      domain.domainUrn,
-      cluster.clusterUrn,
-      loadBalancer.loadBalancerUrn
-    ]
-  })
+  createProject(domain, cluster, loadBalancer)
 
   const kubeconfig = generateKubeconfig(cluster, 'admin', Cluster.readToken)
 
