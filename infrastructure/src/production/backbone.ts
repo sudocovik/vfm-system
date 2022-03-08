@@ -9,7 +9,6 @@ import * as digitalocean from '@pulumi/digitalocean'
 import * as k8s from '@pulumi/kubernetes'
 import { createDomain } from '../components/Domain'
 import { createCertificate } from '../components/Certificate'
-import { createLoadBalancer } from '../components/LoadBalancer'
 import { createWildcardSubdomain } from '../components/Subdomain'
 import { createCluster } from '../components/Cluster'
 
