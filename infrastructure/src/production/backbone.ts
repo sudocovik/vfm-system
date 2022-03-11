@@ -121,18 +121,6 @@ async function describeBackboneResources () {
     parent: namespace
   })
 
-  new k8s.helm.v3.Chart('kube-state-metrics', {
-    chart: 'kube-state-metrics',
-    version: Kubernetes.kubeStateMetricsVersion,
-    fetchOpts: {
-      repo: 'https://prometheus-community.github.io/helm-charts'
-    },
-    namespace: 'kube-system'
-  }, {
-    provider,
-    parent: namespace
-  })
-
   return {
     kubeconfig,
     namespaceName,

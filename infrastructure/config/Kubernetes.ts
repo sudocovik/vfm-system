@@ -5,5 +5,4 @@ export class Kubernetes {
     public static namespace: string = Project.nameLowercase
     public static traefikVersion = '10.6.2'
     public static containerRegistryCredentials: string = process.env.CLUSTER_CONTAINER_REGISTRY_TOKEN || ''
-    public static kubeStateMetricsVersion = '4.0.2'
 }
