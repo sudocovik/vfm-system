@@ -12,6 +12,7 @@ import { Program } from '../pulumi/Program'
 import { Stack } from '../pulumi/Stack'
 import { createKubernetesProvider } from '../components/KubernetesProvider'
 import { createNamespace } from '../components/Namespace'
+import { DockerCredentials } from '../components/DockerCredentials'
 
 export function generateKubeconfig (
   cluster: digitalocean.KubernetesCluster,
@@ -100,13 +101,11 @@ async function describeBackboneResources () {
     parent: namespace
   })
 
-  const dockerLogin = {
-    auths: {
-      'ghcr.io': {
-        auth: Buffer.from('covik:' + Kubernetes.containerRegistryCredentials).toString('base64')
-      }
-    }
-  }
+  const dockerLogin = DockerCredentials.forRegistry('ghcr.io')
+    .asUser('covik')
+    .withPassword(Kubernetes.containerRegistryCredentials)
+    .toJSON()
+
   const containerRegistryCredentials = new k8s.core.v1.Secret('container-registry-credentials', {
     metadata: {
       namespace: namespaceName,
