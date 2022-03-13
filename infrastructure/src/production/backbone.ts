@@ -113,7 +113,7 @@ async function describeBackboneResources () {
     },
     type: 'kubernetes.io/dockerconfigjson',
     data: {
-      '.dockerconfigjson': Buffer.from(JSON.stringify(dockerLogin), 'utf8').toString('base64')
+      '.dockerconfigjson': Buffer.from(dockerLogin, 'utf8').toString('base64')
     }
   }, {
     provider,
