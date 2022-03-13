@@ -17,6 +17,8 @@ module.exports = {
   rules: {
     'no-unused-vars': 'off', // Does not understand types
     '@typescript-eslint/no-unused-vars': 'error',
+    'no-useless-constructor': 'off', // Does not understand types
+    '@typescript-eslint/no-useless-constructor': 'error',
     'no-new': 'off' // Remove once all pulumi objects get created and returned by a function
   },
 
