@@ -13,6 +13,7 @@ import { Stack } from '../pulumi/Stack'
 import { createKubernetesProvider } from '../components/KubernetesProvider'
 import { createNamespace } from '../components/Namespace'
 import { DockerCredentials } from '../components/DockerCredentials'
+import { GitHubContainerRegistry } from '../../config/GitHubContainerRegistry'
 
 export function generateKubeconfig (
   cluster: digitalocean.KubernetesCluster,
@@ -101,9 +102,9 @@ async function describeBackboneResources () {
     parent: namespace
   })
 
-  const dockerLogin = DockerCredentials.forRegistry('ghcr.io')
-    .asUser('covik')
-    .withPassword(Kubernetes.containerRegistryCredentials)
+  const dockerLogin = DockerCredentials.forRegistry(GitHubContainerRegistry.url)
+    .asUser(GitHubContainerRegistry.user)
+    .withPassword(GitHubContainerRegistry.password)
     .toJSON()
 
   const containerRegistryCredentials = new k8s.core.v1.Secret('container-registry-credentials', {
