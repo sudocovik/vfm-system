@@ -1,17 +1,9 @@
 import * as k8s from '@pulumi/kubernetes'
 import * as pulumi from '@pulumi/pulumi'
 import * as docker from '@pulumi/docker'
-import { Kubernetes } from '../../config'
-
-function createNamespace (provider: k8s.Provider): k8s.core.v1.Namespace {
-  return new k8s.core.v1.Namespace('vfm', {
-    metadata: {
-      name: 'vfm'
-    }
-  }, {
-    provider
-  })
-}
+import { createTraefikIngressController } from '../components/TraefikIngressController'
+import { createNamespace } from '../components/Namespace'
+import { createKubernetesProvider } from '../components/KubernetesProvider'
 
 function replaceRegistryUrlWithUrlClusterUnderstands (originalImageName: pulumi.Output<string>): pulumi.Output<string> {
   return originalImageName.apply(imageName => imageName.replace(/^localhost/, 'vfm-registry'))
@@ -116,11 +108,9 @@ function createFrontendApplication (provider: k8s.Provider, namespace: pulumi.Ou
 }
 
 export function createKubernetesManifests (kubeconfig: string): void {
-  const provider: k8s.Provider = new k8s.Provider('main-kubernetes-provider', {
-    kubeconfig
-  })
+  const provider = createKubernetesProvider(kubeconfig)
 
-  const namespace = createNamespace(provider).metadata.name
+  const namespace = createNamespace({ provider }).metadata.name
 
   const configuration = new k8s.core.v1.ConfigMap('traccar-configuration', {
     metadata: {
@@ -263,39 +253,7 @@ export function createKubernetesManifests (kubeconfig: string): void {
     }
   }, { provider })
 
-  const traefik = new k8s.helm.v3.Chart('ingress-controller', {
-    chart: 'traefik',
-    version: Kubernetes.traefikVersion,
-    fetchOpts: {
-      repo: 'https://helm.traefik.io/traefik'
-    },
-    namespace: namespace,
-    values: {
-      ingressRoute: {
-        dashboard: {
-          enabled: false
-        }
-      },
-      service: {
-        type: 'NodePort'
-      },
-      ports: {
-        web: {
-          nodePort: 32080
-        },
-        websecure: {
-          expose: false
-        }
-      }
-    },
-    transformations: [
-      obj => {
-        if (obj.kind === 'Service') {
-          obj.metadata.namespace = namespace
-        }
-      }
-    ]
-  }, { provider })
+  const traefik = createTraefikIngressController(namespace, { provider })
 
   new k8s.networking.v1.Ingress('traefik-ingress', {
     metadata: {
