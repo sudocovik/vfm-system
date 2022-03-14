@@ -7,12 +7,13 @@ import { createLoadBalancer } from '../components/LoadBalancer'
 import { createWildcardSubdomain } from '../components/Subdomain'
 import { createCluster } from '../components/Cluster'
 import { createProject } from '../components/Project'
-import { Cluster, Kubernetes, LoadBalancer, GitHubContainerRegistry } from '../../config'
-import { Program } from '../pulumi/Program'
-import { Stack } from '../pulumi/Stack'
 import { createKubernetesProvider } from '../components/KubernetesProvider'
 import { createNamespace } from '../components/Namespace'
 import { DockerCredentials } from '../components/DockerCredentials'
+import { createTraefikIngressController } from '../components/TraefikIngressController'
+import { Cluster, GitHubContainerRegistry } from '../../config'
+import { Program } from '../pulumi/Program'
+import { Stack } from '../pulumi/Stack'
 
 export function generateKubeconfig (
   cluster: digitalocean.KubernetesCluster,
@@ -61,45 +62,7 @@ async function describeBackboneResources () {
 
   const namespaceName = namespace.metadata.name
 
-  new k8s.helm.v3.Chart('ingress-controller', {
-    chart: 'traefik',
-    version: Kubernetes.traefikVersion,
-    fetchOpts: {
-      repo: 'https://helm.traefik.io/traefik'
-    },
-    namespace: namespaceName,
-    values: {
-      ingressRoute: {
-        dashboard: {
-          enabled: false
-        }
-      },
-      service: {
-        type: 'NodePort'
-      },
-      ports: {
-        web: {
-          nodePort: LoadBalancer.ports.http.internal
-        },
-        websecure: {
-          expose: false
-        }
-      }
-    },
-    transformations: [
-      obj => {
-        if (obj.kind === 'Service') {
-          obj.metadata.namespace = namespaceName
-          obj.metadata.annotations = {
-            'kubernetes.digitalocean.com/firewall-managed': 'false'
-          }
-        }
-      }
-    ]
-  }, {
-    provider,
-    parent: namespace
-  })
+  createTraefikIngressController(namespaceName, { provider, parent: namespace })
 
   const dockerLogin = DockerCredentials.forRegistry(GitHubContainerRegistry.url)
     .asUser(GitHubContainerRegistry.user)
