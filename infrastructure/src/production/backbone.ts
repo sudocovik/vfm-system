@@ -7,13 +7,12 @@ import { createLoadBalancer } from '../components/LoadBalancer'
 import { createWildcardSubdomain } from '../components/Subdomain'
 import { createCluster } from '../components/Cluster'
 import { createProject } from '../components/Project'
-import { Cluster, Kubernetes, LoadBalancer } from '../../config'
+import { Cluster, Kubernetes, LoadBalancer, GitHubContainerRegistry } from '../../config'
 import { Program } from '../pulumi/Program'
 import { Stack } from '../pulumi/Stack'
 import { createKubernetesProvider } from '../components/KubernetesProvider'
 import { createNamespace } from '../components/Namespace'
 import { DockerCredentials } from '../components/DockerCredentials'
-import { GitHubContainerRegistry } from '../../config/GitHubContainerRegistry'
 
 export function generateKubeconfig (
   cluster: digitalocean.KubernetesCluster,
