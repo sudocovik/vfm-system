@@ -1,6 +1,5 @@
 import * as pulumi from '@pulumi/pulumi'
 import * as digitalocean from '@pulumi/digitalocean'
-import * as k8s from '@pulumi/kubernetes'
 import { createDomain } from '../components/Domain'
 import { createCertificate } from '../components/Certificate'
 import { createLoadBalancer } from '../components/LoadBalancer'
@@ -11,6 +10,7 @@ import { createKubernetesProvider } from '../components/KubernetesProvider'
 import { createNamespace } from '../components/Namespace'
 import { DockerCredentials } from '../components/DockerCredentials'
 import { createTraefikIngressController } from '../components/TraefikIngressController'
+import { createContainerRegistrySecret } from '../components/ContainerRegistrySecret'
 import { Cluster, GitHubContainerRegistry } from '../../config'
 import { Program } from '../pulumi/Program'
 import { Stack } from '../pulumi/Stack'
@@ -67,21 +67,8 @@ async function describeBackboneResources () {
   const dockerLogin = DockerCredentials.forRegistry(GitHubContainerRegistry.url)
     .asUser(GitHubContainerRegistry.user)
     .withPassword(GitHubContainerRegistry.password)
-    .toJSON()
 
-  const containerRegistryCredentials = new k8s.core.v1.Secret('container-registry-credentials', {
-    metadata: {
-      namespace: namespaceName,
-      name: 'container-registry'
-    },
-    type: 'kubernetes.io/dockerconfigjson',
-    data: {
-      '.dockerconfigjson': Buffer.from(dockerLogin, 'utf8').toString('base64')
-    }
-  }, {
-    provider,
-    parent: namespace
-  })
+  const containerRegistryCredentials = createContainerRegistrySecret(dockerLogin, namespaceName, { provider, parent: namespace })
 
   return {
     kubeconfig,
