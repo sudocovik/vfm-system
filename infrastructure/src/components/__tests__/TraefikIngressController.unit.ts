@@ -94,13 +94,15 @@ describe('Traefik', () => {
 
     const fakeServiceObject = {
       kind: 'Service',
-      namespace: pulumi.output('wrong-namespace')
+      metadata: {
+        namespace: pulumi.output('wrong-namespace')
+      }
     }
 
     workaroundServiceNamespaceProblems(fakeServiceObject)
 
     const expectedNamespace = await outputOf(namespace)
-    const actualNamespace = await outputOf(fakeServiceObject.namespace)
+    const actualNamespace = await outputOf(fakeServiceObject.metadata.namespace)
     expect(actualNamespace).toEqual(expectedNamespace)
   })
 
@@ -110,13 +112,15 @@ describe('Traefik', () => {
 
     const fakeDeploymentObject = {
       kind: 'Deployment',
-      namespace: pulumi.output('random-namespace')
+      metadata: {
+        namespace: pulumi.output('random-namespace')
+      }
     }
 
     workaroundServiceNamespaceProblems(fakeDeploymentObject)
 
     const expectedNamespace = 'random-namespace'
-    const actualNamespace = await outputOf(fakeDeploymentObject.namespace)
+    const actualNamespace = await outputOf(fakeDeploymentObject.metadata.namespace)
     expect(actualNamespace).toEqual(expectedNamespace)
   })
 
@@ -126,12 +130,14 @@ describe('Traefik', () => {
 
     const fakeServiceObject = {
       kind: 'Service',
-      annotations: {}
+      metadata: {
+        annotations: {}
+      }
     }
 
     doNotExposeServicePortsPublicly(fakeServiceObject)
 
-    expect(fakeServiceObject.annotations).toEqual({ 'kubernetes.digitalocean.com/firewall-managed': 'false' })
+    expect(fakeServiceObject.metadata.annotations).toEqual({ 'kubernetes.digitalocean.com/firewall-managed': 'false' })
   })
 
   it('should not try to close Service ports on non-Service objects', () => {
@@ -141,12 +147,14 @@ describe('Traefik', () => {
     const expectedAnnotations = {}
     const fakeDeploymentObject = {
       kind: 'Deployment',
-      annotations: expectedAnnotations
+      metadata: {
+        annotations: expectedAnnotations
+      }
     }
 
     doNotExposeServicePortsPublicly(fakeDeploymentObject)
 
-    expect(fakeDeploymentObject.annotations).toEqual(expectedAnnotations)
+    expect(fakeDeploymentObject.metadata.annotations).toEqual(expectedAnnotations)
   })
 
   it('should pass custom resource options', () => {

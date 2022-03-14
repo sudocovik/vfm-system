@@ -30,12 +30,12 @@ export function createTraefikIngressController (namespace: pulumi.Output<string>
     },
     transformations: [
       obj => {
-        if (obj.kind === 'Service') obj.namespace = namespace
+        if (obj.kind === 'Service') obj.metadata.namespace = namespace
       },
 
       obj => {
         if (obj.kind === 'Service') {
-          obj.annotations = {
+          obj.metadata.annotations = {
             'kubernetes.digitalocean.com/firewall-managed': 'false'
           }
         }
