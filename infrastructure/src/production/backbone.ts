@@ -49,26 +49,15 @@ async function describeBackboneResources () {
   createWildcardSubdomain(domain, loadBalancer.ip)
   const cluster = createCluster()
 
-  createProject(domain, cluster, loadBalancer)
-
   const kubeconfig = generateKubeconfig(cluster, 'admin', Cluster.readToken)
-
   const provider = createKubernetesProvider(kubeconfig, { parent: cluster })
-
-  const namespace = createNamespace({
-    provider,
-    parent: provider
-  })
-
+  const namespace = createNamespace({ provider, parent: provider })
   const namespaceName = namespace.metadata.name
-
   createTraefikIngressController(namespaceName, { provider, parent: namespace })
-
-  const dockerLogin = DockerCredentials.forRegistry(GitHubContainerRegistry.url)
-    .asUser(GitHubContainerRegistry.user)
-    .withPassword(GitHubContainerRegistry.password)
-
+  const dockerLogin = DockerCredentials.forRegistry(GitHubContainerRegistry.url).asUser(GitHubContainerRegistry.user).withPassword(GitHubContainerRegistry.password)
   const containerRegistryCredentials = createContainerRegistrySecret(dockerLogin, namespaceName, { provider, parent: namespace })
+
+  createProject(domain, cluster, loadBalancer)
 
   return {
     kubeconfig,
