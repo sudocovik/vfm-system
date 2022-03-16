@@ -1,12 +1,12 @@
 <template>
-  <div class="fullscreen bg-blue text-white text-center q-pa-md flex flex-center">
+  <q-page class="text-grey-8 text-center q-pa-md flex flex-center">
     <div>
-      <div style="font-size: 30vh">
+      <div style="font-size: 15vh">
         404
       </div>
 
       <div
-        class="text-h2"
+        class="text-h4"
         style="opacity:.4"
       >
         Oops. Nothing here...
@@ -22,7 +22,7 @@
         no-caps
       />
     </div>
-  </div>
+  </q-page>
 </template>
 
 <script lang="ts">
