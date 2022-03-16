@@ -35,11 +35,3 @@
     />
   </q-tabs>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'TheNavigationBarDummy'
-})
-</script>
