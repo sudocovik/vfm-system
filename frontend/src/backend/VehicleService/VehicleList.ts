@@ -1,15 +1,21 @@
-import { VehicleWithoutPosition } from './models/VehicleWithoutPosition'
 import axios from 'axios'
+import { VehicleWithoutPosition } from './models/VehicleWithoutPosition'
+import { TraccarDevice } from './models/TraccarDevice'
 
 export class VehicleList {
   public static vehicleEndpoint = '/api/devices'
 
   public async fetchAllWithoutPositions (): Promise<VehicleWithoutPosition[]> {
     const response = await axios.get(VehicleList.vehicleEndpoint)
-    const vehicles = response.data as unknown[]
+    const devices = response.data as TraccarDevice[]
 
-    return vehicles?.length === 0 ? [] : [
-      new VehicleWithoutPosition()
-    ]
+    const convertDeviceToVehicle = (device: TraccarDevice) => new VehicleWithoutPosition(
+      device.id,
+      device.name,
+      device.uniqueId,
+      device.status === 'online'
+    )
+
+    return devices?.length === 0 ? [] : [convertDeviceToVehicle(devices[0])]
   }
 }

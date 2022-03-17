@@ -1,21 +1,28 @@
 export class VehicleWithoutPosition {
+  public constructor (
+    private readonly _id: number,
+    private readonly _licensePlate: string,
+    private readonly _imei: string,
+    private readonly _isOnline: boolean
+  ) {}
+
   public id (): number {
-    return 1
+    return this._id
   }
 
   public licensePlate (): string {
-    return 'ZD123AB'
+    return this._licensePlate
   }
 
   public imei (): string {
-    return '123456789'
+    return this._imei
   }
 
   public isOnline (): boolean {
-    return false
+    return this._isOnline
   }
 
   public isOffline (): boolean {
-    return true
+    return !this.isOnline()
   }
 }
