@@ -6,7 +6,7 @@ import axios from 'axios'
 describe('VehicleService', () => {
   describe('VehicleList', () => {
     const vehicleList = new VehicleList()
-    const vehicles = [
+    const rawVehicles = [
       {
         id: 1,
         name: 'ZD123AB',
@@ -49,7 +49,7 @@ describe('VehicleService', () => {
         expect(vehiclesWithoutPosition).toHaveLength(0)
       })
 
-      it.each(vehicles)('should return single vehicle in array if user has only one device (Index: %#)', async (expectedVehicle: TraccarDevice) => {
+      it.each(rawVehicles)('should return single vehicle in array if user has only one device (Index: %#)', async (expectedVehicle: TraccarDevice) => {
         simulateUserHasVehicles([expectedVehicle])
 
         const vehiclesWithoutPosition = await vehicleList.fetchAllWithoutPositions()
@@ -57,12 +57,17 @@ describe('VehicleService', () => {
 
         expect(vehiclesWithoutPosition).toHaveLength(1)
 
-        expect(actualVehicle).toBeInstanceOf(VehicleWithoutPosition)
-        expect(actualVehicle.id()).toEqual(expectedVehicle.id)
-        expect(actualVehicle.licensePlate()).toEqual(expectedVehicle.name)
-        expect(actualVehicle.imei()).toEqual(expectedVehicle.uniqueId)
-        expect(actualVehicle.isOnline()).toEqual(expectedVehicle.status === 'online')
-        expect(actualVehicle.isOffline()).toEqual(expectedVehicle.status === 'offline')
+        vehicleShouldEqualTraccarDevice(actualVehicle, expectedVehicle)
+      })
+
+      it('should return multiple vehicles in array if user has multiple devices', async () => {
+        simulateUserHasVehicles(rawVehicles)
+
+        const vehiclesWithoutPosition = await vehicleList.fetchAllWithoutPositions()
+
+        expect(vehiclesWithoutPosition).toHaveLength(rawVehicles.length)
+
+        vehiclesWithoutPosition.forEach((vehicle, i) => vehicleShouldEqualTraccarDevice(vehicle, rawVehicles[i]))
       })
     })
   })
@@ -76,4 +81,13 @@ function simulateUserHasNoVehicles () {
 function simulateUserHasVehicles (vehicles: TraccarDevice[]) {
   const mock = new MockAdapter(axios)
   mock.onGet(VehicleList.vehicleEndpoint).reply(200, vehicles)
+}
+
+function vehicleShouldEqualTraccarDevice (actualVehicle: VehicleWithoutPosition, expectedVehicle: TraccarDevice) {
+  expect(actualVehicle).toBeInstanceOf(VehicleWithoutPosition)
+  expect(actualVehicle.id()).toEqual(expectedVehicle.id)
+  expect(actualVehicle.licensePlate()).toEqual(expectedVehicle.name)
+  expect(actualVehicle.imei()).toEqual(expectedVehicle.uniqueId)
+  expect(actualVehicle.isOnline()).toEqual(expectedVehicle.status === 'online')
+  expect(actualVehicle.isOffline()).toEqual(expectedVehicle.status === 'offline')
 }

@@ -16,6 +16,6 @@ export class VehicleList {
       device.status === 'online'
     )
 
-    return devices?.length === 0 ? [] : [convertDeviceToVehicle(devices[0])]
+    return devices.map(convertDeviceToVehicle)
   }
 }
