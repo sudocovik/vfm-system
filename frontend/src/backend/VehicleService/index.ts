@@ -1,3 +1,6 @@
 export { VehicleList } from './VehicleList'
+export { PositionList } from './PositionList'
 export { VehicleWithoutPosition } from './models/VehicleWithoutPosition'
+export { Position } from './models/Position'
 export { TraccarDevice } from './models/TraccarDevice'
+export { TraccarPosition } from './models/TraccarPosition'

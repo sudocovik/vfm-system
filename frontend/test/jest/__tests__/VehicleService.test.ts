@@ -1,5 +1,12 @@
 import { describe, expect, it } from '@jest/globals'
-import { TraccarDevice, VehicleList, VehicleWithoutPosition } from 'src/backend/VehicleService'
+import {
+  Position,
+  PositionList,
+  TraccarDevice,
+  TraccarPosition,
+  VehicleList,
+  VehicleWithoutPosition
+} from 'src/backend/VehicleService'
 import MockAdapter from 'axios-mock-adapter'
 import axios from 'axios'
 
@@ -71,6 +78,49 @@ describe('VehicleService', () => {
       })
     })
   })
+
+  describe('PositionList', () => {
+    const positionList = new PositionList()
+
+    describe('fetchAllMostRecent', () => {
+      it('should return empty array if no vehicle has sent it\'s position', async () => {
+        simulateNoPositions()
+        const allPosition = await positionList.fetchAllMostRecent()
+
+        expect(allPosition).toBeInstanceOf(Array)
+        expect(allPosition).toHaveLength(0)
+      })
+
+      it('should return single position in array if only one vehicle has sent it\'s position', async () => {
+        simulateManyPositions([{
+          id: 1,
+          deviceId: 1,
+          protocol: 'teltonika',
+          deviceTime: '2022-03-18T16:39:00Z',
+          fixTime: '2022-03-16T16:39:00Z',
+          serverTime: '2022-03-16T16:39:05Z',
+          outdated: false,
+          valid: true,
+          latitude: 44.0901797,
+          longitude: 15.2176099,
+          altitude: 30,
+          speed: 15,
+          course: 270,
+          address: '',
+          accuracy: 0,
+          network: {},
+          attributes: {}
+        }])
+
+        const allPositions = await positionList.fetchAllMostRecent()
+        const position = allPositions[0]
+
+        expect(allPositions).toHaveLength(1)
+
+        expect(position).toBeInstanceOf(Position)
+      })
+    })
+  })
 })
 
 function simulateUserHasNoVehicles () {
@@ -90,4 +140,14 @@ function vehicleShouldEqualTraccarDevice (actualVehicle: VehicleWithoutPosition,
   expect(actualVehicle.imei()).toEqual(expectedVehicle.uniqueId)
   expect(actualVehicle.isOnline()).toEqual(expectedVehicle.status === 'online')
   expect(actualVehicle.isOffline()).toEqual(expectedVehicle.status === 'offline')
+}
+
+function simulateNoPositions () {
+  const mock = new MockAdapter(axios)
+  mock.onGet(PositionList.positionEndpoint).reply(200, [])
+}
+
+function simulateManyPositions (positions: TraccarPosition[]) {
+  const mock = new MockAdapter(axios)
+  mock.onGet(PositionList.positionEndpoint).reply(200, positions)
 }
