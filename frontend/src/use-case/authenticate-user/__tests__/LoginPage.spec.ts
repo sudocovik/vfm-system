@@ -8,6 +8,7 @@ import LoginFormEmailInput from '../LoginFormEmailInput.vue'
 import { Event, inAllLanguages } from 'test/support/api'
 import { AuthenticationService } from 'src/backend/AuthenticationService'
 import { AuthenticationSuccessfulEventName as AuthenticationSuccessful } from '../AuthenticationSuccessfulEvent'
+import { SessionCookie } from '../SessionCookie'
 
 describe('LoginPage', () => {
   it('should render form in \'ready\' state upon initial render', () => {
@@ -30,6 +31,38 @@ describe('LoginPage', () => {
     authenticationSuccessfulEventShouldBeFired()
   })
 
+  describe('should set session cookie for one year after successful authentication', () => {
+    const cookies = [{
+      value: 'initial-cookie-value',
+      currentClock: Date.UTC(2022, 0, 15, 11, 23, 44),
+      targetExpiry: Date.UTC(2023, 0, 15, 11, 23, 44)
+    }, {
+      value: 'second-cookie-value',
+      currentClock: Date.UTC(2056, 11, 25, 0, 0, 0),
+      targetExpiry: Date.UTC(2057, 11, 25, 0, 0, 0)
+    }]
+
+    cookies.forEach(({ value, currentClock, targetExpiry }, i) => {
+      it(`case ${i + 1}: target expiry = ${new Date(targetExpiry).toDateString()}`, () => {
+        cy.clock(currentClock)
+        simulateSessionCookieSetByBackend(value)
+
+        mountLoginPage()
+        simulateCorrectCredentialsSituation()
+        typeEmail('correct@example.com')
+        typePassword('correct-password')
+        submitForm()
+
+        cy.getCookie(SessionCookie.name)
+          .should(sessionCookie => {
+            const expectedExpiry = targetExpiry / 1000 // Because cypress converts cookie expiry to seconds
+            expect(sessionCookie).to.have.property('value', value)
+            expect(sessionCookie).to.have.property('expiry', expectedExpiry)
+          })
+      })
+    })
+  })
+
   inAllLanguages.it('should tell user if email is missing', (t) => {
     mountLoginPage()
     simulateCorrectCredentialsSituation()
@@ -39,6 +72,7 @@ describe('LoginPage', () => {
 
     formStateShouldBe(LoginFormState.failure().withEmailError(t('validation.required')))
     authenticationSuccessfulEventShouldNotBeFired()
+    sessionCookieShouldNotBeSet()
   })
 
   inAllLanguages.it('should tell user if password is missing', (t) => {
@@ -50,6 +84,7 @@ describe('LoginPage', () => {
 
     formStateShouldBe(LoginFormState.failure().withPasswordError(t('validation.required')))
     authenticationSuccessfulEventShouldNotBeFired()
+    sessionCookieShouldNotBeSet()
   })
 
   inAllLanguages.it('should tell user if email & password are both missing', (t) => {
@@ -60,6 +95,7 @@ describe('LoginPage', () => {
 
     formStateShouldBe(LoginFormState.failure().withEmailError(t('validation.required')).withPasswordError(t('validation.required')))
     authenticationSuccessfulEventShouldNotBeFired()
+    sessionCookieShouldNotBeSet()
   })
 
   inAllLanguages.it('should notify user credentials are incorrect', (t) => {
@@ -75,6 +111,7 @@ describe('LoginPage', () => {
     assertOrderOfStateChangesFor(LoginFormState.failure())
     formStateShouldBe(LoginFormState.failure())
     authenticationSuccessfulEventShouldNotBeFired()
+    sessionCookieShouldNotBeSet()
   })
 
   inAllLanguages.it('should notify user there are problems with the server', (t) => {
@@ -90,6 +127,7 @@ describe('LoginPage', () => {
     assertOrderOfStateChangesFor(LoginFormState.failure())
     formStateShouldBe(LoginFormState.failure())
     authenticationSuccessfulEventShouldNotBeFired()
+    sessionCookieShouldNotBeSet()
   })
 
   inAllLanguages.it('should notify user there are problems with the network', (t) => {
@@ -105,6 +143,7 @@ describe('LoginPage', () => {
     assertOrderOfStateChangesFor(LoginFormState.failure())
     formStateShouldBe(LoginFormState.failure())
     authenticationSuccessfulEventShouldNotBeFired()
+    sessionCookieShouldNotBeSet()
   })
 
   inAllLanguages.it('should notify user there are problems with the client application', (t) => {
@@ -120,6 +159,7 @@ describe('LoginPage', () => {
     assertOrderOfStateChangesFor(LoginFormState.failure())
     formStateShouldBe(LoginFormState.failure())
     authenticationSuccessfulEventShouldNotBeFired()
+    sessionCookieShouldNotBeSet()
   })
 })
 
@@ -226,4 +266,13 @@ function setupFormStateSpies () {
       })
     }
   }
+}
+
+function simulateSessionCookieSetByBackend (value: string) {
+  const expireCookieAfterBrowserWindowCloses = { expiry: Date.now() }
+  cy.setCookie(SessionCookie.name, value, expireCookieAfterBrowserWindowCloses)
+}
+
+function sessionCookieShouldNotBeSet () {
+  cy.getCookie(SessionCookie.name).should('not.exist')
 }
