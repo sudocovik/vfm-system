@@ -100,6 +100,14 @@ function describeApplication (provider: k8s.Provider, namespace: pulumi.Output<s
 
   <entry key='logger.file'>/proc/1/fd/1</entry>
 
+  <entry key='mail.smtp.host'>smtp.zoho.eu</entry>
+  <entry key='mail.smtp.port'>587</entry>
+  <entry key='mail.smtp.starttls.enable'>true</entry>
+  <entry key='mail.smtp.from'>notifications@zarafleet.com</entry>
+  <entry key='mail.smtp.auth'>true</entry>
+  <entry key='mail.smtp.username'>notifications@zarafleet.com</entry>
+  <entry key='mail.smtp.password'>${process.env.NOTIFICATIONS_EMAIL_PASSWORD}</entry>
+
 </properties>`
     }
   }, {

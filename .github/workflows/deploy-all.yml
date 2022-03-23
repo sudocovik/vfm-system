@@ -40,6 +40,7 @@ jobs:
       digitalocean_token: ${{ secrets.DIGITALOCEAN_TOKEN }}
       cluster_token: ${{ secrets.CLUSTER_TOKEN }}
       cluster_container_registry_token: ${{ secrets.CLUSTER_CONTAINER_REGISTRY_TOKEN }}
+      notifications_email_password: ${{ secrets.NOTIFICATIONS_EMAIL_PASSWORD }}
 
   deploy-frontend:
     name: "Frontend"

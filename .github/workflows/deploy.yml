@@ -27,6 +27,8 @@ on:
         required: false
       cluster_container_registry_token:
         required: false
+      notifications_email_password:
+        required: false
 
 jobs:
   deploy:
@@ -45,4 +47,5 @@ jobs:
           CLUSTER_TOKEN: ${{ secrets.cluster_token }}
           CLUSTER_CONTAINER_REGISTRY_TOKEN: ${{ secrets.cluster_container_registry_token }}
           APPLICATION_VERSION: ${{ inputs.application_version }}
+          NOTIFICATIONS_EMAIL_PASSWORD: ${{ secrets.notifications_email_password }}
         run: vfm deploy ${{ inputs.type }}
