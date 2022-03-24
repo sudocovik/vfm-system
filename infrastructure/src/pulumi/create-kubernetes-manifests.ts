@@ -149,7 +149,15 @@ export function createKubernetesManifests (kubeconfig: string): void {
 
   <entry key='logger.file'>/proc/1/fd/1</entry>
 
-</properties>`
+</properties>`,
+      'ignitionOn.vm':
+`#set($subject = "$device.name: kontakt uključen")
+<!DOCTYPE html>
+<html>
+<body>
+Kontakt je uključen na vozilu $device.name
+</body>
+</html>`
     }
   }, {
     provider,
@@ -184,11 +192,6 @@ export function createKubernetesManifests (kubeconfig: string): void {
             name: 'backend',
             image: 'traccar/traccar:4.13-alpine',
             imagePullPolicy: 'IfNotPresent',
-            args: [
-              '-jar',
-              'tracker-server.jar',
-              'conf-custom/traccar.xml'
-            ],
             ports: [{
               name: 'api',
               containerPort: 8082,
@@ -209,7 +212,13 @@ export function createKubernetesManifests (kubeconfig: string): void {
             },
             volumeMounts: [{
               name: configurationVolumeName,
-              mountPath: '/opt/traccar/conf-custom',
+              mountPath: '/opt/traccar/conf/traccar.xml',
+              subPath: 'traccar.xml',
+              readOnly: true
+            }, {
+              name: configurationVolumeName,
+              mountPath: '/opt/traccar/templates/full/ignitionOn.vm',
+              subPath: 'ignitionOn.vm',
               readOnly: true
             }]
           }]

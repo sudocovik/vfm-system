@@ -24,6 +24,7 @@ import {
   NetworkError,
   UndefinedServerError
 } from 'src/backend/AuthenticationService'
+import { SessionCookie } from './SessionCookie'
 
 export default defineComponent({
   name: 'LoginPage',
@@ -41,6 +42,12 @@ export default defineComponent({
     })
 
     const $q = useQuasar()
+
+    const rememberSessionForOneYear = () => {
+      const sessionCookie = $q.cookies.get(SessionCookie.name)
+      $q.cookies.set(SessionCookie.name, String(sessionCookie), { expires: '365d' })
+    }
+
     const formState = ref<FormState>(LoginFormState.ready())
     const handleAuthenticationRequest = async ({ email, password }: AuthenticateEventData) => {
       if (email.trim() === '' || password.trim() === '') {
@@ -62,6 +69,7 @@ export default defineComponent({
           await AuthenticationService.login(email, password)
           formState.value = LoginFormState.successful()
           emit(AuthenticationSuccessfulEventName)
+          rememberSessionForOneYear()
         }
         catch (e: unknown) {
           formState.value = LoginFormState.failure()

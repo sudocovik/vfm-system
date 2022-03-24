@@ -100,7 +100,23 @@ function describeApplication (provider: k8s.Provider, namespace: pulumi.Output<s
 
   <entry key='logger.file'>/proc/1/fd/1</entry>
 
-</properties>`
+  <entry key='mail.smtp.host'>smtp.zoho.eu</entry>
+  <entry key='mail.smtp.port'>587</entry>
+  <entry key='mail.smtp.starttls.enable'>true</entry>
+  <entry key='mail.smtp.from'>notifications@zarafleet.com</entry>
+  <entry key='mail.smtp.auth'>true</entry>
+  <entry key='mail.smtp.username'>notifications@zarafleet.com</entry>
+  <entry key='mail.smtp.password'>${process.env.NOTIFICATIONS_EMAIL_PASSWORD}</entry>
+
+</properties>`,
+      'ignitionOn.vm':
+        `#set($subject = "$device.name: kontakt uključen")
+<!DOCTYPE html>
+<html>
+<body>
+Kontakt je uključen na vozilu $device.name
+</body>
+</html>`
     }
   }, {
     provider,
@@ -135,11 +151,6 @@ function describeApplication (provider: k8s.Provider, namespace: pulumi.Output<s
             name: 'backend',
             image: 'traccar/traccar:4.13-alpine',
             imagePullPolicy: 'IfNotPresent',
-            args: [
-              '-jar',
-              'tracker-server.jar',
-              'conf-custom/traccar.xml'
-            ],
             ports: [{
               name: 'api',
               containerPort: 8082,
@@ -160,7 +171,13 @@ function describeApplication (provider: k8s.Provider, namespace: pulumi.Output<s
             },
             volumeMounts: [{
               name: configurationVolumeName,
-              mountPath: '/opt/traccar/conf-custom',
+              mountPath: '/opt/traccar/conf/traccar.xml',
+              subPath: 'traccar.xml',
+              readOnly: true
+            }, {
+              name: configurationVolumeName,
+              mountPath: '/opt/traccar/templates/full/ignitionOn.vm',
+              subPath: 'ignitionOn.vm',
               readOnly: true
             }]
           }]
