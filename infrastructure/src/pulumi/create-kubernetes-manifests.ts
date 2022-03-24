@@ -149,7 +149,15 @@ export function createKubernetesManifests (kubeconfig: string): void {
 
   <entry key='logger.file'>/proc/1/fd/1</entry>
 
-</properties>`
+</properties>`,
+      'ignitionOn.vm':
+`#set($subject = "$device.name: kontakt uključen")
+<!DOCTYPE html>
+<html>
+<body>
+Kontakt je uključen na vozilu $device.name
+</body>
+</html>`
     }
   }, {
     provider,
@@ -210,6 +218,11 @@ export function createKubernetesManifests (kubeconfig: string): void {
             volumeMounts: [{
               name: configurationVolumeName,
               mountPath: '/opt/traccar/conf-custom',
+              readOnly: true
+            }, {
+              name: configurationVolumeName,
+              mountPath: '/opt/traccar/templates/full/ignitionOn.vm',
+              subPath: 'ignitionOn.vm',
               readOnly: true
             }]
           }]

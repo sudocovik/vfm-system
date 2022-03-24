@@ -108,7 +108,15 @@ function describeApplication (provider: k8s.Provider, namespace: pulumi.Output<s
   <entry key='mail.smtp.username'>notifications@zarafleet.com</entry>
   <entry key='mail.smtp.password'>${process.env.NOTIFICATIONS_EMAIL_PASSWORD}</entry>
 
-</properties>`
+</properties>`,
+      'ignitionOn.vm':
+        `#set($subject = "$device.name: kontakt uključen")
+<!DOCTYPE html>
+<html>
+<body>
+Kontakt je uključen na vozilu $device.name
+</body>
+</html>`
     }
   }, {
     provider,
@@ -169,6 +177,11 @@ function describeApplication (provider: k8s.Provider, namespace: pulumi.Output<s
             volumeMounts: [{
               name: configurationVolumeName,
               mountPath: '/opt/traccar/conf-custom',
+              readOnly: true
+            }, {
+              name: configurationVolumeName,
+              mountPath: '/opt/traccar/templates/full/ignitionOn.vm',
+              subPath: 'ignitionOn.vm',
               readOnly: true
             }]
           }]
