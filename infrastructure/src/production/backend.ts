@@ -151,11 +151,6 @@ Kontakt je uključen na vozilu $device.name
             name: 'backend',
             image: 'traccar/traccar:4.13-alpine',
             imagePullPolicy: 'IfNotPresent',
-            args: [
-              '-jar',
-              'tracker-server.jar',
-              'conf-custom/traccar.xml'
-            ],
             ports: [{
               name: 'api',
               containerPort: 8082,
@@ -176,7 +171,8 @@ Kontakt je uključen na vozilu $device.name
             },
             volumeMounts: [{
               name: configurationVolumeName,
-              mountPath: '/opt/traccar/conf-custom',
+              mountPath: '/opt/traccar/conf/traccar.xml',
+              subPath: 'traccar.xml',
               readOnly: true
             }, {
               name: configurationVolumeName,
