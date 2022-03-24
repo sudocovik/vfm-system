@@ -9,6 +9,7 @@ import {
 } from 'src/backend/VehicleService'
 import MockAdapter from 'axios-mock-adapter'
 import axios from 'axios'
+import { parseISO } from 'date-fns'
 
 describe('VehicleService', () => {
   describe('VehicleList', () => {
@@ -92,13 +93,13 @@ describe('VehicleService', () => {
       })
 
       it('should return single position in array if only one vehicle has sent it\'s position', async () => {
-        simulateManyPositions([{
+        const rawPosition = {
           id: 1,
           deviceId: 1,
           protocol: 'teltonika',
-          deviceTime: '2022-03-18T16:39:00Z',
-          fixTime: '2022-03-16T16:39:00Z',
-          serverTime: '2022-03-16T16:39:05Z',
+          deviceTime: '2022-03-16T16:39:01.000+00:00',
+          fixTime: '2022-03-16T16:39:00.000+00:00',
+          serverTime: '2022-03-16T16:39:05.000+00:00',
           outdated: false,
           valid: true,
           latitude: 44.0901797,
@@ -106,18 +107,19 @@ describe('VehicleService', () => {
           altitude: 30,
           speed: 15,
           course: 270,
-          address: '',
+          address: 'My street 1',
           accuracy: 0,
           network: {},
           attributes: {}
-        }])
+        }
+        simulateManyPositions([rawPosition])
 
         const allPositions = await positionList.fetchAllMostRecent()
         const position = allPositions[0]
 
         expect(allPositions).toHaveLength(1)
 
-        expect(position).toBeInstanceOf(Position)
+        positionShouldEqualTraccarPosition(position, rawPosition)
       })
     })
   })
@@ -150,4 +152,19 @@ function simulateNoPositions () {
 function simulateManyPositions (positions: TraccarPosition[]) {
   const mock = new MockAdapter(axios)
   mock.onGet(PositionList.positionEndpoint).reply(200, positions)
+}
+
+function positionShouldEqualTraccarPosition (position: Position, expectedPosition: TraccarPosition) {
+  expect(position).toBeInstanceOf(Position)
+  expect(position.id()).toEqual(expectedPosition.id)
+  expect(position.vehicleId()).toEqual(expectedPosition.deviceId)
+  expect(position.latitude()).toEqual(expectedPosition.latitude)
+  expect(position.longitude()).toEqual(expectedPosition.longitude)
+  expect(position.course()).toEqual(expectedPosition.course)
+  expect(position.speed()).toEqual(Math.round(expectedPosition.speed * 1.852))
+  expect(position.altitude()).toEqual(expectedPosition.altitude)
+  expect(position.address()).toEqual(expectedPosition.address)
+  expect(position.fixationTime().getTime()).toEqual(parseISO(expectedPosition.fixTime).getTime())
+  expect(position.sentTime().getTime()).toEqual(parseISO(expectedPosition.deviceTime).getTime())
+  expect(position.receivedTime().getTime()).toEqual(parseISO(expectedPosition.serverTime).getTime())
 }
