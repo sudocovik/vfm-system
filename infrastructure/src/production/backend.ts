@@ -92,6 +92,7 @@ function describeApplication (provider: k8s.Provider, namespace: pulumi.Output<s
   <entry key='database.saveOriginal'>true</entry>
 
   <entry key='web.origin'>*</entry>
+  <entry key='web.persistSession'>true</entry>
 
   <entry key='geocoder.format'>%r %h, %p %t, %s, %c</entry>
 
