@@ -149,7 +149,7 @@ Kontakt je uključen na vozilu $device.name
           restartPolicy: 'Always',
           containers: [{
             name: 'backend',
-            image: 'traccar/traccar:4.14-alpine',
+            image: 'traccar/traccar:4.15-alpine',
             imagePullPolicy: 'IfNotPresent',
             ports: [{
               name: 'api',
