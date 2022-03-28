@@ -67,3 +67,4 @@ jobs:
       pulumi_token: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       digitalocean_token: ${{ secrets.DIGITALOCEAN_TOKEN }}
       notifications_email_password: ${{ secrets.NOTIFICATIONS_EMAIL_PASSWORD }}
+      reverse_geocoding_token: ${{ secrets.REVERSE_GEOCODING_TOKEN }}

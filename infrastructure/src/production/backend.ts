@@ -95,6 +95,10 @@ function describeApplication (provider: k8s.Provider, namespace: pulumi.Output<s
   <entry key='web.persistSession'>true</entry>
 
   <entry key='geocoder.format'>%r %h, %p %t, %s, %c</entry>
+  <entry key='geocoder.key'>${process.env.REVERSE_GEOCODING_TOKEN}</entry>
+  <entry key='geocoder.onRequest'>false</entry>
+  <entry key='geocoder.processInvalidPositions'>false</entry>
+  <entry key='geocoder.reuseDistance'>50</entry>
 
   <entry key='filter.enable'>true</entry>
   <entry key='filter.zero'>true</entry>

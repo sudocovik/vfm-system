@@ -29,6 +29,8 @@ on:
         required: false
       notifications_email_password:
         required: false
+      reverse_geocoding_token:
+        required: false
 
 jobs:
   deploy:
@@ -48,4 +50,5 @@ jobs:
           CLUSTER_CONTAINER_REGISTRY_TOKEN: ${{ secrets.cluster_container_registry_token }}
           APPLICATION_VERSION: ${{ inputs.application_version }}
           NOTIFICATIONS_EMAIL_PASSWORD: ${{ secrets.notifications_email_password }}
+          REVERSE_GEOCODING_TOKEN: ${{ secrets.reverse_geocoding_token }}
         run: vfm deploy ${{ inputs.type }}
