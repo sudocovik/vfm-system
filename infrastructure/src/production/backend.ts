@@ -92,8 +92,13 @@ function describeApplication (provider: k8s.Provider, namespace: pulumi.Output<s
   <entry key='database.saveOriginal'>true</entry>
 
   <entry key='web.origin'>*</entry>
+  <entry key='web.persistSession'>true</entry>
 
   <entry key='geocoder.format'>%r %h, %p %t, %s, %c</entry>
+  <entry key='geocoder.key'>${process.env.REVERSE_GEOCODING_TOKEN}</entry>
+  <entry key='geocoder.onRequest'>false</entry>
+  <entry key='geocoder.processInvalidPositions'>false</entry>
+  <entry key='geocoder.reuseDistance'>50</entry>
 
   <entry key='filter.enable'>true</entry>
   <entry key='filter.zero'>true</entry>
@@ -149,7 +154,7 @@ Kontakt je uključen na vozilu $device.name
           restartPolicy: 'Always',
           containers: [{
             name: 'backend',
-            image: 'traccar/traccar:4.13-alpine',
+            image: 'traccar/traccar:4.15-alpine',
             imagePullPolicy: 'IfNotPresent',
             ports: [{
               name: 'api',

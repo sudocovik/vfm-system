@@ -1,5 +1,5 @@
 import { mount } from '@cypress/vue'
-import { Properties, VueComponent } from './types'
+import { Attributes, Properties, VueComponent } from './types'
 
 type ModelValue = unknown
 
@@ -7,6 +7,7 @@ export class ComponentToBeMounted {
   private readonly component: VueComponent
   private modelValue: ModelValue = undefined
   private properties: Properties = {}
+  private attributes?: Attributes = undefined
 
   constructor (component: VueComponent) {
     this.component = component
@@ -22,10 +23,15 @@ export class ComponentToBeMounted {
     return this
   }
 
+  public withAttributes (wantedAttributes: Attributes): ComponentToBeMounted {
+    this.attributes = wantedAttributes
+    return this
+  }
+
   public mount (): ComponentToBeMounted {
     const allComponentProperties = {
       ...this.properties,
-      modelValue: this.modelValue
+      ...(this.modelValue !== undefined ? { modelValue: this.modelValue } : {})
     }
 
     /*
@@ -36,7 +42,7 @@ export class ComponentToBeMounted {
      */
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    mount(this.component, { props: allComponentProperties })
+    mount(this.component, { props: allComponentProperties, attrs: this.attributes })
     return this
   }
 }
