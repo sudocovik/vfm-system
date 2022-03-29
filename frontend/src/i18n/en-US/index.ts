@@ -8,5 +8,6 @@ export default {
   'wrong-email-and-password': 'Wrong email and/or password',
   'general-server-error': 'Unexpected server error. Try again.',
   'network-error': 'Problem with the network. Check your internet connection and try again.',
-  'general-application-error': 'Unexpected application error. Try again.'
+  'general-application-error': 'Unexpected application error. Try again.',
+  vehicles: 'Vehicles'
 }

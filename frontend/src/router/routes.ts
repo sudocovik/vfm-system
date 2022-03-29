@@ -3,7 +3,7 @@ import { RouteRecordRaw } from 'vue-router'
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    component: () => import('pages/PageIndex.vue')
+    component: () => import('../use-case/real-time-vehicle-feed/RealTimeVehicleFeedPage.vue')
   },
 
   {
