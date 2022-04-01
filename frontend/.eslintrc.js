@@ -116,7 +116,7 @@ module.exports = {
 
   overrides: [
     {
-      files: ['*.ts'],
+      files: ['*.ts', '*.vue'],
       rules: {
         'no-undef': 'off' // TypeScript already handles these errors
       }
