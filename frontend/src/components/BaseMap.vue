@@ -9,13 +9,9 @@
 </template>
 
 <script lang="ts">
+/// <reference types="google.maps" />
 import { computed, defineComponent, PropType } from 'vue'
 import { GoogleMap } from 'vue3-google-map'
-
-export type Position = {
-  lat: number
-  lng: number
-}
 
 const croatia = {
   coordinates: {
@@ -39,7 +35,7 @@ export default defineComponent({
 
   props: {
     center: {
-      type: Object as PropType<Position>,
+      type: Object as PropType<google.maps.LatLngLiteral>,
       default: () => DEFAULT_CENTER
     },
 
