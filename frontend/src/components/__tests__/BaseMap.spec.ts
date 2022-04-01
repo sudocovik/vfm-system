@@ -1,3 +1,4 @@
+/// <reference types="google.maps" />
 import { mount } from '@cypress/vue'
 import BaseMap, { DEFAULT_CENTER, DEFAULT_ZOOM } from '../BaseMap.vue'
 import { GoogleMap } from 'vue3-google-map'
@@ -98,6 +99,32 @@ describe('BaseMap', () => {
       })
     })
   })
+
+  describe('(prop): renderPOI', () => {
+    const renderPOIStates = [
+      { renderPOI: false, expectedVisibility: 'off' },
+      { renderPOI: true, expectedVisibility: 'on' }
+    ]
+    const defaultState = renderPOIStates[1]
+
+    it('should be rendered by default', () => {
+      mountMap()
+
+      cy.then(() => expect(Cypress.vueWrapper.props('renderPOI')).to.equal(defaultState.renderPOI))
+      cy.then(poiVisibilityShouldBe(defaultState.expectedVisibility))
+    })
+
+    describe('should correctly configure \'styles\' property of the GoogleMap component', () => {
+      renderPOIStates.forEach(({ renderPOI, expectedVisibility }, i) => {
+        it(`case ${i + 1}: do${renderPOI ? '' : ' not'} render POIs`, () => {
+          mountMap({ renderPOI })
+
+          cy.then(() => expect(Cypress.vueWrapper.props('renderPOI')).to.equal(renderPOI))
+          cy.then(poiVisibilityShouldBe(expectedVisibility))
+        })
+      })
+    })
+  })
 })
 
 function mountMap (props?: Record<string, unknown>) {
@@ -105,10 +132,27 @@ function mountMap (props?: Record<string, unknown>) {
     global: {
       stubs: {
         GoogleMap: {
-          props: ['center', 'zoom', 'disableDefaultUi', 'gestureHandling']
+          props: ['center', 'zoom', 'disableDefaultUi', 'gestureHandling', 'styles']
         }
       }
     },
     props
   })
+}
+
+function getPoiStyles () {
+  const allStyles = <google.maps.MapTypeStyle[]>(Cypress.vueWrapper.findComponent(GoogleMap).props('styles'))
+  const poiStyling = allStyles.find(({ featureType }) => featureType === 'poi')
+  const poiVisibility = (poiStyling?.stylers[0] as { visibility: 'on' | 'off' }).visibility
+
+  return { poiStyling, poiVisibility }
+}
+
+function poiVisibilityShouldBe (visibility: string) {
+  return () => {
+    const { poiStyling, poiVisibility } = getPoiStyles()
+
+    expect(poiStyling).to.have.property('elementType', 'labels')
+    expect(poiVisibility).to.equal(visibility)
+  }
 }

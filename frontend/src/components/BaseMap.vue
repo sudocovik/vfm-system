@@ -4,6 +4,7 @@
     :zoom="zoom"
     :disable-default-ui="areUiControlsDisabled"
     :gesture-handling="gestureHandling"
+    :styles="styles"
   />
 </template>
 
@@ -50,6 +51,11 @@ export default defineComponent({
     interactive: {
       type: Boolean,
       default: true
+    },
+
+    renderPOI: {
+      type: Boolean,
+      default: true
     }
   },
 
@@ -57,9 +63,18 @@ export default defineComponent({
     const areUiControlsDisabled = computed<boolean>(() => !props.interactive)
     const gestureHandling = computed<string>(() => props.interactive ? 'auto' : 'none')
 
+    const styles = [{
+      featureType: 'poi',
+      elementType: 'labels',
+      stylers: [
+        { visibility: props.renderPOI ? 'on' : 'off' }
+      ]
+    }]
+
     return {
       areUiControlsDisabled,
-      gestureHandling
+      gestureHandling,
+      styles
     }
   }
 })
