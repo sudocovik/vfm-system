@@ -2,11 +2,13 @@
   <GoogleMap
     :center="center"
     :zoom="zoom"
+    :disable-default-ui="areUiControlsDisabled"
+    :gesture-handling="gestureHandling"
   />
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { computed, defineComponent, PropType } from 'vue'
 import { GoogleMap } from 'vue3-google-map'
 
 export type Position = {
@@ -43,6 +45,21 @@ export default defineComponent({
     zoom: {
       type: Number,
       default: DEFAULT_ZOOM
+    },
+
+    interactive: {
+      type: Boolean,
+      default: true
+    }
+  },
+
+  setup (props) {
+    const areUiControlsDisabled = computed<boolean>(() => !props.interactive)
+    const gestureHandling = computed<string>(() => props.interactive ? 'auto' : 'none')
+
+    return {
+      areUiControlsDisabled,
+      gestureHandling
     }
   }
 })

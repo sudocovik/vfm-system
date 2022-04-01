@@ -69,6 +69,35 @@ describe('BaseMap', () => {
       })
     })
   })
+
+  describe('(prop): interactive', () => {
+    it('should be interactive by default', () => {
+      mountMap()
+
+      cy.then(() => {
+        expect(Cypress.vueWrapper.props('interactive')).to.equal(true)
+        const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
+        expect(googleMap.props('disableDefaultUi')).to.equal(false)
+        expect(googleMap.props('gestureHandling')).to.equal('auto')
+      })
+    })
+
+    describe('should pass it to underlying GoogleMap component', () => {
+      const possibleInteractivity = [false, true]
+      possibleInteractivity.forEach((interactive, i) => {
+        it(`case ${i + 1}: ${interactive ? '' : 'non-'}interactive`, () => {
+          mountMap({ interactive })
+
+          cy.then(() => {
+            expect(Cypress.vueWrapper.props('interactive')).to.equal(interactive)
+            const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
+            expect(googleMap.props('disableDefaultUi')).to.equal(!interactive)
+            expect(googleMap.props('gestureHandling')).to.equal(interactive ? 'auto' : 'none')
+          })
+        })
+      })
+    })
+  })
 })
 
 function mountMap (props?: Record<string, unknown>) {
@@ -76,7 +105,7 @@ function mountMap (props?: Record<string, unknown>) {
     global: {
       stubs: {
         GoogleMap: {
-          props: ['center', 'zoom']
+          props: ['center', 'zoom', 'disableDefaultUi', 'gestureHandling']
         }
       }
     },
