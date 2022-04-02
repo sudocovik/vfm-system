@@ -183,6 +183,18 @@ describe('BaseMap', () => {
         })
       })
     })
+
+    it('should be reactive', () => {
+      const firstState = renderPOIStates[0]
+      const secondState = renderPOIStates[1]
+      mountMap({ renderPOI: firstState.renderPOI })
+
+      cy.then(poiVisibilityShouldBe(firstState.expectedVisibility))
+
+      cy.then(() => Cypress.vueWrapper.setProps({ renderPOI: secondState.renderPOI }))
+
+      cy.then(poiVisibilityShouldBe(secondState.expectedVisibility))
+    })
   })
 })
 

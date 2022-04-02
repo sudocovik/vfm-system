@@ -59,13 +59,13 @@ export default defineComponent({
     const areUiControlsDisabled = computed<boolean>(() => !props.interactive)
     const gestureHandling = computed<string>(() => props.interactive ? 'auto' : 'none')
 
-    const styles = [{
+    const styles = computed<google.maps.MapTypeStyle[]>(() => [{
       featureType: 'poi',
       elementType: 'labels',
       stylers: [
         { visibility: props.renderPOI ? 'on' : 'off' }
       ]
-    }]
+    }])
 
     return {
       areUiControlsDisabled,
