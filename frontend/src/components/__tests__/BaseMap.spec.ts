@@ -68,6 +68,8 @@ describe('BaseMap', () => {
   })
 
   describe('(prop): zoom', () => {
+    const zooms = [3, 9]
+
     it('should have a default value', () => {
       mountMap()
 
@@ -76,7 +78,6 @@ describe('BaseMap', () => {
     })
 
     describe('should pass it to underlying GoogleMap component', () => {
-      const zooms = [3, 9]
       zooms.forEach((zoom, i) => {
         it(`case ${i + 1}: level ${zoom}`, () => {
           mountMap({ zoom })
@@ -86,6 +87,24 @@ describe('BaseMap', () => {
             expect(googleMap.props('zoom')).to.equal(zoom)
           })
         })
+      })
+    })
+
+    it('should be reactive', () => {
+      const firstZoom = zooms[0]
+      const secondZoom = zooms[1]
+      mountMap({ zoom: firstZoom })
+
+      cy.then(() => {
+        const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
+        expect(googleMap.props('zoom')).to.deep.equal(firstZoom)
+      })
+
+      cy.then(() => Cypress.vueWrapper.setProps({ zoom: secondZoom }))
+
+      cy.then(() => {
+        const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
+        expect(googleMap.props('zoom')).to.deep.equal(secondZoom)
       })
     })
   })
