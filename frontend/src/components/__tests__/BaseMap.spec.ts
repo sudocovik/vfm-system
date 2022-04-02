@@ -23,6 +23,11 @@ describe('BaseMap', () => {
   })
 
   describe('(prop): center', () => {
+    const centers = [
+      { lat: 22.341, lng: 46.675 },
+      { lat: 35.463, lng: 45.875 }
+    ]
+
     it('should have a default value', () => {
       mountMap()
 
@@ -31,10 +36,6 @@ describe('BaseMap', () => {
     })
 
     describe('should pass it to underlying GoogleMap component', () => {
-      const centers = [
-        { lat: 22.341, lng: 46.675 },
-        { lat: 35.463, lng: 45.875 }
-      ]
       centers.forEach((center, i) => {
         it(`case ${i + 1}: coordinates ${center.lat}, ${center.lng}`, () => {
           mountMap({ center })
@@ -44,6 +45,24 @@ describe('BaseMap', () => {
             expect(googleMap.props('center')).to.deep.equal(center)
           })
         })
+      })
+    })
+
+    it('should be reactive', () => {
+      const firstCenter = centers[0]
+      const secondCenter = centers[1]
+      mountMap({ center: firstCenter })
+
+      cy.then(() => {
+        const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
+        expect(googleMap.props('center')).to.deep.equal(firstCenter)
+      })
+
+      cy.then(() => Cypress.vueWrapper.setProps({ center: secondCenter }))
+
+      cy.then(() => {
+        const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
+        expect(googleMap.props('center')).to.deep.equal(secondCenter)
       })
     })
   })
