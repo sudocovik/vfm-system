@@ -10,7 +10,7 @@
 
 <script lang="ts">
 /// <reference types="google.maps" />
-import { defineComponent, PropType } from 'vue'
+import { computed, defineComponent, PropType } from 'vue'
 import { GoogleMap } from 'vue3-google-map'
 
 const croatia = {
@@ -56,8 +56,8 @@ export default defineComponent({
   },
 
   setup (props) {
-    const areUiControlsDisabled = !props.interactive
-    const gestureHandling = props.interactive ? 'auto' : 'none'
+    const areUiControlsDisabled = computed<boolean>(() => !props.interactive)
+    const gestureHandling = computed<string>(() => props.interactive ? 'auto' : 'none')
 
     const styles = [{
       featureType: 'poi',

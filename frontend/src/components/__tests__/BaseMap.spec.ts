@@ -110,6 +110,8 @@ describe('BaseMap', () => {
   })
 
   describe('(prop): interactive', () => {
+    const possibleInteractivity = [false, true]
+
     it('should be interactive by default', () => {
       mountMap()
 
@@ -122,7 +124,6 @@ describe('BaseMap', () => {
     })
 
     describe('should pass it to underlying GoogleMap component', () => {
-      const possibleInteractivity = [false, true]
       possibleInteractivity.forEach((interactive, i) => {
         it(`case ${i + 1}: ${interactive ? '' : 'non-'}interactive`, () => {
           mountMap({ interactive })
@@ -134,6 +135,26 @@ describe('BaseMap', () => {
             expect(googleMap.props('gestureHandling')).to.equal(interactive ? 'auto' : 'none')
           })
         })
+      })
+    })
+
+    it('should be reactive', () => {
+      const yes = possibleInteractivity[1]
+      const no = possibleInteractivity[0]
+      mountMap({ interactive: yes })
+
+      cy.then(() => {
+        const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
+        expect(googleMap.props('disableDefaultUi')).to.equal(false)
+        expect(googleMap.props('gestureHandling')).to.equal('auto')
+      })
+
+      cy.then(() => Cypress.vueWrapper.setProps({ interactive: no }))
+
+      cy.then(() => {
+        const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
+        expect(googleMap.props('disableDefaultUi')).to.equal(true)
+        expect(googleMap.props('gestureHandling')).to.equal('none')
       })
     })
   })
