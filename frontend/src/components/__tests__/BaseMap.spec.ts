@@ -52,7 +52,7 @@ describe('BaseMap', () => {
       mountMap()
 
       cy.wrap(Cypress.vueWrapper.props('center')).should('deep.equal', DEFAULT_CENTER)
-      cy.wrap(Cypress.vueWrapper.findComponent(GoogleMap).props('center')).should('deep.equal', DEFAULT_CENTER)
+      mapCenterShouldBe(DEFAULT_CENTER)
     })
 
     describe('should pass it to underlying GoogleMap component', () => {
@@ -60,10 +60,7 @@ describe('BaseMap', () => {
         it(`case ${i + 1}: center = ${center.lat}, ${center.lng}`, () => {
           mountMap({ center })
 
-          cy.then(() => {
-            const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
-            expect(googleMap.props('center')).to.deep.equal(center)
-          })
+          mapCenterShouldBe(center)
         })
       })
     })
@@ -72,17 +69,10 @@ describe('BaseMap', () => {
       const firstCenter = centers[0]
       const secondCenter = centers[1]
       mountMap({ center: firstCenter })
-
-      cy.then(() => {
-        const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
-        expect(googleMap.props('center')).to.deep.equal(firstCenter)
-      })
+      mapCenterShouldBe(firstCenter)
 
       ComponentUnderTest.changeProperties({ center: secondCenter })
-      cy.then(() => {
-        const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
-        expect(googleMap.props('center')).to.deep.equal(secondCenter)
-      })
+      mapCenterShouldBe(secondCenter)
     })
   })
 
@@ -323,6 +313,13 @@ function mountMapWithDefaultSlot (slotContent: string | VNode) {
         render: () => slotContent
       }
     }
+  })
+}
+
+function mapCenterShouldBe (center: google.maps.LatLngLiteral) {
+  cy.then(() => {
+    const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
+    expect(googleMap.props('center')).to.deep.equal(center)
   })
 }
 
