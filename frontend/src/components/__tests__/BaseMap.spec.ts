@@ -24,12 +24,8 @@ describe('BaseMap', () => {
   })
 
   it('should not inherit unspecified properties from GoogleMap component', () => {
-    mountMap()
-
-    cy.then(() => {
-      const inheritAttrs = BaseMap.inheritAttrs
-      expect(inheritAttrs).to.equal(false)
-    })
+    const inheritAttrs = BaseMap.inheritAttrs
+    expect(inheritAttrs).to.equal(false)
   })
 
   describe('should set API key on GoogleMap component', () => {
