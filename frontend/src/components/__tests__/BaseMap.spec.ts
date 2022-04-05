@@ -152,7 +152,6 @@ describe('BaseMap', () => {
           mountMap({ interactive })
 
           cy.then(() => {
-            expect(Cypress.vueWrapper.props('interactive')).to.equal(interactive)
             const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
             expect(googleMap.props('disableDefaultUi')).to.equal(!interactive)
             expect(googleMap.props('gestureHandling')).to.equal(interactive ? 'auto' : 'none')
