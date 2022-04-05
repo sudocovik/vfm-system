@@ -1,4 +1,5 @@
 /// <reference types="google.maps" />
+import { ComponentUnderTest } from 'test/support/api'
 import { mount } from '@cypress/vue'
 import BaseMap, { DEFAULT_CENTER, DEFAULT_ZOOM } from '../BaseMap.vue'
 import { GoogleMap } from 'vue3-google-map'
@@ -81,8 +82,7 @@ describe('BaseMap', () => {
         expect(googleMap.props('center')).to.deep.equal(firstCenter)
       })
 
-      cy.then(() => Cypress.vueWrapper.setProps({ center: secondCenter }))
-
+      ComponentUnderTest.changeProperties({ center: secondCenter })
       cy.then(() => {
         const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
         expect(googleMap.props('center')).to.deep.equal(secondCenter)
@@ -123,8 +123,7 @@ describe('BaseMap', () => {
         expect(googleMap.props('zoom')).to.deep.equal(firstZoom)
       })
 
-      cy.then(() => Cypress.vueWrapper.setProps({ zoom: secondZoom }))
-
+      ComponentUnderTest.changeProperties({ zoom: secondZoom })
       cy.then(() => {
         const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
         expect(googleMap.props('zoom')).to.deep.equal(secondZoom)
@@ -171,8 +170,7 @@ describe('BaseMap', () => {
         expect(googleMap.props('gestureHandling')).to.equal('auto')
       })
 
-      cy.then(() => Cypress.vueWrapper.setProps({ interactive: no }))
-
+      ComponentUnderTest.changeProperties({ interactive: no })
       cy.then(() => {
         const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
         expect(googleMap.props('disableDefaultUi')).to.equal(true)
@@ -210,11 +208,9 @@ describe('BaseMap', () => {
       const firstState = renderPOIStates[0]
       const secondState = renderPOIStates[1]
       mountMap({ renderPOI: firstState.renderPOI })
-
       cy.then(poiVisibilityShouldBe(firstState.expectedVisibility))
 
-      cy.then(() => Cypress.vueWrapper.setProps({ renderPOI: secondState.renderPOI }))
-
+      ComponentUnderTest.changeProperties({ renderPOI: secondState.renderPOI })
       cy.then(poiVisibilityShouldBe(secondState.expectedVisibility))
     })
   })
@@ -238,9 +234,9 @@ describe('BaseMap', () => {
       const firstClasses = classes[0]
       const secondClasses = classes[1]
       mountMapWithAttributes({ class: firstClasses })
-
       mapCssClassesShouldBe(firstClasses)
-      cy.then(() => Cypress.vueWrapper.setProps({ class: secondClasses }))
+
+      ComponentUnderTest.changeProperties({ class: secondClasses })
       mapCssClassesShouldBe(secondClasses)
     })
   })
@@ -266,7 +262,7 @@ describe('BaseMap', () => {
       mountMapWithAttributes({ style: firstStyle })
       mapStyleShouldBe(firstStyle)
 
-      cy.then(() => Cypress.vueWrapper.setProps({ style: secondStyle }))
+      ComponentUnderTest.changeProperties({ style: secondStyle })
       mapStyleShouldBe(secondStyle)
     })
   })
