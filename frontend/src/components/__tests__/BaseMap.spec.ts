@@ -18,7 +18,7 @@ describe('BaseMap', () => {
     mountMap()
 
     cy.then(() => {
-      const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
+      const googleMap = getGoogleMap()
       expect(googleMap.exists()).to.equal(true)
     })
   })
@@ -36,7 +36,7 @@ describe('BaseMap', () => {
         mountMap()
 
         cy.then(() => {
-          expect(Cypress.vueWrapper.findComponent(GoogleMap).props('apiKey')).to.equal(apiKey)
+          expect(getGoogleMap().props('apiKey')).to.equal(apiKey)
         })
       })
     })
@@ -283,18 +283,18 @@ function mountMapWithDefaultSlot (slotContent: string | VNode) {
   })
 }
 
+function getGoogleMap () {
+  return Cypress.vueWrapper.findComponent(GoogleMap)
+}
+
 function mapCenterShouldBe (center: google.maps.LatLngLiteral) {
-  cy.then(() => {
-    const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
-    expect(googleMap.props('center')).to.deep.equal(center)
-  })
+  cy.then(getGoogleMap)
+    .then((googleMap) => expect(googleMap.props('center')).to.deep.equal(center))
 }
 
 function mapZoomShouldBe (zoom: number) {
-  cy.then(() => {
-    const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
-    expect(googleMap.props('zoom')).to.equal(zoom)
-  })
+  cy.then(getGoogleMap)
+    .then((googleMap) => expect(googleMap.props('zoom')).to.equal(zoom))
 }
 
 function mapInteractivityShouldBe (interactive: boolean) {
@@ -302,15 +302,15 @@ function mapInteractivityShouldBe (interactive: boolean) {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const { ENABLED, DISABLED } = GESTURE_HANDLING
 
-  cy.then(() => {
-    const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
-    expect(googleMap.props('disableDefaultUi')).to.equal(!interactive)
-    expect(googleMap.props('gestureHandling')).to.equal(interactive ? ENABLED : DISABLED)
-  })
+  cy.then(getGoogleMap)
+    .then((googleMap) => {
+      expect(googleMap.props('disableDefaultUi')).to.equal(!interactive)
+      expect(googleMap.props('gestureHandling')).to.equal(interactive ? ENABLED : DISABLED)
+    })
 }
 
 function getPoiStyles () {
-  const allStyles = <google.maps.MapTypeStyle[]>(Cypress.vueWrapper.findComponent(GoogleMap).props('styles'))
+  const allStyles = <google.maps.MapTypeStyle[]>(getGoogleMap().props('styles'))
   const poiStyling = allStyles.find(({ featureType }) => featureType === 'poi')
   const poiVisibility = (poiStyling?.stylers[0] as { visibility: string }).visibility
 
@@ -327,24 +327,26 @@ function poiVisibilityShouldBe (visibility: string) {
 }
 
 function mapCssClassesShouldBe (classNames: string) {
-  cy.then(() => {
-    const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
-    const mapClasses = googleMap.attributes('class')
-    expect(mapClasses).to.equal(classNames)
-  })
+  cy.then(getGoogleMap)
+    .then((googleMap) => {
+      const mapClasses = googleMap.attributes('class')
+      expect(mapClasses).to.equal(classNames)
+    })
 }
 
 function mapStyleShouldBe (style: string) {
-  cy.then(() => {
-    const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
-    const mapStyle = googleMap.attributes('style')
-    expect(mapStyle).to.equal(style)
-  })
+  cy.then(getGoogleMap)
+    .then((googleMap) => {
+      const mapStyle = googleMap.attributes('style')
+      expect(mapStyle).to.equal(style)
+    })
 }
 
 function mapHTMLContentShouldBe (sampleTextContent: string | (() => string)) {
-  cy.then(() => {
-    const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
-    expect(googleMap.element.innerHTML).to.equal(typeof sampleTextContent === 'function' ? sampleTextContent() : sampleTextContent)
-  })
+  cy.then(getGoogleMap)
+    .then((googleMap) => {
+      expect(googleMap.element.innerHTML).to.equal(
+        typeof sampleTextContent === 'function' ? sampleTextContent() : sampleTextContent
+      )
+    })
 }
