@@ -157,7 +157,6 @@ describe('BaseMap', () => {
         it(`case ${i + 1}: renderPOI = ${String(renderPOI)}`, () => {
           mountMap({ renderPOI })
 
-          cy.then(() => expect(Cypress.vueWrapper.props('renderPOI')).to.equal(renderPOI))
           poiVisibilityShouldBe(expectedVisibility)
         })
       })
