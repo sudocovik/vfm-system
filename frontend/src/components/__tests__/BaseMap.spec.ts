@@ -83,7 +83,7 @@ describe('BaseMap', () => {
       mountMap()
 
       cy.wrap(Cypress.vueWrapper.props('zoom')).should('equal', DEFAULT_ZOOM)
-      cy.wrap(Cypress.vueWrapper.findComponent(GoogleMap).props('zoom')).should('equal', DEFAULT_ZOOM)
+      mapZoomShouldBe(DEFAULT_ZOOM)
     })
 
     describe('should pass it to underlying GoogleMap component', () => {
@@ -91,10 +91,7 @@ describe('BaseMap', () => {
         it(`case ${i + 1}: zoom = ${zoom}`, () => {
           mountMap({ zoom })
 
-          cy.then(() => {
-            const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
-            expect(googleMap.props('zoom')).to.equal(zoom)
-          })
+          mapZoomShouldBe(zoom)
         })
       })
     })
@@ -103,17 +100,10 @@ describe('BaseMap', () => {
       const firstZoom = zooms[0]
       const secondZoom = zooms[1]
       mountMap({ zoom: firstZoom })
-
-      cy.then(() => {
-        const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
-        expect(googleMap.props('zoom')).to.deep.equal(firstZoom)
-      })
+      mapZoomShouldBe(firstZoom)
 
       ComponentUnderTest.changeProperties({ zoom: secondZoom })
-      cy.then(() => {
-        const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
-        expect(googleMap.props('zoom')).to.deep.equal(secondZoom)
-      })
+      mapZoomShouldBe(secondZoom)
     })
   })
 
@@ -320,6 +310,13 @@ function mapCenterShouldBe (center: google.maps.LatLngLiteral) {
   cy.then(() => {
     const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
     expect(googleMap.props('center')).to.deep.equal(center)
+  })
+}
+
+function mapZoomShouldBe (zoom: number) {
+  cy.then(() => {
+    const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
+    expect(googleMap.props('zoom')).to.equal(zoom)
   })
 }
 
