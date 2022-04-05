@@ -35,6 +35,11 @@ export const GESTURE_HANDLING = {
   DISABLED: 'none'
 }
 
+export const POI_VISIBILITY = {
+  VISIBLE: 'yes',
+  INVISIBLE: 'no'
+}
+
 export default defineComponent({
   name: 'BaseMap',
 
@@ -74,7 +79,7 @@ export default defineComponent({
       featureType: 'poi',
       elementType: 'labels',
       stylers: [
-        { visibility: props.renderPOI ? 'on' : 'off' }
+        { visibility: props.renderPOI ? POI_VISIBILITY.VISIBLE : POI_VISIBILITY.INVISIBLE }
       ]
     }])
 
