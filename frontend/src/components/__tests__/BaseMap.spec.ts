@@ -60,7 +60,7 @@ describe('BaseMap', () => {
 
     describe('should pass it to underlying GoogleMap component', () => {
       centers.forEach((center, i) => {
-        it(`case ${i + 1}: coordinates ${center.lat}, ${center.lng}`, () => {
+        it(`case ${i + 1}: center = ${center.lat}, ${center.lng}`, () => {
           mountMap({ center })
 
           cy.then(() => {
@@ -102,7 +102,7 @@ describe('BaseMap', () => {
 
     describe('should pass it to underlying GoogleMap component', () => {
       zooms.forEach((zoom, i) => {
-        it(`case ${i + 1}: level ${zoom}`, () => {
+        it(`case ${i + 1}: zoom = ${zoom}`, () => {
           mountMap({ zoom })
 
           cy.then(() => {
@@ -148,7 +148,7 @@ describe('BaseMap', () => {
 
     describe('should pass it to underlying GoogleMap component', () => {
       possibleInteractivity.forEach((interactive, i) => {
-        it(`case ${i + 1}: ${interactive ? '' : 'non-'}interactive`, () => {
+        it(`case ${i + 1}: interactive = ${String(interactive)}`, () => {
           mountMap({ interactive })
 
           cy.then(() => {
@@ -198,7 +198,7 @@ describe('BaseMap', () => {
 
     describe('should correctly configure \'styles\' property of the GoogleMap component', () => {
       renderPOIStates.forEach(({ renderPOI, expectedVisibility }, i) => {
-        it(`case ${i + 1}: do${renderPOI ? '' : ' not'} render POIs`, () => {
+        it(`case ${i + 1}: renderPOI = ${String(renderPOI)}`, () => {
           mountMap({ renderPOI })
 
           cy.then(() => expect(Cypress.vueWrapper.props('renderPOI')).to.equal(renderPOI))
@@ -227,7 +227,7 @@ describe('BaseMap', () => {
     ]
     describe('should set class(es) on GoogleMap component', () => {
       classes.forEach((classNames, i) => {
-        it(`case ${i + 1}: class = ${classNames}`, () => {
+        it(`case ${i + 1}: class = '${classNames}'`, () => {
           mountMapWithAttributes({ class: classNames })
 
           mapCssClassesShouldBe(classNames)
@@ -253,7 +253,7 @@ describe('BaseMap', () => {
     ]
     describe('should set style(s) on GoogleMap component', () => {
       styles.forEach((style, i) => {
-        it(`case ${i + 1}: style = ${style}`, () => {
+        it(`case ${i + 1}: style = '${style}'`, () => {
           mountMapWithAttributes({ style })
 
           mapStyleShouldBe(style)
