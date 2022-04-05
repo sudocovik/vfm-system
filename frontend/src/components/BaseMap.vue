@@ -58,7 +58,7 @@ export default defineComponent({
     }
   },
 
-  setup (props, { attrs }) {
+  setup (props) {
     const areUiControlsDisabled = computed<boolean>(() => !props.interactive)
     const gestureHandling = computed<string>(() => props.interactive ? 'auto' : 'none')
 
