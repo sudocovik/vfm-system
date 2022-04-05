@@ -4,6 +4,7 @@ import BaseMap, { DEFAULT_CENTER, DEFAULT_ZOOM } from '../BaseMap.vue'
 import { GoogleMap } from 'vue3-google-map'
 import { GoogleMapOptions } from '../../config/GoogleMapOptions'
 import { SinonStub } from 'cypress/types/sinon'
+import { h, VNode } from 'vue'
 
 describe('BaseMap', () => {
   let apiKeyStub: SinonStub
@@ -272,6 +273,28 @@ describe('BaseMap', () => {
       mapStyleShouldBe(secondStyle)
     })
   })
+
+  describe('(slot): default', () => {
+    it('should render HTML content', () => {
+      const sampleDivElement = h('div', { innerHTML: 'Test 1' })
+      mountMapWithDefaultSlot(sampleDivElement)
+
+      cy.then(() => {
+        const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
+        expect(googleMap.element.innerHTML).to.equal(sampleDivElement.el?.outerHTML)
+      })
+    })
+
+    it('should render text content', () => {
+      const sampleTextContent = 'My custom text'
+      mountMapWithDefaultSlot(sampleTextContent)
+
+      cy.then(() => {
+        const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
+        expect(googleMap.element.innerHTML).to.equal(sampleTextContent)
+      })
+    })
+  })
 })
 
 function mountMap (props?: Record<string, unknown>) {
@@ -295,6 +318,22 @@ function mountMapWithAttributes (attrs?: Record<string, unknown>) {
       }
     },
     attrs
+  })
+}
+
+function mountMapWithDefaultSlot (slotContent: string | VNode) {
+  mount(BaseMap, {
+    global: {
+      renderStubDefaultSlot: true,
+      stubs: {
+        GoogleMap: true
+      }
+    },
+    slots: {
+      default: {
+        render: () => slotContent
+      }
+    }
   })
 }
 

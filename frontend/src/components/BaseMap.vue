@@ -8,7 +8,9 @@
     :api-key="apiKey"
     :class="$attrs.class"
     :style="$attrs.style"
-  />
+  >
+    <slot />
+  </GoogleMap>
 </template>
 
 <script lang="ts">
