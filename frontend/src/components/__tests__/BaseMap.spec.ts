@@ -31,6 +31,20 @@ describe('BaseMap', () => {
     })
   })
 
+  describe('should set API key on GoogleMap component', () => {
+    const apiKeys = ['first-key', 'second-key']
+    apiKeys.forEach((apiKey, i) => {
+      it(`case ${i + 1}: api key = '${apiKey}'`, () => {
+        apiKeyStub.returns(apiKey)
+        mountMap()
+
+        cy.then(() => {
+          expect(Cypress.vueWrapper.findComponent(GoogleMap).props('apiKey')).to.equal(apiKey)
+        })
+      })
+    })
+  })
+
   describe('(prop): center', () => {
     const centers = [
       { lat: 22.341, lng: 46.675 },
@@ -203,22 +217,6 @@ describe('BaseMap', () => {
       cy.then(() => Cypress.vueWrapper.setProps({ renderPOI: secondState.renderPOI }))
 
       cy.then(poiVisibilityShouldBe(secondState.expectedVisibility))
-    })
-  })
-
-  describe('API Key', () => {
-    const apiKeys = ['first-key', 'second-key']
-    describe('should set API key on GoogleMap component', () => {
-      apiKeys.forEach((apiKey, i) => {
-        it(`case ${i + 1}: api key = '${apiKey}'`, () => {
-          apiKeyStub.returns(apiKey)
-          mountMap()
-
-          cy.then(() => {
-            expect(Cypress.vueWrapper.findComponent(GoogleMap).props('apiKey')).to.equal(apiKey)
-          })
-        })
-      })
     })
   })
 
