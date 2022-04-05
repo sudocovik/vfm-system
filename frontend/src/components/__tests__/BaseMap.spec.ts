@@ -113,12 +113,8 @@ describe('BaseMap', () => {
     it('should be interactive by default', () => {
       mountMap()
 
-      cy.then(() => {
-        expect(Cypress.vueWrapper.props('interactive')).to.equal(true)
-        const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
-        expect(googleMap.props('disableDefaultUi')).to.equal(false)
-        expect(googleMap.props('gestureHandling')).to.equal('auto')
-      })
+      cy.then(() => expect(Cypress.vueWrapper.props('interactive')).to.equal(true))
+      mapInteractivityShouldBe(true)
     })
 
     describe('should pass it to underlying GoogleMap component', () => {
@@ -126,11 +122,7 @@ describe('BaseMap', () => {
         it(`case ${i + 1}: interactive = ${String(interactive)}`, () => {
           mountMap({ interactive })
 
-          cy.then(() => {
-            const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
-            expect(googleMap.props('disableDefaultUi')).to.equal(!interactive)
-            expect(googleMap.props('gestureHandling')).to.equal(interactive ? 'auto' : 'none')
-          })
+          mapInteractivityShouldBe(interactive)
         })
       })
     })
@@ -139,19 +131,10 @@ describe('BaseMap', () => {
       const yes = possibleInteractivity[1]
       const no = possibleInteractivity[0]
       mountMap({ interactive: yes })
-
-      cy.then(() => {
-        const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
-        expect(googleMap.props('disableDefaultUi')).to.equal(false)
-        expect(googleMap.props('gestureHandling')).to.equal('auto')
-      })
+      mapInteractivityShouldBe(yes)
 
       ComponentUnderTest.changeProperties({ interactive: no })
-      cy.then(() => {
-        const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
-        expect(googleMap.props('disableDefaultUi')).to.equal(true)
-        expect(googleMap.props('gestureHandling')).to.equal('none')
-      })
+      mapInteractivityShouldBe(no)
     })
   })
 
@@ -317,6 +300,14 @@ function mapZoomShouldBe (zoom: number) {
   cy.then(() => {
     const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
     expect(googleMap.props('zoom')).to.equal(zoom)
+  })
+}
+
+function mapInteractivityShouldBe (interactive: boolean) {
+  cy.then(() => {
+    const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
+    expect(googleMap.props('disableDefaultUi')).to.equal(!interactive)
+    expect(googleMap.props('gestureHandling')).to.equal(interactive ? 'auto' : 'none')
   })
 }
 
