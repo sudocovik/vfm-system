@@ -1,7 +1,7 @@
 /// <reference types="google.maps" />
 import { ComponentUnderTest } from 'test/support/api'
 import { mount } from '@cypress/vue'
-import BaseMap, { DEFAULT_CENTER, DEFAULT_ZOOM } from '../BaseMap.vue'
+import BaseMap, { DEFAULT_CENTER, DEFAULT_ZOOM, GESTURE_HANDLING } from '../BaseMap.vue'
 import { GoogleMap } from 'vue3-google-map'
 import { GoogleMapOptions } from '../../config/GoogleMapOptions'
 import { SinonStub } from 'cypress/types/sinon'
@@ -304,10 +304,14 @@ function mapZoomShouldBe (zoom: number) {
 }
 
 function mapInteractivityShouldBe (interactive: boolean) {
+  // Why ESLint thinks this is 'any' type is a great mystery
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const { ENABLED, DISABLED } = GESTURE_HANDLING
+
   cy.then(() => {
     const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
     expect(googleMap.props('disableDefaultUi')).to.equal(!interactive)
-    expect(googleMap.props('gestureHandling')).to.equal(interactive ? 'auto' : 'none')
+    expect(googleMap.props('gestureHandling')).to.equal(interactive ? ENABLED : DISABLED)
   })
 }
 

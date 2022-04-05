@@ -30,6 +30,11 @@ const croatia = {
 export const DEFAULT_CENTER = croatia.coordinates
 export const DEFAULT_ZOOM = croatia.zoom
 
+export const GESTURE_HANDLING = {
+  ENABLED: 'auto',
+  DISABLED: 'none'
+}
+
 export default defineComponent({
   name: 'BaseMap',
 
@@ -63,7 +68,7 @@ export default defineComponent({
 
   setup (props) {
     const areUiControlsDisabled = computed<boolean>(() => !props.interactive)
-    const gestureHandling = computed<string>(() => props.interactive ? 'auto' : 'none')
+    const gestureHandling = computed<string>(() => props.interactive ? GESTURE_HANDLING.ENABLED : GESTURE_HANDLING.DISABLED)
 
     const styles = computed<google.maps.MapTypeStyle[]>(() => [{
       featureType: 'poi',
