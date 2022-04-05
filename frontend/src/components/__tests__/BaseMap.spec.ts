@@ -149,7 +149,7 @@ describe('BaseMap', () => {
       mountMap()
 
       cy.then(() => expect(Cypress.vueWrapper.props('renderPOI')).to.equal(defaultState.renderPOI))
-      cy.then(poiVisibilityShouldBe(defaultState.expectedVisibility))
+      poiVisibilityShouldBe(defaultState.expectedVisibility)
     })
 
     describe('should correctly configure \'styles\' property of the GoogleMap component', () => {
@@ -158,7 +158,7 @@ describe('BaseMap', () => {
           mountMap({ renderPOI })
 
           cy.then(() => expect(Cypress.vueWrapper.props('renderPOI')).to.equal(renderPOI))
-          cy.then(poiVisibilityShouldBe(expectedVisibility))
+          poiVisibilityShouldBe(expectedVisibility)
         })
       })
     })
@@ -167,10 +167,10 @@ describe('BaseMap', () => {
       const firstState = renderPOIStates[0]
       const secondState = renderPOIStates[1]
       mountMap({ renderPOI: firstState.renderPOI })
-      cy.then(poiVisibilityShouldBe(firstState.expectedVisibility))
+      poiVisibilityShouldBe(firstState.expectedVisibility)
 
       ComponentUnderTest.changeProperties({ renderPOI: secondState.renderPOI })
-      cy.then(poiVisibilityShouldBe(secondState.expectedVisibility))
+      poiVisibilityShouldBe(secondState.expectedVisibility)
     })
   })
 
@@ -324,12 +324,12 @@ function getPoiStyles () {
 }
 
 function poiVisibilityShouldBe (visibility: string) {
-  return () => {
+  cy.then(() => {
     const { poiStyling, poiVisibility } = getPoiStyles()
 
     expect(poiStyling).to.have.property('elementType', 'labels')
     expect(poiVisibility).to.equal(visibility)
-  }
+  })
 }
 
 function mapCssClassesShouldBe (classNames: string) {
