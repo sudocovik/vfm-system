@@ -2,8 +2,16 @@
 import { mount } from '@cypress/vue'
 import BaseMap, { DEFAULT_CENTER, DEFAULT_ZOOM } from '../BaseMap.vue'
 import { GoogleMap } from 'vue3-google-map'
+import { GoogleMapOptions } from '../../config/GoogleMapOptions'
+import { SinonStub } from 'cypress/types/sinon'
 
 describe('BaseMap', () => {
+  let apiKeyStub: SinonStub
+
+  beforeEach(() => {
+    apiKeyStub = cy.stub(GoogleMapOptions, 'apiKey').returns('irrelevant-key')
+  })
+
   it('should render GoogleMap component', () => {
     mountMap()
 
@@ -196,6 +204,22 @@ describe('BaseMap', () => {
       cy.then(poiVisibilityShouldBe(secondState.expectedVisibility))
     })
   })
+
+  describe('API Key', () => {
+    const apiKeys = ['first-key', 'second-key']
+    describe('should set API key on GoogleMap component', () => {
+      apiKeys.forEach((apiKey, i) => {
+        it(`case ${i + 1}: api key = '${apiKey}'`, () => {
+          apiKeyStub.returns(apiKey)
+          mountMap()
+
+          cy.then(() => {
+            expect(Cypress.vueWrapper.findComponent(GoogleMap).props('apiKey')).to.equal(apiKey)
+          })
+        })
+      })
+    })
+  })
 })
 
 function mountMap (props?: Record<string, unknown>) {
@@ -203,7 +227,7 @@ function mountMap (props?: Record<string, unknown>) {
     global: {
       stubs: {
         GoogleMap: {
-          props: ['center', 'zoom', 'disableDefaultUi', 'gestureHandling', 'styles']
+          props: ['center', 'zoom', 'disableDefaultUi', 'gestureHandling', 'styles', 'apiKey']
         }
       }
     },
