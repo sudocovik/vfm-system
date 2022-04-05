@@ -231,20 +231,14 @@ describe('BaseMap', () => {
       const sampleDivElement = h('div', { innerHTML: 'Test 1' })
       mountMapWithDefaultSlot(sampleDivElement)
 
-      cy.then(() => {
-        const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
-        expect(googleMap.element.innerHTML).to.equal(sampleDivElement.el?.outerHTML)
-      })
+      mapHTMLContentShouldBe(() => <string>sampleDivElement.el?.outerHTML)
     })
 
     it('should render text content', () => {
       const sampleTextContent = 'My custom text'
       mountMapWithDefaultSlot(sampleTextContent)
 
-      cy.then(() => {
-        const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
-        expect(googleMap.element.innerHTML).to.equal(sampleTextContent)
-      })
+      mapHTMLContentShouldBe(sampleTextContent)
     })
   })
 })
@@ -345,5 +339,12 @@ function mapStyleShouldBe (style: string) {
     const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
     const mapStyle = googleMap.attributes('style')
     expect(mapStyle).to.equal(style)
+  })
+}
+
+function mapHTMLContentShouldBe (sampleTextContent: string | (() => string)) {
+  cy.then(() => {
+    const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
+    expect(googleMap.element.innerHTML).to.equal(typeof sampleTextContent === 'function' ? sampleTextContent() : sampleTextContent)
   })
 }
