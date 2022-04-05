@@ -345,8 +345,7 @@ function mapStyleShouldBe (style: string) {
 function mapHTMLContentShouldBe (sampleTextContent: string | (() => string)) {
   cy.then(getGoogleMap)
     .then((googleMap) => {
-      expect(googleMap.element.innerHTML).to.equal(
-        typeof sampleTextContent === 'function' ? sampleTextContent() : sampleTextContent
-      )
+      const wantedContent = typeof sampleTextContent === 'function' ? sampleTextContent() : sampleTextContent
+      expect(googleMap.element.innerHTML).to.equal(wantedContent)
     })
 }
