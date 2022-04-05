@@ -246,6 +246,32 @@ describe('BaseMap', () => {
       mapCssClassesShouldBe(secondClasses)
     })
   })
+
+  describe('(attr): style', () => {
+    const styles = [
+      'color: red; background-color: white;',
+      'color: green; background-color: black;'
+    ]
+    describe('should set style(s) on GoogleMap component', () => {
+      styles.forEach((style, i) => {
+        it(`case ${i + 1}: style = ${style}`, () => {
+          mountMapWithAttributes({ style })
+
+          mapStyleShouldBe(style)
+        })
+      })
+    })
+
+    it('should be reactive', () => {
+      const firstStyle = styles[0]
+      const secondStyle = styles[1]
+      mountMapWithAttributes({ style: firstStyle })
+      mapStyleShouldBe(firstStyle)
+
+      cy.then(() => Cypress.vueWrapper.setProps({ style: secondStyle }))
+      mapStyleShouldBe(secondStyle)
+    })
+  })
 })
 
 function mountMap (props?: Record<string, unknown>) {
@@ -294,5 +320,13 @@ function mapCssClassesShouldBe (classNames: string) {
     const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
     const mapClasses = googleMap.attributes('class')
     expect(mapClasses).to.equal(classNames)
+  })
+}
+
+function mapStyleShouldBe (style: string) {
+  cy.then(() => {
+    const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
+    const mapStyle = googleMap.attributes('style')
+    expect(mapStyle).to.equal(style)
   })
 }

@@ -7,6 +7,7 @@
     :styles="styles"
     :api-key="apiKey"
     :class="$attrs.class"
+    :style="$attrs.style"
   />
 </template>
 
