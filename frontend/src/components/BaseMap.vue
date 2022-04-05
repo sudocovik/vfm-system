@@ -6,6 +6,7 @@
     :gesture-handling="gestureHandling"
     :styles="styles"
     :api-key="apiKey"
+    :class="$attrs.class"
   />
 </template>
 
@@ -57,7 +58,7 @@ export default defineComponent({
     }
   },
 
-  setup (props) {
+  setup (props, { attrs }) {
     const areUiControlsDisabled = computed<boolean>(() => !props.interactive)
     const gestureHandling = computed<string>(() => props.interactive ? 'auto' : 'none')
 

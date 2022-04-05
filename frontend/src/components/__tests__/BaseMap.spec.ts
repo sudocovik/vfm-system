@@ -220,6 +220,32 @@ describe('BaseMap', () => {
       })
     })
   })
+
+  describe.only('(attr): class', () => {
+    const classes = [
+      'test-1 test-2',
+      'test-3 test-4'
+    ]
+    describe('should set class(es) on GoogleMap component', () => {
+      classes.forEach((classNames, i) => {
+        it(`case ${i + 1}: class = ${classNames}`, () => {
+          mountMapWithAttributes({ class: classNames })
+
+          mapCssClassesShouldBe(classNames)
+        })
+      })
+    })
+
+    it('should be reactive', () => {
+      const firstClasses = classes[0]
+      const secondClasses = classes[1]
+      mountMapWithAttributes({ class: firstClasses })
+
+      mapCssClassesShouldBe(firstClasses)
+      cy.then(() => Cypress.vueWrapper.setProps({ class: secondClasses }))
+      mapCssClassesShouldBe(secondClasses)
+    })
+  })
 })
 
 function mountMap (props?: Record<string, unknown>) {
@@ -232,6 +258,17 @@ function mountMap (props?: Record<string, unknown>) {
       }
     },
     props
+  })
+}
+
+function mountMapWithAttributes (attrs?: Record<string, unknown>) {
+  mount(BaseMap, {
+    global: {
+      stubs: {
+        GoogleMap: true
+      }
+    },
+    attrs
   })
 }
 
@@ -250,4 +287,12 @@ function poiVisibilityShouldBe (visibility: string) {
     expect(poiStyling).to.have.property('elementType', 'labels')
     expect(poiVisibility).to.equal(visibility)
   }
+}
+
+function mapCssClassesShouldBe (classNames: string) {
+  cy.then(() => {
+    const googleMap = Cypress.vueWrapper.findComponent(GoogleMap)
+    const mapClasses = googleMap.attributes('class')
+    expect(mapClasses).to.equal(classNames)
+  })
 }
