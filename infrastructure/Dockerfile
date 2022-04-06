@@ -1,6 +1,6 @@
 FROM node:17.3.0-alpine3.14 AS base
 
-COPY --from=pulumi/pulumi-base:3.25.1 /pulumi/bin/pulumi /usr/bin/pulumi
+COPY --from=pulumi/pulumi-base:3.28.0 /pulumi/bin/pulumi /usr/bin/pulumi
 
 COPY --from=alpine/helm:3.8.0 /usr/bin/helm /usr/bin/helm
 
