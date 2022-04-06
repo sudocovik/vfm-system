@@ -40,7 +40,7 @@ SHELL ["/bin/bash", "-c"]
 
 COPY --from=docker:20.10.14 /usr/local/bin/docker /usr/local/bin/docker
 
-RUN curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v5.3.0 bash
+COPY --from=ghcr.io/k3d-io/k3d:5.4.1 /bin/k3d /usr/local/bin/k3d
 
 COPY --from=devspacesh/devspace:5.18.4 /bin/devspace /usr/local/bin/devspace
 
