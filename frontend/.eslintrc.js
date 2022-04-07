@@ -116,6 +116,12 @@ module.exports = {
 
   overrides: [
     {
+      files: ['*.ts', '*.vue'],
+      rules: {
+        'no-undef': 'off' // TypeScript already handles these errors
+      }
+    },
+    {
       files: ['**/*.spec.{js,ts}', '**/__tests__/*.spec.{js,ts}', '**/__tests__/helpers/*.{js,ts}', 'test/support/*.{js,ts}'],
       extends: [
         // Add Cypress-specific lint rules, globals and Cypress plugin
