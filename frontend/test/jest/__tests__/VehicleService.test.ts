@@ -86,10 +86,10 @@ describe('VehicleService', () => {
     describe('fetchAllMostRecent', () => {
       it('should return empty array if no vehicle has sent it\'s position', async () => {
         simulateNoPositions()
-        const allPosition = await positionList.fetchAllMostRecent()
+        const allPositions = await positionList.fetchAllMostRecent()
 
-        expect(allPosition).toBeInstanceOf(Array)
-        expect(allPosition).toHaveLength(0)
+        expect(allPositions).toBeInstanceOf(Array)
+        expect(allPositions).toHaveLength(0)
       })
 
       it('should return single position in array if only one vehicle has sent it\'s position', async () => {
