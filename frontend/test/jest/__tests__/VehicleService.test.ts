@@ -185,6 +185,18 @@ describe('VehicleService', () => {
 
         positionShouldEqualTraccarPosition(position, expected)
       })
+
+      it('should return multiple positions in array if multiple devices sent their positions', async () => {
+        const rawBackendPositions = rawPositions.map(({ raw }) => raw)
+        const rawExpectedPositions = rawPositions.map(({ expected }) => expected)
+        simulateManyPositions(rawBackendPositions)
+
+        const allPositions = await positionList.fetchAllMostRecent()
+
+        expect(allPositions).toHaveLength(rawBackendPositions.length)
+
+        allPositions.forEach((position, i) => positionShouldEqualTraccarPosition(position, rawExpectedPositions[i]))
+      })
     })
   })
 })

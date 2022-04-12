@@ -23,6 +23,6 @@ export class PositionList {
       position.serverTime
     )
 
-    return positions?.length === 0 ? [] : [convertToPosition(positions[0])]
+    return positions.map(convertToPosition)
   }
 }
