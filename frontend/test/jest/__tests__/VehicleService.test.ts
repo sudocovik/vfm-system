@@ -9,7 +9,20 @@ import {
 } from 'src/backend/VehicleService'
 import MockAdapter from 'axios-mock-adapter'
 import axios from 'axios'
-import { parseISO } from 'date-fns'
+
+interface ExpectedPosition {
+  id: number
+  vehicleId: number
+  latitude: number
+  longitude: number
+  altitude: number
+  speed: number
+  course: number
+  address: string
+  fixationTime: Date
+  sentTime: Date
+  receivedTime: Date
+}
 
 describe('VehicleService', () => {
   describe('VehicleList', () => {
@@ -112,6 +125,19 @@ describe('VehicleService', () => {
           network: {},
           attributes: {}
         }
+        const expectedPosition: ExpectedPosition = {
+          id: 1,
+          vehicleId: 1,
+          latitude: 44.0901797,
+          longitude: 15.2176099,
+          altitude: 30,
+          speed: 28,
+          course: 270,
+          address: 'My street 1',
+          fixationTime: new Date(2022, 2, 16, 16, 39, 0, 0),
+          sentTime: new Date(2022, 2, 16, 16, 39, 1, 0),
+          receivedTime: new Date(2022, 2, 16, 16, 39, 5, 0)
+        }
         simulateManyPositions([rawPosition])
 
         const allPositions = await positionList.fetchAllMostRecent()
@@ -119,7 +145,7 @@ describe('VehicleService', () => {
 
         expect(allPositions).toHaveLength(1)
 
-        positionShouldEqualTraccarPosition(position, rawPosition)
+        positionShouldEqualTraccarPosition(position, expectedPosition)
       })
     })
   })
@@ -154,17 +180,17 @@ function simulateManyPositions (positions: TraccarPosition[]) {
   mock.onGet(PositionList.positionEndpoint).reply(200, positions)
 }
 
-function positionShouldEqualTraccarPosition (position: Position, expectedPosition: TraccarPosition) {
+function positionShouldEqualTraccarPosition (position: Position, expectedPosition: ExpectedPosition) {
   expect(position).toBeInstanceOf(Position)
   expect(position.id()).toEqual(expectedPosition.id)
-  expect(position.vehicleId()).toEqual(expectedPosition.deviceId)
+  expect(position.vehicleId()).toEqual(expectedPosition.vehicleId)
   expect(position.latitude()).toEqual(expectedPosition.latitude)
   expect(position.longitude()).toEqual(expectedPosition.longitude)
   expect(position.course()).toEqual(expectedPosition.course)
-  expect(position.speed()).toEqual(Math.round(expectedPosition.speed * 1.852))
+  expect(position.speed()).toEqual(expectedPosition.speed)
   expect(position.altitude()).toEqual(expectedPosition.altitude)
   expect(position.address()).toEqual(expectedPosition.address)
-  expect(position.fixationTime().getTime()).toEqual(parseISO(expectedPosition.fixTime).getTime())
-  expect(position.sentTime().getTime()).toEqual(parseISO(expectedPosition.deviceTime).getTime())
-  expect(position.receivedTime().getTime()).toEqual(parseISO(expectedPosition.serverTime).getTime())
+  expect(position.fixationTime()).toEqual(expectedPosition.fixationTime)
+  expect(position.sentTime()).toEqual(expectedPosition.sentTime)
+  expect(position.receivedTime()).toEqual(expectedPosition.receivedTime)
 }
