@@ -105,47 +105,88 @@ describe('VehicleService', () => {
         expect(allPositions).toHaveLength(0)
       })
 
-      it('should return single position in array if only one vehicle has sent it\'s position', async () => {
-        const rawPosition = {
-          id: 1,
-          deviceId: 1,
-          protocol: 'teltonika',
-          deviceTime: '2022-03-16T16:39:01.000+00:00',
-          fixTime: '2022-03-16T16:39:00.000+00:00',
-          serverTime: '2022-03-16T16:39:05.000+00:00',
-          outdated: false,
-          valid: true,
-          latitude: 44.0901797,
-          longitude: 15.2176099,
-          altitude: 30,
-          speed: 15,
-          course: 270,
-          address: 'My street 1',
-          accuracy: 0,
-          network: {},
-          attributes: {}
-        }
-        const expectedPosition: ExpectedPosition = {
-          id: 1,
-          vehicleId: 1,
-          latitude: 44.0901797,
-          longitude: 15.2176099,
-          altitude: 30,
-          speed: 28,
-          course: 270,
-          address: 'My street 1',
-          fixationTime: new Date(2022, 2, 16, 16, 39, 0, 0),
-          sentTime: new Date(2022, 2, 16, 16, 39, 1, 0),
-          receivedTime: new Date(2022, 2, 16, 16, 39, 5, 0)
-        }
-        simulateManyPositions([rawPosition])
+      describe('should return single position in array if only one vehicle has sent it\'s position', () => {
+        const rawPositions: ({ raw: TraccarPosition, expected: ExpectedPosition })[] = [
+          {
+            raw: {
+              id: 1,
+              deviceId: 1,
+              protocol: 'teltonika',
+              fixTime: '2022-03-16T16:39:00.000+00:00',
+              deviceTime: '2022-03-16T16:39:01.000+00:00',
+              serverTime: '2022-03-16T16:39:05.000+00:00',
+              outdated: false,
+              valid: true,
+              latitude: 44.0901797,
+              longitude: 15.2176099,
+              altitude: 30,
+              speed: 15,
+              course: 270,
+              address: 'My street 1',
+              accuracy: 0,
+              network: {},
+              attributes: {}
+            },
+            expected: {
+              id: 1,
+              vehicleId: 1,
+              latitude: 44.0901797,
+              longitude: 15.2176099,
+              altitude: 30,
+              speed: 28,
+              course: 270,
+              address: 'My street 1',
+              fixationTime: new Date(2022, 2, 16, 16, 39, 0, 0),
+              sentTime: new Date(2022, 2, 16, 16, 39, 1, 0),
+              receivedTime: new Date(2022, 2, 16, 16, 39, 5, 0)
+            }
+          },
+          {
+            raw: {
+              id: 2,
+              deviceId: 2,
+              protocol: 'teltonika',
+              fixTime: '2022-04-12T12:02:02.000+00:00',
+              deviceTime: '2022-04-12T12:02:05.000+00:00',
+              serverTime: '2022-04-12T12:02:07.000+00:00',
+              outdated: false,
+              valid: true,
+              latitude: 44.11660,
+              longitude: 15.27059,
+              altitude: 70,
+              speed: 90,
+              course: 17,
+              address: 'Your street 1',
+              accuracy: 0,
+              network: {},
+              attributes: {}
+            },
+            expected: {
+              id: 2,
+              vehicleId: 2,
+              latitude: 44.11660,
+              longitude: 15.27059,
+              altitude: 70,
+              speed: 167,
+              course: 17,
+              address: 'Your street 1',
+              fixationTime: new Date(2022, 3, 12, 12, 2, 2, 0),
+              sentTime: new Date(2022, 3, 12, 12, 2, 5, 0),
+              receivedTime: new Date(2022, 3, 12, 12, 2, 7, 0)
+            }
+          }
+        ]
 
-        const allPositions = await positionList.fetchAllMostRecent()
-        const position = allPositions[0]
+        it.each(rawPositions)('case %#', async ({ raw, expected }) => {
+          simulateManyPositions([raw])
 
-        expect(allPositions).toHaveLength(1)
+          const allPositions = await positionList.fetchAllMostRecent()
+          const position = allPositions[0]
 
-        positionShouldEqualTraccarPosition(position, expectedPosition)
+          expect(allPositions).toHaveLength(1)
+
+          positionShouldEqualTraccarPosition(position, expected)
+        })
       })
     })
   })

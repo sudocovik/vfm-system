@@ -9,6 +9,20 @@ export class PositionList {
     const response = await axios.get(PositionList.positionEndpoint)
     const positions = response.data as TraccarPosition[]
 
-    return positions?.length === 0 ? [] : [new Position()]
+    const convertToPosition = (position: TraccarPosition) => new Position(
+      position.id,
+      position.deviceId,
+      position.latitude,
+      position.longitude,
+      position.altitude,
+      position.course,
+      position.speed,
+      position.address,
+      position.fixTime,
+      position.deviceTime,
+      position.serverTime
+    )
+
+    return positions?.length === 0 ? [] : [convertToPosition(positions[0])]
   }
 }

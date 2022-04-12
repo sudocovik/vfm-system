@@ -1,45 +1,62 @@
+import { parseISO } from 'date-fns'
+
 export class Position {
+  public constructor (
+    private _id: number,
+    private _vehicleId: number,
+    private _latitude: number,
+    private _longitude: number,
+    private _altitude: number,
+    private _course: number,
+    private _speed: number,
+    private _address: string,
+    private _fixationTime: string,
+    private _sentTime: string,
+    private _receivedTime: string
+  ) {
+  }
+
   public id (): number {
-    return 1
+    return this._id
   }
 
   public vehicleId (): number {
-    return 1
+    return this._vehicleId
   }
 
   public latitude (): number {
-    return 44.0901797
+    return this._latitude
   }
 
   public longitude (): number {
-    return 15.2176099
-  }
-
-  public course (): number {
-    return 270
-  }
-
-  public speed (): number {
-    return 28
+    return this._longitude
   }
 
   public altitude (): number {
-    return 30
+    return this._altitude
+  }
+
+  public course (): number {
+    return this._course
+  }
+
+  public speed (): number {
+    return Math.round(this._speed * 1.852)
   }
 
   public address (): string {
-    return 'My street 1'
+    return this._address
   }
 
   public fixationTime (): Date {
-    return new Date(2022, 2, 16, 16, 39, 0)
+    return parseISO(this._fixationTime)
   }
 
   public sentTime (): Date {
-    return new Date(2022, 2, 16, 16, 39, 1)
+    return parseISO(this._sentTime)
   }
 
   public receivedTime (): Date {
-    return new Date(2022, 2, 16, 16, 39, 5)
+    return parseISO(this._receivedTime)
   }
 }
