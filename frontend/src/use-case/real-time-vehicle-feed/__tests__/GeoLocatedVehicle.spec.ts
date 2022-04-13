@@ -62,10 +62,27 @@ describe('GeoLocatedVehicle', () => {
     })
   })
 
-  it('should render address', () => {
-    mountGeoLocatedVehicle()
+  describe('Address', () => {
+    const addresses = ['Ulica Ante Starčevića 1a, 23000 Zadar, HR', 'Splitska ulica 11, 23000 Zadar, HR']
+    const addressShouldBe = (address: string) => cy.dataCy('address').should('have.text', address)
 
-    cy.dataCy('address').should('have.text', 'Ulica Ante Starčevića 1a, 23000 Zadar, HR')
+    addresses.forEach(address => {
+      it(`should render address '${address}'`, () => {
+        mountGeoLocatedVehicle({ address })
+
+        addressShouldBe(address)
+      })
+    })
+
+    it('should be reactive', () => {
+      const firstAddress = addresses[0]
+      const secondAddress = addresses[1]
+      mountGeoLocatedVehicle({ address: firstAddress })
+      addressShouldBe(firstAddress)
+
+      ComponentUnderTest.changeProperties({ address: secondAddress })
+      addressShouldBe(secondAddress)
+    })
   })
 
   it('should render speed', () => {

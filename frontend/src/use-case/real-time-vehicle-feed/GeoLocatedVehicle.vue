@@ -17,7 +17,7 @@
 
     <q-card-section class="q-pt-none">
       <div>
-        <span data-cy="address">Ulica Ante Starčevića 1a, 23000 Zadar, HR</span>
+        <span data-cy="address">{{ address }}</span>
       </div>
       <div class="q-mt-xs">
         <span data-cy="speed">30 km/h</span>
@@ -39,6 +39,11 @@ export default defineComponent({
 
   props: {
     licensePlate: {
+      type: String,
+      required: true
+    },
+
+    address: {
       type: String,
       required: true
     },
