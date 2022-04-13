@@ -1,6 +1,7 @@
 import { mount } from '@cypress/vue'
 import GeoLocatedVehicle, { MAP_HEIGHT } from '../GeoLocatedVehicle.vue'
 import BaseMap from 'components/BaseMap.vue'
+import { ComponentUnderTest } from 'test/support/api'
 
 describe('GeoLocatedVehicle', () => {
   it('should render BaseMap', () => {
@@ -12,10 +13,27 @@ describe('GeoLocatedVehicle', () => {
     })
   })
 
-  it('should render license plate', () => {
-    mountGeoLocatedVehicle()
+  describe('License plate', () => {
+    const licensePlates = ['ZD000AA', 'ZD111AA']
+    const licensePlateShouldBe = (licensePlate: string) => cy.dataCy('license-plate').should('have.text', licensePlate)
 
-    cy.dataCy('license-plate').should('have.text', 'ZD000AA')
+    licensePlates.forEach(licensePlate => {
+      it(`should render license plate '${licensePlate}'`, () => {
+        mountGeoLocatedVehicle({ licensePlate })
+
+        licensePlateShouldBe(licensePlate)
+      })
+    })
+
+    it('should be reactive', () => {
+      const firstLicensePlate = licensePlates[0]
+      const secondLicensePlate = licensePlates[1]
+      mountGeoLocatedVehicle({ licensePlate: firstLicensePlate })
+      licensePlateShouldBe(firstLicensePlate)
+
+      ComponentUnderTest.changeProperties({ licensePlate: secondLicensePlate })
+      licensePlateShouldBe(secondLicensePlate)
+    })
   })
 
   describe('Movement states', () => {
@@ -66,6 +84,9 @@ describe('GeoLocatedVehicle', () => {
 })
 
 function mountGeoLocatedVehicle (props?: Record<string, unknown>) {
+  // For some reason, after adding 'licensePlate' as required property, TS complains 'props' object does not exist...
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   mount(GeoLocatedVehicle, {
     global: {
       stubs: {

@@ -12,7 +12,7 @@
       <span
         class="vertical-middle"
         data-cy="license-plate"
-      >ZD000AA</span>
+      >{{ licensePlate }}</span>
     </q-card-section>
 
     <q-card-section class="q-pt-none">
@@ -38,6 +38,11 @@ export default defineComponent({
   components: { BaseMap },
 
   props: {
+    licensePlate: {
+      type: String,
+      required: true
+    },
+
     moving: {
       type: Boolean,
       required: false,
