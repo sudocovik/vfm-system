@@ -51,7 +51,7 @@ export default defineComponent({
   },
 
   setup (props) {
-    const icon = props.moving ? 'mdi-truck-fast' : 'mdi-truck'
+    const icon = computed(() => props.moving ? 'mdi-truck-fast' : 'mdi-truck')
     const mapCssStyle = { height: `${MAP_HEIGHT}px`, width: '100%', overflow: 'hidden' }
 
     return {

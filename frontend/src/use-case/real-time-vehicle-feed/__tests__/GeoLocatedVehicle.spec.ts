@@ -41,12 +41,24 @@ describe('GeoLocatedVehicle', () => {
       { moving: false, icon: 'mdi-truck' },
       { moving: true, icon: 'mdi-truck-fast' }
     ]
+    const vehicleIconShouldBe = (icon: string) => cy.dataCy('icon').invoke('hasClass', icon).should('equal', true)
+
     movementStates.forEach(({ moving, icon }) => {
       it(`should render '${icon}' icon when ${moving ? 'moving' : 'not moving'}`, () => {
         mountGeoLocatedVehicle({ moving })
 
-        cy.dataCy('icon').invoke('hasClass', icon).should('equal', true)
+        vehicleIconShouldBe(icon)
       })
+    })
+
+    it('should be reactive', () => {
+      const firstState = movementStates[0]
+      const secondState = movementStates[1]
+      mountGeoLocatedVehicle({ moving: firstState.moving })
+      vehicleIconShouldBe(firstState.icon)
+
+      ComponentUnderTest.changeProperties({ moving: secondState.moving })
+      vehicleIconShouldBe(secondState.icon)
     })
   })
 
