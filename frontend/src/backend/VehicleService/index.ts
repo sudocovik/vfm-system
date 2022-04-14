@@ -1,5 +1,6 @@
 export { VehicleList } from './VehicleList'
 export { PositionList } from './PositionList'
+export { GeoLocatedVehicle } from './models/GeoLocatedVehicle'
 export { VehicleWithoutPosition } from './models/VehicleWithoutPosition'
 export { Position } from './models/Position'
 export type { TraccarDevice } from './models/TraccarDevice'

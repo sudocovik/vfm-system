@@ -5,7 +5,8 @@ import {
   TraccarDevice,
   TraccarPosition,
   VehicleList,
-  VehicleWithoutPosition
+  VehicleWithoutPosition,
+  GeoLocatedVehicle
 } from 'src/backend/VehicleService'
 import MockAdapter from 'axios-mock-adapter'
 import axios from 'axios'
@@ -23,6 +24,77 @@ interface ExpectedPosition {
   sentTime: Date
   receivedTime: Date
 }
+
+const rawPositions: ({ raw: TraccarPosition, expected: ExpectedPosition })[] = [
+  {
+    raw: {
+      id: 1,
+      deviceId: 1,
+      protocol: 'teltonika',
+      fixTime: '2022-03-16T16:39:00.000+00:00',
+      deviceTime: '2022-03-16T16:39:01.000+00:00',
+      serverTime: '2022-03-16T16:39:05.000+00:00',
+      outdated: false,
+      valid: true,
+      latitude: 44.0901797,
+      longitude: 15.2176099,
+      altitude: 30,
+      speed: 15,
+      course: 270,
+      address: 'My street 1',
+      accuracy: 0,
+      network: {},
+      attributes: {}
+    },
+    expected: {
+      id: 1,
+      vehicleId: 1,
+      latitude: 44.0901797,
+      longitude: 15.2176099,
+      altitude: 30,
+      speed: 28,
+      course: 270,
+      address: 'My street 1',
+      fixationTime: new Date(2022, 2, 16, 16, 39, 0, 0),
+      sentTime: new Date(2022, 2, 16, 16, 39, 1, 0),
+      receivedTime: new Date(2022, 2, 16, 16, 39, 5, 0)
+    }
+  },
+  {
+    raw: {
+      id: 2,
+      deviceId: 2,
+      protocol: 'teltonika',
+      fixTime: '2022-04-12T12:02:02.000+00:00',
+      deviceTime: '2022-04-12T12:02:05.000+00:00',
+      serverTime: '2022-04-12T12:02:07.000+00:00',
+      outdated: false,
+      valid: true,
+      latitude: 44.11660,
+      longitude: 15.27059,
+      altitude: 70,
+      speed: 90,
+      course: 17,
+      address: 'Your street 1',
+      accuracy: 0,
+      network: {},
+      attributes: {}
+    },
+    expected: {
+      id: 2,
+      vehicleId: 2,
+      latitude: 44.11660,
+      longitude: 15.27059,
+      altitude: 70,
+      speed: 167,
+      course: 17,
+      address: 'Your street 1',
+      fixationTime: new Date(2022, 3, 12, 12, 2, 2, 0),
+      sentTime: new Date(2022, 3, 12, 12, 2, 5, 0),
+      receivedTime: new Date(2022, 3, 12, 12, 2, 7, 0)
+    }
+  }
+]
 
 describe('VehicleService', () => {
   describe('VehicleList', () => {
@@ -91,80 +163,67 @@ describe('VehicleService', () => {
         vehiclesWithoutPosition.forEach((vehicle, i) => vehicleShouldEqualTraccarDevice(vehicle, rawVehicles[i]))
       })
     })
+
+    describe('fetchAll', () => {
+      it('should return empty array if user has zero vehicles', async () => {
+        simulateUserHasNoVehicles()
+
+        const vehicles = await vehicleList.fetchAll()
+
+        expect(vehicles).toBeInstanceOf(Array)
+        expect(vehicles).toHaveLength(0)
+      })
+
+      it('should return empty array if user has zero vehicles and zero positions', async () => {
+        simulateUserHasNoVehicles()
+        simulateNoPositions()
+
+        const vehicles = await vehicleList.fetchAll()
+
+        expect(vehicles).toBeInstanceOf(Array)
+        expect(vehicles).toHaveLength(0)
+      })
+
+      it('should return empty array if user has zero vehicles but has some positions', async () => {
+        // This is a behaviour which should never happen in production
+        // but having extra checks does not cost anything significant
+        simulateUserHasNoVehicles()
+        simulateManyPositions(rawPositions.map(({ raw }) => raw))
+
+        const vehicles = await vehicleList.fetchAll()
+
+        expect(vehicles).toBeInstanceOf(Array)
+        expect(vehicles).toHaveLength(0)
+      })
+
+      it('should return single vehicle with position if user has single vehicle which works properly', async () => {
+        const vehicleUnderTest = rawVehicles[0]
+        const positionUnderTest = rawPositions.map(({ raw }) => raw)[0]
+        const expectedPosition = rawPositions.map(({ expected }) => expected)[0]
+        simulateUserHasVehicles([vehicleUnderTest])
+        simulateManyPositions([positionUnderTest])
+
+        const vehicles = await vehicleList.fetchAll()
+        const vehicle = vehicles[0]
+
+        expect(vehicle).toBeInstanceOf(GeoLocatedVehicle)
+        expect(vehicle.id()).toEqual(vehicleUnderTest.id)
+        expect(vehicle.licensePlate()).toEqual(vehicleUnderTest.name)
+        expect(vehicle.imei()).toEqual(vehicleUnderTest.uniqueId)
+        expect(vehicle.isOnline()).toEqual(true)
+        expect(vehicle.isOffline()).toEqual(false)
+        expect(vehicle.latitude()).toEqual(expectedPosition.latitude)
+        expect(vehicle.longitude()).toEqual(expectedPosition.longitude)
+        expect(vehicle.altitude()).toEqual(expectedPosition.altitude)
+        expect(vehicle.speed()).toEqual(expectedPosition.speed)
+        expect(vehicle.address()).toEqual(expectedPosition.address)
+        expect(vehicle.fixationTime()).toEqual(expectedPosition.fixationTime)
+      })
+    })
   })
 
   describe('PositionList', () => {
     const positionList = new PositionList()
-    const rawPositions: ({ raw: TraccarPosition, expected: ExpectedPosition })[] = [
-      {
-        raw: {
-          id: 1,
-          deviceId: 1,
-          protocol: 'teltonika',
-          fixTime: '2022-03-16T16:39:00.000+00:00',
-          deviceTime: '2022-03-16T16:39:01.000+00:00',
-          serverTime: '2022-03-16T16:39:05.000+00:00',
-          outdated: false,
-          valid: true,
-          latitude: 44.0901797,
-          longitude: 15.2176099,
-          altitude: 30,
-          speed: 15,
-          course: 270,
-          address: 'My street 1',
-          accuracy: 0,
-          network: {},
-          attributes: {}
-        },
-        expected: {
-          id: 1,
-          vehicleId: 1,
-          latitude: 44.0901797,
-          longitude: 15.2176099,
-          altitude: 30,
-          speed: 28,
-          course: 270,
-          address: 'My street 1',
-          fixationTime: new Date(2022, 2, 16, 16, 39, 0, 0),
-          sentTime: new Date(2022, 2, 16, 16, 39, 1, 0),
-          receivedTime: new Date(2022, 2, 16, 16, 39, 5, 0)
-        }
-      },
-      {
-        raw: {
-          id: 2,
-          deviceId: 2,
-          protocol: 'teltonika',
-          fixTime: '2022-04-12T12:02:02.000+00:00',
-          deviceTime: '2022-04-12T12:02:05.000+00:00',
-          serverTime: '2022-04-12T12:02:07.000+00:00',
-          outdated: false,
-          valid: true,
-          latitude: 44.11660,
-          longitude: 15.27059,
-          altitude: 70,
-          speed: 90,
-          course: 17,
-          address: 'Your street 1',
-          accuracy: 0,
-          network: {},
-          attributes: {}
-        },
-        expected: {
-          id: 2,
-          vehicleId: 2,
-          latitude: 44.11660,
-          longitude: 15.27059,
-          altitude: 70,
-          speed: 167,
-          course: 17,
-          address: 'Your street 1',
-          fixationTime: new Date(2022, 3, 12, 12, 2, 2, 0),
-          sentTime: new Date(2022, 3, 12, 12, 2, 5, 0),
-          receivedTime: new Date(2022, 3, 12, 12, 2, 7, 0)
-        }
-      }
-    ]
 
     describe('fetchAllMostRecent', () => {
       it('should return empty array if no vehicle has sent it\'s position', async () => {
