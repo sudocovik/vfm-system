@@ -201,14 +201,13 @@ describe('VehicleService', () => {
   })
 })
 
+const axiosMock = new MockAdapter(axios)
 function simulateUserHasNoVehicles () {
-  const mock = new MockAdapter(axios)
-  mock.onGet(VehicleList.vehicleEndpoint).reply(200, [])
+  axiosMock.onGet(VehicleList.vehicleEndpoint).reply(200, [])
 }
 
 function simulateUserHasVehicles (vehicles: TraccarDevice[]) {
-  const mock = new MockAdapter(axios)
-  mock.onGet(VehicleList.vehicleEndpoint).reply(200, vehicles)
+  axiosMock.onGet(VehicleList.vehicleEndpoint).reply(200, vehicles)
 }
 
 function vehicleShouldEqualTraccarDevice (actualVehicle: VehicleWithoutPosition, expectedVehicle: TraccarDevice) {
@@ -221,13 +220,11 @@ function vehicleShouldEqualTraccarDevice (actualVehicle: VehicleWithoutPosition,
 }
 
 function simulateNoPositions () {
-  const mock = new MockAdapter(axios)
-  mock.onGet(PositionList.positionEndpoint).reply(200, [])
+  axiosMock.onGet(PositionList.positionEndpoint).reply(200, [])
 }
 
 function simulateManyPositions (positions: TraccarPosition[]) {
-  const mock = new MockAdapter(axios)
-  mock.onGet(PositionList.positionEndpoint).reply(200, positions)
+  axiosMock.onGet(PositionList.positionEndpoint).reply(200, positions)
 }
 
 function positionShouldEqualTraccarPosition (position: Position, expectedPosition: ExpectedPosition) {
