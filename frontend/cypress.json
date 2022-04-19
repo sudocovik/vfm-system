@@ -1,5 +1,6 @@
 {
   "baseUrl": "http://localhost/",
+  "downloadsFolder": "test/cypress/downloads",
   "fixturesFolder": "test/cypress/fixtures",
   "integrationFolder": "test/cypress/integration",
   "pluginsFile": "test/cypress/plugins/index.ts",
