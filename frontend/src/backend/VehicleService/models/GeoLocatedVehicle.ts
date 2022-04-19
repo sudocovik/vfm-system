@@ -4,19 +4,19 @@ export class GeoLocatedVehicle {
   }
 
   public licensePlate (): string {
-    return 'ZD123AB'
+    return 'ZD456BC'
   }
 
   public imei (): string {
-    return '123456789'
+    return '424232564'
   }
 
   public isOnline (): boolean {
-    return true
+    return false
   }
 
   public isOffline (): boolean {
-    return false
+    return true
   }
 
   public latitude (): number {
@@ -29,6 +29,10 @@ export class GeoLocatedVehicle {
 
   public altitude (): number {
     return 30
+  }
+
+  public course (): number {
+    return 270
   }
 
   public speed (): number {

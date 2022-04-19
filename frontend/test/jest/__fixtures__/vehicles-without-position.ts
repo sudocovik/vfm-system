@@ -1,4 +1,6 @@
-export const firstVehicle = {
+import { TraccarDevice } from 'src/backend/VehicleService'
+
+export const firstVehicle: TraccarDevice = {
   id: 1,
   name: 'ZD123AB',
   uniqueId: '123456789',
@@ -15,7 +17,7 @@ export const firstVehicle = {
   attributes: {}
 }
 
-export const secondVehicle = {
+export const secondVehicle: TraccarDevice = {
   id: 2,
   name: 'ZD321BA',
   uniqueId: '987654321',
@@ -32,4 +34,4 @@ export const secondVehicle = {
   attributes: {}
 }
 
-export const vehicles = [firstVehicle, secondVehicle]
+export const vehiclesWithoutPosition: TraccarDevice[] = [firstVehicle, secondVehicle]
