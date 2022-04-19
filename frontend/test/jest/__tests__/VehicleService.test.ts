@@ -8,6 +8,7 @@ import {
   VehicleWithoutPosition,
   GeoLocatedVehicle
 } from 'src/backend/VehicleService'
+import { firstVehicle, vehicles as rawVehicles } from '../__fixtures__/vehicles'
 import MockAdapter from 'axios-mock-adapter'
 import axios from 'axios'
 
@@ -99,39 +100,6 @@ const rawPositions: ({ raw: TraccarPosition, expected: ExpectedPosition })[] = [
 describe('VehicleService', () => {
   describe('VehicleList', () => {
     const vehicleList = new VehicleList()
-    const rawVehicles = [
-      {
-        id: 1,
-        name: 'ZD123AB',
-        uniqueId: '123456789',
-        status: 'offline',
-        disabled: false,
-        lastUpdate: null,
-        positionId: null,
-        groupId: null,
-        phone: '',
-        model: '',
-        contact: '',
-        category: null,
-        geofenceIds: [],
-        attributes: {}
-      }, {
-        id: 2,
-        name: 'ZD321BA',
-        uniqueId: '987654321',
-        status: 'online',
-        disabled: false,
-        lastUpdate: null,
-        positionId: null,
-        groupId: null,
-        phone: '',
-        model: '',
-        contact: '',
-        category: null,
-        geofenceIds: [],
-        attributes: {}
-      }
-    ]
 
     describe('fetchAllWithoutPositions', () => {
       it('should return empty array if user has no vehicles', async () => {
@@ -197,27 +165,27 @@ describe('VehicleService', () => {
       })
 
       it('should return single vehicle with position if user has single vehicle which works properly', async () => {
-        const vehicleUnderTest = rawVehicles[0]
+        const mockedVehicle = firstVehicle
         const positionUnderTest = rawPositions.map(({ raw }) => raw)[0]
         const expectedPosition = rawPositions.map(({ expected }) => expected)[0]
-        simulateUserHasVehicles([vehicleUnderTest])
+        simulateUserHasVehicles([mockedVehicle])
         simulateManyPositions([positionUnderTest])
 
         const vehicles = await vehicleList.fetchAll()
-        const vehicle = vehicles[0]
+        const actualVehicle = vehicles[0]
 
-        expect(vehicle).toBeInstanceOf(GeoLocatedVehicle)
-        expect(vehicle.id()).toEqual(vehicleUnderTest.id)
-        expect(vehicle.licensePlate()).toEqual(vehicleUnderTest.name)
-        expect(vehicle.imei()).toEqual(vehicleUnderTest.uniqueId)
-        expect(vehicle.isOnline()).toEqual(true)
-        expect(vehicle.isOffline()).toEqual(false)
-        expect(vehicle.latitude()).toEqual(expectedPosition.latitude)
-        expect(vehicle.longitude()).toEqual(expectedPosition.longitude)
-        expect(vehicle.altitude()).toEqual(expectedPosition.altitude)
-        expect(vehicle.speed()).toEqual(expectedPosition.speed)
-        expect(vehicle.address()).toEqual(expectedPosition.address)
-        expect(vehicle.fixationTime()).toEqual(expectedPosition.fixationTime)
+        expect(actualVehicle).toBeInstanceOf(GeoLocatedVehicle)
+        expect(actualVehicle.id()).toEqual(mockedVehicle.id)
+        expect(actualVehicle.licensePlate()).toEqual(mockedVehicle.name)
+        expect(actualVehicle.imei()).toEqual(mockedVehicle.uniqueId)
+        expect(actualVehicle.isOnline()).toEqual(true)
+        expect(actualVehicle.isOffline()).toEqual(false)
+        expect(actualVehicle.latitude()).toEqual(expectedPosition.latitude)
+        expect(actualVehicle.longitude()).toEqual(expectedPosition.longitude)
+        expect(actualVehicle.altitude()).toEqual(expectedPosition.altitude)
+        expect(actualVehicle.speed()).toEqual(expectedPosition.speed)
+        expect(actualVehicle.address()).toEqual(expectedPosition.address)
+        expect(actualVehicle.fixationTime()).toEqual(expectedPosition.fixationTime)
       })
     })
   })
