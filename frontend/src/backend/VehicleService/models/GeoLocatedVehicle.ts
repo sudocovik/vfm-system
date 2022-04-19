@@ -1,6 +1,17 @@
+import { Position } from './Position'
+
 export class GeoLocatedVehicle {
+  public constructor (
+    private _id: number,
+    private _licensePlate: string,
+    private _imei: string,
+    private _online: boolean,
+    private _position: Position
+  ) {
+  }
+
   public id (): number {
-    return 1
+    return this._id
   }
 
   public licensePlate (): string {

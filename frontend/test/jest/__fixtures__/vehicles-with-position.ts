@@ -78,4 +78,61 @@ export const firstVehicle = (): VehicleWithPositionMock => {
   }
 }
 
-export const vehiclesWithPositions = [firstVehicle()]
+export const secondVehicle = (): VehicleWithPositionMock => {
+  const vehicleId = 2
+  const positionId = 2
+
+  return {
+    vehicle: {
+      id: vehicleId,
+      name: 'ZD359AL',
+      uniqueId: '0984129482',
+      status: 'online',
+      disabled: false,
+      lastUpdate: null,
+      positionId: positionId,
+      groupId: null,
+      phone: '',
+      model: '',
+      contact: '',
+      category: null,
+      geofenceIds: [],
+      attributes: {}
+    },
+    position: {
+      id: positionId,
+      deviceId: vehicleId,
+      protocol: 'teltonika',
+      fixTime: '2022-04-19T13:59:00.000+00:00',
+      deviceTime: '2022-04-19T14:00:01.000+00:00',
+      serverTime: '2022-04-19T14:00:05.000+00:00',
+      outdated: false,
+      valid: true,
+      latitude: 44.11689198,
+      longitude: 15.2355778,
+      altitude: 15,
+      speed: 30,
+      course: 30,
+      address: 'Ulica Bana Josipa Jelačića, 23000 Zadar, HR',
+      accuracy: 0,
+      network: {},
+      attributes: {}
+    },
+    expectations: {
+      vehicleId,
+      licensePlate: 'ZD359AL',
+      imei: '0984129482',
+      isOnline: true,
+      isOffline: false,
+      latitude: 44.11689198,
+      longitude: 15.2355778,
+      altitude: 15,
+      speed: 56,
+      course: 30,
+      address: 'Ulica Bana Josipa Jelačića, 23000 Zadar, HR',
+      fixationTime: new Date(2022, 3, 19, 13, 59, 0, 0)
+    }
+  }
+}
+
+export const vehiclesWithPositions = [firstVehicle(), secondVehicle()]
