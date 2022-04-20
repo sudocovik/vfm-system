@@ -12,7 +12,7 @@ import { vehiclesWithoutPosition } from '../__fixtures__/vehicles-without-positi
 import {
   vehiclesWithPositions,
   VehicleWithPositionExpectations,
-  VehicleWithPositionMock
+  VehicleWithPositionFixture
 } from '../__fixtures__/vehicles-with-position'
 import MockAdapter from 'axios-mock-adapter'
 import axios from 'axios'
@@ -158,7 +158,7 @@ describe('VehicleService', () => {
         expect(vehicles).toHaveLength(0)
       })
 
-      it.each(vehiclesWithPositions)('should return single vehicle with position if user has single vehicle which works properly', async (vehicleMock: VehicleWithPositionMock) => {
+      it.each(vehiclesWithPositions)('should return single vehicle with position if user has single vehicle which works properly', async (vehicleMock: VehicleWithPositionFixture) => {
         const { vehicle, position, expectations } = vehicleMock
 
         simulateUserHasVehicles([vehicle])

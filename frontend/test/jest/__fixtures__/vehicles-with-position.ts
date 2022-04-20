@@ -15,13 +15,13 @@ export type VehicleWithPositionExpectations = {
   fixationTime: Date
 }
 
-export type VehicleWithPositionMock = {
+export type VehicleWithPositionFixture = {
   vehicle: TraccarDevice
   position: TraccarPosition
   expectations: VehicleWithPositionExpectations
 }
 
-export const firstVehicle = (): VehicleWithPositionMock => {
+export const firstVehicle = (): VehicleWithPositionFixture => {
   const vehicleId = 1
   const positionId = 1
 
@@ -78,7 +78,7 @@ export const firstVehicle = (): VehicleWithPositionMock => {
   }
 }
 
-export const secondVehicle = (): VehicleWithPositionMock => {
+export const secondVehicle = (): VehicleWithPositionFixture => {
   const vehicleId = 2
   const positionId = 2
 
