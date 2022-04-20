@@ -1,9 +1,7 @@
 import axios from 'axios'
-import { VehicleWithoutPosition } from './models/VehicleWithoutPosition'
-import { TraccarDevice } from './models/TraccarDevice'
-import { GeoLocatedVehicle } from './models/GeoLocatedVehicle'
+import { GeoLocatedVehicle, Position, VehicleWithoutPosition } from './models/'
 import { PositionList } from './PositionList'
-import { Position } from './models/Position'
+import { TraccarDevice } from './response-schema/'
 
 export class VehicleList {
   public static vehicleEndpoint = '/api/devices'

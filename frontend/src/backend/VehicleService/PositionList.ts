@@ -1,6 +1,6 @@
-import { Position } from './models/Position'
 import axios from 'axios'
-import { TraccarPosition } from './models/TraccarPosition'
+import { Position } from './models/'
+import { TraccarPosition } from './response-schema/'
 
 export class PositionList {
   public static readonly positionEndpoint = '/api/position'
