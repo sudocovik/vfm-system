@@ -1,12 +1,12 @@
 import { describe, expect, it } from '@jest/globals'
 import {
+  GeoLocatedVehicle,
   Position,
   PositionList,
   TraccarDevice,
   TraccarPosition,
   VehicleList,
-  VehicleWithoutPosition,
-  GeoLocatedVehicle
+  VehicleWithoutPosition
 } from 'src/backend/VehicleService'
 import { vehiclesWithoutPosition } from '../__fixtures__/vehicles-without-position'
 import { vehiclesWithPositions, VehicleWithPositionMock } from '../__fixtures__/vehicles-with-position'
@@ -133,15 +133,6 @@ describe('VehicleService', () => {
 
     describe('fetchAll', () => {
       it('should return empty array if user has zero vehicles', async () => {
-        simulateUserHasNoVehicles()
-
-        const vehicles = await vehicleList.fetchAll()
-
-        expect(vehicles).toBeInstanceOf(Array)
-        expect(vehicles).toHaveLength(0)
-      })
-
-      it('should return empty array if user has zero vehicles and zero positions', async () => {
         simulateUserHasNoVehicles()
         simulateNoPositions()
 
