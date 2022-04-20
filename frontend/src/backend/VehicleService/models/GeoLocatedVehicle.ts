@@ -15,46 +15,46 @@ export class GeoLocatedVehicle {
   }
 
   public licensePlate (): string {
-    return 'ZD456BC'
+    return this._licensePlate
   }
 
   public imei (): string {
-    return '424232564'
+    return this._imei
   }
 
   public isOnline (): boolean {
-    return false
+    return this._online
   }
 
   public isOffline (): boolean {
-    return true
+    return !this.isOnline()
   }
 
   public latitude (): number {
-    return 44.0901797
+    return this._position.latitude()
   }
 
   public longitude (): number {
-    return 15.2176099
+    return this._position.longitude()
   }
 
   public altitude (): number {
-    return 30
+    return this._position.altitude()
   }
 
   public course (): number {
-    return 270
+    return this._position.course()
   }
 
   public speed (): number {
-    return 28
+    return this._position.speed()
   }
 
   public address (): string {
-    return 'My street 1'
+    return this._position.address()
   }
 
   public fixationTime (): Date {
-    return new Date(2022, 2, 16, 16, 39, 0, 0)
+    return this._position.fixationTime()
   }
 }
