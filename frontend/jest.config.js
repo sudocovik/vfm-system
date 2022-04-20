@@ -37,7 +37,10 @@ module.exports = {
     // Matches tests in any subfolder of 'src' or into 'test/jest/__tests__'
     // Matches all files with extension 'js', 'jsx', 'ts' and 'tsx'
     '<rootDir>/test/jest/__tests__/**/*.(spec|test).+(ts|js)?(x)',
-    '<rootDir>/src/**/*.jest.(spec|test).+(ts|js)?(x)'
+    '<rootDir>/src/**/*.jest.(spec|test).+(ts|js)?(x)',
+
+    // Matches test file ending in '.unit.ts' as a direct child of the '__tests__' directory under 'src' directory
+    '<rootDir>/src/**/__tests__/*.unit.ts'
   ],
   // Extension-less imports of components are resolved to .ts files by TS,
   //  grating correct type-checking in test files.
