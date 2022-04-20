@@ -3,6 +3,7 @@ import { VehicleWithoutPosition } from './models/VehicleWithoutPosition'
 import { TraccarDevice } from './models/TraccarDevice'
 import { GeoLocatedVehicle } from './models/GeoLocatedVehicle'
 import { PositionList } from './PositionList'
+import { Position } from './models/Position'
 
 export class VehicleList {
   public static vehicleEndpoint = '/api/devices'
@@ -25,19 +26,18 @@ export class VehicleList {
     const vehicles = await this.fetchAllWithoutPositions()
     const positions = await new PositionList().fetchAllMostRecent()
 
-    const vehicleWithPosition = () => {
-      const firstVehicle = vehicles[0]
-      const firstPosition = positions[0]
+    const vehicleWithPosition = (vehicle: VehicleWithoutPosition) => {
+      const position = positions.find(position => position.vehicleId() === vehicle.id()) as Position
 
       return new GeoLocatedVehicle(
-        firstVehicle.id(),
-        firstVehicle.licensePlate(),
-        firstVehicle.imei(),
-        firstVehicle.isOnline(),
-        firstPosition
+        vehicle.id(),
+        vehicle.licensePlate(),
+        vehicle.imei(),
+        vehicle.isOnline(),
+        position
       )
     }
 
-    return vehicles.length === 0 ? [] : [vehicleWithPosition()]
+    return vehicles.length === 0 ? [] : vehicles.map(vehicleWithPosition)
   }
 }

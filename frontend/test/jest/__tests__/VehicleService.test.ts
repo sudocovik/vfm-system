@@ -9,7 +9,11 @@ import {
   VehicleWithoutPosition
 } from 'src/backend/VehicleService'
 import { vehiclesWithoutPosition } from '../__fixtures__/vehicles-without-position'
-import { vehiclesWithPositions, VehicleWithPositionMock } from '../__fixtures__/vehicles-with-position'
+import {
+  vehiclesWithPositions,
+  VehicleWithPositionExpectations,
+  VehicleWithPositionMock
+} from '../__fixtures__/vehicles-with-position'
 import MockAdapter from 'axios-mock-adapter'
 import axios from 'axios'
 
@@ -177,6 +181,21 @@ describe('VehicleService', () => {
         expect(actualVehicle.address()).toEqual(expectations.address)
         expect(actualVehicle.fixationTime()).toEqual(expectations.fixationTime)
       })
+
+      it('should return two vehicles with their position if user has two vehicles working properly', async () => {
+        const [first, second] = vehiclesWithPositions
+        const { vehicle: firstVehicle, position: firstPosition, expectations: firstExpectations } = first
+        const { vehicle: secondVehicle, position: secondPosition, expectations: secondExpectations } = second
+
+        simulateUserHasVehicles([firstVehicle, secondVehicle])
+        simulateManyPositions([firstPosition, secondPosition])
+
+        const vehicles = await vehicleList.fetchAll()
+
+        expect(vehicles).toHaveLength(2)
+        validateGeoLocatedVehicle(vehicles[0], firstExpectations)
+        validateGeoLocatedVehicle(vehicles[1], secondExpectations)
+      })
     })
   })
 
@@ -257,4 +276,20 @@ function positionShouldEqualTraccarPosition (position: Position, expectedPositio
   expect(position.fixationTime()).toEqual(expectedPosition.fixationTime)
   expect(position.sentTime()).toEqual(expectedPosition.sentTime)
   expect(position.receivedTime()).toEqual(expectedPosition.receivedTime)
+}
+
+function validateGeoLocatedVehicle (vehicle: GeoLocatedVehicle, expectations: VehicleWithPositionExpectations) {
+  expect(vehicle).toBeInstanceOf(GeoLocatedVehicle)
+  expect(vehicle.id()).toEqual(expectations.vehicleId)
+  expect(vehicle.licensePlate()).toEqual(expectations.licensePlate)
+  expect(vehicle.imei()).toEqual(expectations.imei)
+  expect(vehicle.isOnline()).toEqual(expectations.isOnline)
+  expect(vehicle.isOffline()).toEqual(expectations.isOffline)
+  expect(vehicle.latitude()).toEqual(expectations.latitude)
+  expect(vehicle.longitude()).toEqual(expectations.longitude)
+  expect(vehicle.altitude()).toEqual(expectations.altitude)
+  expect(vehicle.speed()).toEqual(expectations.speed)
+  expect(vehicle.course()).toEqual(expectations.course)
+  expect(vehicle.address()).toEqual(expectations.address)
+  expect(vehicle.fixationTime()).toEqual(expectations.fixationTime)
 }
