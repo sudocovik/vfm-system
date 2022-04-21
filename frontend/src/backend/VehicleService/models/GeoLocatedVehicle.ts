@@ -7,8 +7,7 @@ export class GeoLocatedVehicle {
     private _imei: string,
     private _online: boolean,
     private _position: Position
-  ) {
-  }
+  ) {}
 
   public id (): number {
     return this._id
