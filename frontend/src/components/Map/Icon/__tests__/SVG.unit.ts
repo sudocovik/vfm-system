@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals'
-import { SVG, SVGWidthNotSet } from '../SVG'
+import { SVG, SVGHeightNotSet, SVGWidthNotSet } from '../SVG'
 
 describe('SVG', () => {
   describe('(method): toUrl()', () => {
@@ -45,6 +45,28 @@ describe('SVG', () => {
       }
     })
   })
+
+  describe('(method): havingHeight()', () => {
+    it.each([24, 32])('should accept number (in pixels)', (expectedHeight: number) => {
+      const svg = new SVG('').havingHeight(expectedHeight)
+
+      expect(svg.height()).toEqual(expectedHeight)
+    })
+  })
+
+  describe('(method): height()', () => {
+    it('should throw exception if height has not been set', () => {
+      expect.assertions(1)
+
+      try {
+        const svg = new SVG('')
+        svg.height()
+      }
+      catch (e) {
+        expect(e).toBeInstanceOf(SVGHeightNotSet)
+      }
+    })
+  })
 })
 
 describe('SVGWidthNotSet', () => {
@@ -54,5 +76,15 @@ describe('SVGWidthNotSet', () => {
 
   it('should have the same name as class name', () => {
     expect(new SVGWidthNotSet().name).toEqual('SVGWidthNotSet')
+  })
+})
+
+describe('SVGHeightNotSet', () => {
+  it('should have a message', () => {
+    expect(new SVGHeightNotSet().message).not.toEqual('')
+  })
+
+  it('should have the same name as class name', () => {
+    expect(new SVGHeightNotSet().name).toEqual('SVGHeightNotSet')
   })
 })
