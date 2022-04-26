@@ -1,7 +1,7 @@
 import { mount } from '@cypress/vue'
 import MapMarker from '../MapMarker.vue'
 import { Marker as GoogleMapMarker } from 'vue3-google-map'
-import { ComponentUnderTest } from '../../../test/support/ComponentUnderTest'
+import { ComponentUnderTest } from 'test/support/ComponentUnderTest'
 
 describe('MapMarker', () => {
   it('should render GoogleMapMarker', () => {
