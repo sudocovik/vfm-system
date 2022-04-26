@@ -16,6 +16,14 @@ describe('MapMarker', () => {
     expect(inheritAttrs).to.equal(false)
   })
 
+  it('should not be clickable by default', () => {
+    mountMarker()
+
+    cy.then(getGoogleMapMarker)
+      .then(marker => <google.maps.MarkerOptions>marker.props('options'))
+      .then(options => expect(options.clickable).to.equal(false))
+  })
+
   describe('(prop): latitude', () => {
     const latitudes = [45.1965, 43.1583]
 

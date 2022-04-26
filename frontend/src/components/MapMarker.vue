@@ -33,7 +33,8 @@ export default defineComponent({
       position: {
         lat: props.latitude,
         lng: props.longitude
-      }
+      },
+      clickable: false
     })
 
     watch(() => props.latitude, latitude => {
