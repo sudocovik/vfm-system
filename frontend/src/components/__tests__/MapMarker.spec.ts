@@ -2,6 +2,7 @@ import { mount } from '@cypress/vue'
 import MapMarker from '../MapMarker.vue'
 import { Marker as GoogleMapMarker } from 'vue3-google-map'
 import { ComponentUnderTest } from 'test/support/ComponentUnderTest'
+import { SVG } from '../Map/Icon'
 
 describe('MapMarker', () => {
   it('should render GoogleMapMarker', () => {
@@ -73,6 +74,48 @@ describe('MapMarker', () => {
       markerLongitudeShouldBe(secondLongitude)
     })
   })
+
+  describe('(prop): icon', () => {
+    const svgTemplates = ['first-svg-template', 'second-svg-template']
+
+    it('should be undefined by default', () => {
+      mountMarker()
+
+      markerIconShouldNotExist()
+    })
+
+    describe('should pass URL to underlying GoogleMapMarker component', () => {
+      svgTemplates.forEach((template, i) => {
+        it(`case ${i + 1}: template = '${template}'`, () => {
+          const icon = new SVG(template)
+          const url = icon.toUrl()
+
+          mountMarker({ icon })
+
+          markerIconUrlShouldBe(url)
+        })
+      })
+    })
+
+    it('should be reactive when changing to different icon', () => {
+      const firstIcon = new SVG(svgTemplates[0])
+      const secondIcon = new SVG(svgTemplates[1])
+      mountMarker({ icon: firstIcon })
+      markerIconUrlShouldBe(firstIcon.toUrl())
+
+      ComponentUnderTest.changeProperties({ icon: secondIcon })
+      markerIconUrlShouldBe(secondIcon.toUrl())
+    })
+
+    it('should remove icon object when prop is set to undefined but previously was SVG icon', () => {
+      const svgIcon = new SVG(svgTemplates[0])
+      mountMarker({ icon: svgIcon })
+      markerIconUrlShouldBe(svgIcon.toUrl())
+
+      ComponentUnderTest.changeProperties({ icon: undefined })
+      markerIconShouldNotExist()
+    })
+  })
 })
 
 function getGoogleMapMarker () {
@@ -114,4 +157,17 @@ function markerLongitudeShouldBe (expectedLongitude: number) {
 
       expect(lng).to.equal(expectedLongitude)
     })
+}
+
+function markerIconShouldNotExist () {
+  cy.then(getGoogleMapMarker)
+    .then(marker => <google.maps.MarkerOptions>marker.props('options'))
+    .then(options => expect(options).not.to.haveOwnProperty('icon'))
+}
+
+function markerIconUrlShouldBe (expectedURL: string) {
+  cy.then(getGoogleMapMarker)
+    .then(marker => <google.maps.MarkerOptions>marker.props('options'))
+    .then(options => <google.maps.Icon>options.icon)
+    .then(icon => expect(icon.url).to.equal(expectedURL))
 }
