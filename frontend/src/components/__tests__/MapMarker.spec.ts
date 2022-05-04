@@ -117,6 +117,34 @@ describe('MapMarker', () => {
       markerIconShouldNotExist()
     })
   })
+
+  describe('(prop): iconCenter', () => {
+    it('should be false by default', () => {
+      mountMarker()
+
+      cy.then(() => {
+        expect(Cypress.vueWrapper.props('iconCenter')).to.equal(false)
+      })
+    })
+
+    it('should not set icon anchor when icon is missing and iconCenter is false', () => {
+      mountMarker({ icon: undefined, iconCenter: false })
+
+      cy.then(getGoogleMapMarker)
+        .then(getMarkerOptions)
+        .then(options => cy.wrap(options.icon?.anchor))
+        .should('be.undefined')
+    })
+
+    it('should not set icon anchor when icon is given but iconCenter is false', () => {
+      mountMarker({ icon: new SVG('irrelevant'), iconCenter: false })
+
+      cy.then(getGoogleMapMarker)
+        .then(getMarkerOptions)
+        .then(options => cy.wrap(options.icon?.anchor))
+        .should('be.undefined')
+    })
+  })
 })
 
 function getGoogleMapMarker () {

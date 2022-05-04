@@ -41,6 +41,10 @@ export default defineComponent({
     icon: {
       type: Object as PropType<MapIcon>,
       default: undefined
+    },
+    iconCenter: {
+      type: Boolean,
+      default: false
     }
   },
 
