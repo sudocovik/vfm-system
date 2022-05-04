@@ -127,6 +127,10 @@ function getMarkerOptions (marker: VueWrapper) {
   return <google.maps.MarkerOptions>marker.props('options')
 }
 
+function getMarkerPosition (options: google.maps.MarkerOptions) {
+  return <google.maps.LatLngLiteral>options.position
+}
+
 function mountMarker (props?: Record<string, unknown>) {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
@@ -145,23 +149,17 @@ function mountMarker (props?: Record<string, unknown>) {
 function markerLatitudeShouldBe (expectedLatitude: number) {
   cy.then(getGoogleMapMarker)
     .then(getMarkerOptions)
-    .then(options => {
-      const { position } = options
-      const { lat } = <google.maps.LatLngLiteral>position
-
-      expect(lat).to.equal(expectedLatitude)
-    })
+    .then(getMarkerPosition)
+    .then(position => cy.wrap(position.lat))
+    .should('equal', expectedLatitude)
 }
 
 function markerLongitudeShouldBe (expectedLongitude: number) {
   cy.then(getGoogleMapMarker)
     .then(getMarkerOptions)
-    .then(options => {
-      const { position } = options
-      const { lng } = <google.maps.LatLngLiteral>position
-
-      expect(lng).to.equal(expectedLongitude)
-    })
+    .then(getMarkerPosition)
+    .then(position => cy.wrap(position.lng))
+    .should('equal', expectedLongitude)
 }
 
 function markerIconShouldNotExist () {
