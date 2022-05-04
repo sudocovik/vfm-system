@@ -3,6 +3,7 @@ import MapMarker from '../MapMarker.vue'
 import { Marker as GoogleMapMarker } from 'vue3-google-map'
 import { ComponentUnderTest } from 'test/support/ComponentUnderTest'
 import { SVG } from '../Map/Icon'
+import { VueWrapper } from '@vue/test-utils'
 
 describe('MapMarker', () => {
   it('should render GoogleMapMarker', () => {
@@ -21,7 +22,7 @@ describe('MapMarker', () => {
     mountMarker()
 
     cy.then(getGoogleMapMarker)
-      .then(marker => <google.maps.MarkerOptions>marker.props('options'))
+      .then(getMarkerOptions)
       .then(options => expect(options.clickable).to.equal(false))
   })
 
@@ -122,6 +123,10 @@ function getGoogleMapMarker () {
   return Cypress.vueWrapper.findComponent(GoogleMapMarker)
 }
 
+function getMarkerOptions (marker: VueWrapper) {
+  return <google.maps.MarkerOptions>marker.props('options')
+}
+
 function mountMarker (props?: Record<string, unknown>) {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
@@ -139,9 +144,9 @@ function mountMarker (props?: Record<string, unknown>) {
 
 function markerLatitudeShouldBe (expectedLatitude: number) {
   cy.then(getGoogleMapMarker)
-    .then(marker => {
-      const markerOptions = <google.maps.MarkerOptions>marker.props('options')
-      const { position } = markerOptions
+    .then(getMarkerOptions)
+    .then(options => {
+      const { position } = options
       const { lat } = <google.maps.LatLngLiteral>position
 
       expect(lat).to.equal(expectedLatitude)
@@ -150,9 +155,9 @@ function markerLatitudeShouldBe (expectedLatitude: number) {
 
 function markerLongitudeShouldBe (expectedLongitude: number) {
   cy.then(getGoogleMapMarker)
-    .then(marker => {
-      const markerOptions = <google.maps.MarkerOptions>marker.props('options')
-      const { position } = markerOptions
+    .then(getMarkerOptions)
+    .then(options => {
+      const { position } = options
       const { lng } = <google.maps.LatLngLiteral>position
 
       expect(lng).to.equal(expectedLongitude)
@@ -161,13 +166,13 @@ function markerLongitudeShouldBe (expectedLongitude: number) {
 
 function markerIconShouldNotExist () {
   cy.then(getGoogleMapMarker)
-    .then(marker => <google.maps.MarkerOptions>marker.props('options'))
+    .then(getMarkerOptions)
     .then(options => expect(options).not.to.haveOwnProperty('icon'))
 }
 
 function markerIconUrlShouldBe (expectedURL: string) {
   cy.then(getGoogleMapMarker)
-    .then(marker => <google.maps.MarkerOptions>marker.props('options'))
+    .then(getMarkerOptions)
     .then(options => <google.maps.Icon>options.icon)
     .then(icon => expect(icon.url).to.equal(expectedURL))
 }
