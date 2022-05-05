@@ -5,24 +5,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, reactive, watch } from 'vue'
+import { computed, defineComponent, PropType } from 'vue'
 import { Marker as GoogleMapMarker } from 'vue3-google-map'
 import type { MapIcon } from './Map/Icon'
-
-type MarkerOptions = {
-  clickable: boolean,
-  icon?: {
-    url: string,
-    anchor?: {
-      x: number
-      y: number
-    }
-  },
-  position: {
-    lat: number,
-    lng: number
-  }
-}
 
 export default defineComponent({
   name: 'MapMarker',
@@ -53,49 +38,35 @@ export default defineComponent({
   },
 
   setup (props) {
-    const markerOptions = reactive<MarkerOptions>({
+    const wantsMarkerIcon = computed<boolean>(() => props.icon !== undefined)
+
+    const markerIcon = computed(() => {
+      if (!wantsMarkerIcon.value) return {}
+      const icon = props.icon as MapIcon
+
+      const anchorCenter = () => ({
+        anchor: {
+          x: icon.width() / 2,
+          y: icon.height() / 2
+        }
+      })
+
+      return {
+        url: icon.toUrl(),
+        ...(props.iconCenter ? anchorCenter() : {})
+      }
+    })
+
+    const markerOptions = computed(() => ({
       position: {
         lat: props.latitude,
         lng: props.longitude
       },
-      clickable: false
-    })
+      clickable: false,
+      ...(wantsMarkerIcon.value ? { icon: markerIcon.value } : {})
+    }))
 
-    const iconAnchor = (iconWidth: number, iconHeight: number) => ({
-      anchor: {
-        x: iconWidth / 2,
-        y: iconHeight / 2
-      }
-    })
-
-    if (props.icon !== undefined) {
-      markerOptions.icon = {
-        url: props.icon.toUrl(),
-        ...(props.iconCenter ? iconAnchor(props.icon.width(), props.icon.height()) : {})
-      }
-    }
-
-    watch(() => props.latitude, latitude => {
-      markerOptions.position.lat = latitude
-    })
-
-    watch(() => props.longitude, longitude => {
-      markerOptions.position.lng = longitude
-    })
-
-    watch(() => props.icon, icon => {
-      if (icon !== undefined) {
-        markerOptions.icon = {
-          url: icon.toUrl(),
-          ...(props.iconCenter ? iconAnchor(icon.width(), icon.height()) : {})
-        }
-      }
-      else delete markerOptions.icon
-    }, { deep: true, immediate: true })
-
-    return {
-      markerOptions
-    }
+    return { markerOptions }
   }
 })
 </script>
