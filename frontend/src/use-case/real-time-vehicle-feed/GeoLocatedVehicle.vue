@@ -3,7 +3,9 @@
     <BaseMap
       :style="mapCssStyle"
       :interactive="false"
-    />
+    >
+      <MapMarker />
+    </BaseMap>
 
     <q-card-section class="text-h6">
       <q-icon
@@ -31,14 +33,17 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
-import { BaseMap } from 'components/Map'
+import { BaseMap, MapMarker } from 'components/Map'
 
 export const MAP_HEIGHT = 200
 
 export default defineComponent({
   name: 'GeoLocatedVehicle',
 
-  components: { BaseMap },
+  components: {
+    BaseMap,
+    MapMarker
+  },
 
   props: {
     licensePlate: {

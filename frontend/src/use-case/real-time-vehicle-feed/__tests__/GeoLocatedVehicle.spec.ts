@@ -1,7 +1,8 @@
 import { mount } from '@cypress/vue'
 import GeoLocatedVehicle, { MAP_HEIGHT } from '../GeoLocatedVehicle.vue'
-import { BaseMap } from 'components/Map'
+import { BaseMap, MapMarker } from 'components/Map'
 import { ComponentUnderTest } from 'test/support/api'
+import { VueWrapper } from '@vue/test-utils'
 
 describe('GeoLocatedVehicle', () => {
   it('should render BaseMap', () => {
@@ -116,6 +117,17 @@ describe('GeoLocatedVehicle', () => {
       mapInteractivityShouldBe(false)
     })
   })
+
+  describe('MapMarker', () => {
+    it.only('should be direct child of BaseMap', () => {
+      mountGeoLocatedVehicle()
+
+      cy.then(getBaseMap)
+        .then(getMapMarker)
+        .then(marker => cy.wrap(marker.exists()))
+        .should('equal', true)
+    })
+  })
 })
 
 function mountGeoLocatedVehicle (props?: Record<string, unknown>) {
@@ -124,8 +136,10 @@ function mountGeoLocatedVehicle (props?: Record<string, unknown>) {
   // @ts-ignore
   mount(GeoLocatedVehicle, {
     global: {
+      renderStubDefaultSlot: true,
       stubs: {
-        BaseMap: true
+        BaseMap: true,
+        MapMarker: true
       }
     },
     props
@@ -134,6 +148,10 @@ function mountGeoLocatedVehicle (props?: Record<string, unknown>) {
 
 function getBaseMap () {
   return Cypress.vueWrapper.findComponent(BaseMap)
+}
+
+function getMapMarker (baseMap: VueWrapper) {
+  return baseMap.findComponent(MapMarker)
 }
 
 function mapWidthShouldBe (expectedWidth: string) {
