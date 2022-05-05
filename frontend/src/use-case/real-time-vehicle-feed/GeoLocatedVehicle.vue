@@ -1,6 +1,9 @@
 <template>
   <q-card>
-    <BaseMap :style="mapCssStyle" />
+    <BaseMap
+      :style="mapCssStyle"
+      :interactive="false"
+    />
 
     <q-card-section class="text-h6">
       <q-icon

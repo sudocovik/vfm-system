@@ -109,6 +109,12 @@ describe('GeoLocatedVehicle', () => {
 
       mapOverflowShouldBe('hidden')
     })
+
+    it('should not be interactive', () => {
+      mountGeoLocatedVehicle()
+
+      mapInteractivityShouldBe(false)
+    })
   })
 })
 
@@ -149,4 +155,10 @@ function mapOverflowShouldBe (expectedOverflow: string) {
     .then(baseMap => cy.wrap(baseMap.element))
     .invoke('css', 'overflow')
     .should('equal', expectedOverflow)
+}
+
+function mapInteractivityShouldBe (expectedInteractivity: boolean) {
+  cy.then(getBaseMap)
+    .then(baseMap => cy.wrap(baseMap.props('interactive')))
+    .should('equal', expectedInteractivity)
 }
