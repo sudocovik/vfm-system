@@ -7,7 +7,7 @@
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue'
 import { Marker as GoogleMapMarker } from 'vue3-google-map'
-import type { MapIcon } from './Map/Icon'
+import type { MapIcon } from './Icon'
 
 export default defineComponent({
   name: 'MapMarker',

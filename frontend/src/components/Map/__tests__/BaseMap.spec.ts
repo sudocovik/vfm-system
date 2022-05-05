@@ -3,7 +3,7 @@ import { ComponentUnderTest } from 'test/support/api'
 import { mount } from '@cypress/vue'
 import BaseMap, { DEFAULT_CENTER, DEFAULT_ZOOM, GESTURE_HANDLING, POI_VISIBILITY } from '../BaseMap.vue'
 import { GoogleMap } from 'vue3-google-map'
-import { GoogleMapOptions } from '../../config/GoogleMapOptions'
+import { GoogleMapOptions } from 'src/config/GoogleMapOptions'
 import { SinonStub } from 'cypress/types/sinon'
 import { h, VNode } from 'vue'
 

@@ -28,7 +28,7 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
-import BaseMap from 'components/BaseMap.vue'
+import { BaseMap } from 'components/Map'
 
 export const MAP_HEIGHT = 200
 

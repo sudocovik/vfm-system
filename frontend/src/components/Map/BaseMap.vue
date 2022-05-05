@@ -17,7 +17,7 @@
 /// <reference types="google.maps" />
 import { computed, defineComponent, PropType } from 'vue'
 import { GoogleMap } from 'vue3-google-map'
-import { GoogleMapOptions } from '../config/GoogleMapOptions'
+import { GoogleMapOptions } from 'src/config/GoogleMapOptions'
 
 const croatia = {
   coordinates: {

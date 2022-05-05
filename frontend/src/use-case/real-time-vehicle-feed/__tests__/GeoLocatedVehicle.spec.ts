@@ -1,6 +1,6 @@
 import { mount } from '@cypress/vue'
 import GeoLocatedVehicle, { MAP_HEIGHT } from '../GeoLocatedVehicle.vue'
-import BaseMap from 'components/BaseMap.vue'
+import { BaseMap } from 'components/Map'
 import { ComponentUnderTest } from 'test/support/api'
 
 describe('GeoLocatedVehicle', () => {

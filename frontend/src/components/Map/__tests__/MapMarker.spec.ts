@@ -2,7 +2,7 @@ import { mount } from '@cypress/vue'
 import MapMarker from '../MapMarker.vue'
 import { Marker as GoogleMapMarker } from 'vue3-google-map'
 import { ComponentUnderTest } from 'test/support/ComponentUnderTest'
-import { SVG } from '../Map/Icon'
+import { SVG } from '../Icon'
 import { VueWrapper } from '@vue/test-utils'
 import { reactive } from 'vue'
 
