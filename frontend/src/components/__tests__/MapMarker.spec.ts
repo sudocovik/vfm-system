@@ -4,6 +4,7 @@ import { Marker as GoogleMapMarker } from 'vue3-google-map'
 import { ComponentUnderTest } from 'test/support/ComponentUnderTest'
 import { SVG } from '../Map/Icon'
 import { VueWrapper } from '@vue/test-utils'
+import { reactive } from 'vue'
 
 describe('MapMarker', () => {
   it('should render GoogleMapMarker', () => {
@@ -144,6 +145,39 @@ describe('MapMarker', () => {
         .then(options => cy.wrap(options.icon?.anchor))
         .should('be.undefined')
     })
+
+    it('should set icon anchor when icon is given and iconCenter is true', () => {
+      const icon = new SVG('irrelevant')
+        .havingWidth(32)
+        .havingHeight(24)
+
+      const expectedAnchorX = 16
+      const expectedAnchorY = 12
+
+      mountMarker({ icon, iconCenter: true })
+
+      markerIconAnchorShouldBe(expectedAnchorX, expectedAnchorY)
+    })
+
+    it('should update icon anchor when icon width and height changes', () => {
+      const initialIcon = reactive(
+        new SVG('irrelevant')
+          .havingWidth(32)
+          .havingHeight(32)
+      )
+
+      mountMarker({ icon: initialIcon, iconCenter: true })
+      markerIconAnchorShouldBe(16, 16)
+
+      cy.then(() => {
+        const iconWithDifferentWidthAndHeight = initialIcon
+          .havingWidth(48)
+          .havingHeight(24)
+
+        ComponentUnderTest.changeProperties({ icon: iconWithDifferentWidthAndHeight })
+        markerIconAnchorShouldBe(24, 12)
+      })
+    })
   })
 })
 
@@ -201,4 +235,16 @@ function markerIconUrlShouldBe (expectedURL: string) {
     .then(getMarkerOptions)
     .then(options => <google.maps.Icon>options.icon)
     .then(icon => expect(icon.url).to.equal(expectedURL))
+}
+
+function markerIconAnchorShouldBe (expectedX: number, expectedY: number) {
+  const expectedAnchor = {
+    x: expectedX,
+    y: expectedY
+  }
+
+  cy.then(getGoogleMapMarker)
+    .then(getMarkerOptions)
+    .then(options => cy.wrap(options.icon?.anchor))
+    .should('deep.equal', expectedAnchor)
 }

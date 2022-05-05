@@ -12,7 +12,11 @@ import type { MapIcon } from './Map/Icon'
 type MarkerOptions = {
   clickable: boolean,
   icon?: {
-    url: string
+    url: string,
+    anchor?: {
+      x: number
+      y: number
+    }
   },
   position: {
     lat: number,
@@ -57,9 +61,17 @@ export default defineComponent({
       clickable: false
     })
 
+    const iconAnchor = (iconWidth: number, iconHeight: number) => ({
+      anchor: {
+        x: iconWidth / 2,
+        y: iconHeight / 2
+      }
+    })
+
     if (props.icon !== undefined) {
       markerOptions.icon = {
-        url: props.icon?.toUrl()
+        url: props.icon.toUrl(),
+        ...(props.iconCenter ? iconAnchor(props.icon.width(), props.icon.height()) : {})
       }
     }
 
@@ -74,11 +86,12 @@ export default defineComponent({
     watch(() => props.icon, icon => {
       if (icon !== undefined) {
         markerOptions.icon = {
-          url: icon.toUrl()
+          url: icon.toUrl(),
+          ...(props.iconCenter ? iconAnchor(icon.width(), icon.height()) : {})
         }
       }
       else delete markerOptions.icon
-    })
+    }, { deep: true, immediate: true })
 
     return {
       markerOptions
