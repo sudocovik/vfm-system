@@ -119,7 +119,7 @@ describe('GeoLocatedVehicle', () => {
   })
 
   describe('MapMarker', () => {
-    it.only('should be direct child of BaseMap', () => {
+    it('should be direct child of BaseMap', () => {
       mountGeoLocatedVehicle()
 
       cy.then(getBaseMap)
