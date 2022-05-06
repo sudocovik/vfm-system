@@ -5,16 +5,7 @@ import { ComponentUnderTest } from 'test/support/api'
 import { VueWrapper } from '@vue/test-utils'
 
 describe('GeoLocatedVehicle', () => {
-  it('should render BaseMap', () => {
-    mountGeoLocatedVehicle()
-
-    cy.then(() => {
-      const baseMap = getBaseMap()
-      expect(baseMap.exists()).to.equal(true)
-    })
-  })
-
-  describe('License plate', () => {
+  describe('(prop): licensePlate', () => {
     const licensePlates = ['ZD000AA', 'ZD111AA']
     const licensePlateShouldBe = (licensePlate: string) => cy.dataCy('license-plate').should('have.text', licensePlate)
 
@@ -37,7 +28,7 @@ describe('GeoLocatedVehicle', () => {
     })
   })
 
-  describe('Movement states', () => {
+  describe('(prop): moving', () => {
     const movementStates = [
       { moving: false, icon: 'mdi-truck' },
       { moving: true, icon: 'mdi-truck-fast' }
@@ -63,7 +54,7 @@ describe('GeoLocatedVehicle', () => {
     })
   })
 
-  describe('Address', () => {
+  describe('(prop): address', () => {
     const addresses = ['Ulica Ante Starčevića 1a, 23000 Zadar, HR', 'Splitska ulica 11, 23000 Zadar, HR']
     const addressShouldBe = (address: string) => cy.dataCy('address').should('have.text', address)
 
@@ -92,7 +83,16 @@ describe('GeoLocatedVehicle', () => {
     cy.dataCy('speed').should('have.text', '30 km/h')
   })
 
-  describe('Map', () => {
+  describe('(component): BaseMap', () => {
+    it('should render', () => {
+      mountGeoLocatedVehicle()
+
+      cy.then(() => {
+        const baseMap = getBaseMap()
+        expect(baseMap.exists()).to.equal(true)
+      })
+    })
+
     it(`should be ${String(MAP_HEIGHT)}px high`, () => {
       mountGeoLocatedVehicle()
 
@@ -118,8 +118,8 @@ describe('GeoLocatedVehicle', () => {
     })
   })
 
-  describe('MapMarker', () => {
-    it('should be direct child of BaseMap', () => {
+  describe('(component): MapMarker', () => {
+    it('should be a direct child of BaseMap', () => {
       mountGeoLocatedVehicle()
 
       cy.then(getBaseMap)
