@@ -3,8 +3,12 @@
     <BaseMap
       :style="mapCssStyle"
       :interactive="false"
+      :center="{ lat: latitude, lng: longitude }"
     >
-      <MapMarker />
+      <MapMarker
+        :latitude="latitude"
+        :longitude="longitude"
+      />
     </BaseMap>
 
     <q-card-section class="text-h6">
@@ -46,6 +50,16 @@ export default defineComponent({
   },
 
   props: {
+    latitude: {
+      type: Number,
+      required: true
+    },
+
+    longitude: {
+      type: Number,
+      required: true
+    },
+
     licensePlate: {
       type: String,
       required: true

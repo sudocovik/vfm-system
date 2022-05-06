@@ -5,6 +5,62 @@ import { ComponentUnderTest } from 'test/support/api'
 import { VueWrapper } from '@vue/test-utils'
 
 describe('GeoLocatedVehicle', () => {
+  describe('(prop): latitude', () => {
+    const latitudes = [45.1234, 46.4321]
+
+    describe('should pass it to BaseMap.center.lat and MapMarker.latitude', () => {
+      latitudes.forEach((latitude, i) => {
+        it(`case ${i + 1}: latitude = ${latitude}`, () => {
+          mountGeoLocatedVehicle({ latitude })
+
+          baseMapCenterLatitudeShouldBe(latitude)
+          mapMarkerLatitudeShouldBe(latitude)
+        })
+      })
+    })
+
+    it('should be reactive', () => {
+      const firstLatitude = latitudes[0]
+      const secondLatitude = latitudes[1]
+
+      mountGeoLocatedVehicle({ latitude: firstLatitude })
+      baseMapCenterLatitudeShouldBe(firstLatitude)
+      mapMarkerLatitudeShouldBe(firstLatitude)
+
+      ComponentUnderTest.changeProperties({ latitude: secondLatitude })
+      baseMapCenterLatitudeShouldBe(secondLatitude)
+      mapMarkerLatitudeShouldBe(secondLatitude)
+    })
+  })
+
+  describe('(prop): longitude', () => {
+    const longitudes = [15.1234, 16.4321]
+
+    describe('should pass it to BaseMap.center.lng and MapMarker.longitude', () => {
+      longitudes.forEach((longitude, i) => {
+        it(`case ${i + 1}: longitude = ${longitude}`, () => {
+          mountGeoLocatedVehicle({ longitude })
+
+          baseMapCenterLongitudeShouldBe(longitude)
+          mapMarkerLongitudeShouldBe(longitude)
+        })
+      })
+    })
+
+    it('should be reactive', () => {
+      const firstLongitude = longitudes[0]
+      const secondLongitude = longitudes[1]
+
+      mountGeoLocatedVehicle({ longitude: firstLongitude })
+      baseMapCenterLongitudeShouldBe(firstLongitude)
+      mapMarkerLongitudeShouldBe(firstLongitude)
+
+      ComponentUnderTest.changeProperties({ longitude: secondLongitude })
+      baseMapCenterLongitudeShouldBe(secondLongitude)
+      mapMarkerLongitudeShouldBe(secondLongitude)
+    })
+  })
+
   describe('(prop): licensePlate', () => {
     const licensePlates = ['ZD000AA', 'ZD111AA']
     const licensePlateShouldBe = (licensePlate: string) => cy.dataCy('license-plate').should('have.text', licensePlate)
@@ -152,6 +208,36 @@ function getBaseMap () {
 
 function getMapMarker (baseMap: VueWrapper) {
   return baseMap.findComponent(MapMarker)
+}
+
+function baseMapCenterLatitudeShouldBe (expectedLatitude: number) {
+  cy.then(getBaseMap)
+    .then(map => (<google.maps.LatLngLiteral>map.props('center')).lat)
+    .then(latitude => cy.wrap(latitude))
+    .should('equal', expectedLatitude)
+}
+
+function mapMarkerLatitudeShouldBe (expectedLatitude: number) {
+  cy.then(getBaseMap)
+    .then(getMapMarker)
+    .then(marker => marker.props('latitude') as number)
+    .then(latitude => cy.wrap(latitude))
+    .should('equal', expectedLatitude)
+}
+
+function baseMapCenterLongitudeShouldBe (expectedLongitude: number) {
+  cy.then(getBaseMap)
+    .then(map => (<google.maps.LatLngLiteral>map.props('center')).lng)
+    .then(longitude => cy.wrap(longitude))
+    .should('equal', expectedLongitude)
+}
+
+function mapMarkerLongitudeShouldBe (expectedLongitude: number) {
+  cy.then(getBaseMap)
+    .then(getMapMarker)
+    .then(marker => marker.props('longitude') as number)
+    .then(longitude => cy.wrap(longitude))
+    .should('equal', expectedLongitude)
 }
 
 function mapWidthShouldBe (expectedWidth: string) {
