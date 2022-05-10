@@ -201,6 +201,106 @@ describe('VehicleAsIcon', () => {
       })
     })
   })
+
+  describe('Stop indicator', () => {
+    it('should be rendered when property \'moving\' is false', () => {
+      const icon = createVehicleIcon(false)
+      mountIcon(icon)
+
+      cy.dataCy('stop-indicator').should('exist')
+    })
+
+    it('should not be rendered when property \'moving\' is true', () => {
+      const icon = createVehicleIcon(true)
+      mountIcon(icon)
+
+      cy.dataCy('stop-indicator').should('not.exist')
+    })
+
+    it('should be node of type \'rect\'', () => {
+      const icon = createVehicleIcon(false)
+      mountIcon(icon)
+
+      cy.dataCy('stop-indicator').then($el => {
+        expect($el.get(0).nodeName).equal('rect')
+      })
+    })
+
+    it('should be above background', () => {
+      const icon = createVehicleIcon(false)
+      mountIcon(icon)
+
+      cy.get('[data-cy="background-fill"] ~ [data-cy="stop-indicator"]')
+    })
+
+    it('should be 12 units wide and high', () => {
+      const icon = createVehicleIcon(false)
+      mountIcon(icon)
+
+      cy.dataCy('stop-indicator').should('have.attr', 'width', 12)
+      cy.dataCy('stop-indicator').should('have.attr', 'height', 12)
+    })
+
+    it('should be positioned at the center', () => {
+      const icon = createVehicleIcon(false)
+      mountIcon(icon)
+
+      const center = 10
+      cy.dataCy('stop-indicator').should('have.attr', 'x', center)
+      cy.dataCy('stop-indicator').should('have.attr', 'y', center)
+    })
+
+    it('should have a stroke color', () => {
+      const icon = createVehicleIcon(false)
+      mountIcon(icon)
+
+      cy.dataCy('stop-indicator').should('have.attr', 'stroke') // not interested in actual color, covered by other tests
+    })
+
+    it('should have a stroke width of 1', () => {
+      const icon = createVehicleIcon(false)
+      mountIcon(icon)
+
+      cy.dataCy('stop-indicator').should('have.attr', 'stroke-width', 1)
+    })
+
+    it('should have a fill color', () => {
+      const icon = createVehicleIcon(false)
+      mountIcon(icon)
+
+      cy.dataCy('stop-indicator').should('have.attr', 'fill') // not interested in actual color, covered by other tests
+    })
+
+    describe('Rotation', () => {
+      const rotations = [35, 190]
+      rotations.forEach(rotation => {
+        it(`it should not rotate the icon when rotation = ${rotation}`, () => {
+          const icon = createVehicleIcon(false, false, rotation)
+          mountIcon(icon)
+
+          iconRotationShouldBe(0)
+        })
+      })
+    })
+
+    describe('Colors', () => {
+      it('should have a yellow-like stroke & fill color when property \'ignition\' is false', () => {
+        const icon = createVehicleIcon(false, false)
+        mountIcon(icon)
+
+        cy.dataCy('stop-indicator').should('have.attr', 'stroke', colors.yellow.stroke)
+        cy.dataCy('stop-indicator').should('have.attr', 'fill', colors.yellow.fill)
+      })
+
+      it('should have a green-like stroke & fill color when property \'ignition\' is true', () => {
+        const icon = createVehicleIcon(false, true)
+        mountIcon(icon)
+
+        cy.dataCy('stop-indicator').should('have.attr', 'stroke', colors.green.stroke)
+        cy.dataCy('stop-indicator').should('have.attr', 'fill', colors.green.fill)
+      })
+    })
+  })
 })
 
 function resetScene () {
