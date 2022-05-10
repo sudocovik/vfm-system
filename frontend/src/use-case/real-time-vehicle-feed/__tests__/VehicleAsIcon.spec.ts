@@ -119,6 +119,13 @@ describe('VehicleAsIcon', () => {
       })
     })
 
+    it('should be above background', () => {
+      const icon = createVehicleIcon(true)
+      mountIcon(icon)
+
+      cy.get('[data-cy="background-fill"] ~ [data-cy="direction-arrow"]')
+    })
+
     it('should have a stroke color', () => {
       const icon = createVehicleIcon(true)
       mountIcon(icon)
