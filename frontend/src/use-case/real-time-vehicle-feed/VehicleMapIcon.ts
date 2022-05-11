@@ -36,7 +36,7 @@ const createStopIndicator = (fillColor: string, strokeColor: string) =>
   y="${stopIndicatorCenter}"
 />`
 
-export function createVehicleIcon (moving = false, ignition = false, rotationInDegrees = 0): string {
+export function createIcon (moving = false, ignition = false, rotationInDegrees = 0): string {
   const rotation = moving ? rotationInDegrees : 0
   const { stroke, fill } = colors[ignition ? 'green' : 'yellow']
 

@@ -1,6 +1,6 @@
 import {
   colors,
-  createVehicleIcon,
+  createIcon,
   centerX,
   centerY,
   radius,
@@ -13,7 +13,7 @@ describe('VehicleMapIcon', () => {
   beforeEach(resetScene)
 
   it('should have only one root SVG node', () => {
-    const icon = createVehicleIcon()
+    const icon = createIcon()
     mountIcon(icon)
 
     cy.get('svg').should('have.length', 1)
@@ -21,7 +21,7 @@ describe('VehicleMapIcon', () => {
 
   describe('Root svg', () => {
     it('should have an XML namespace', () => {
-      const icon = createVehicleIcon()
+      const icon = createIcon()
       mountIcon(icon)
 
       cy.get('svg').should('have.attr', 'xmlns', 'http://www.w3.org/2000/svg')
@@ -30,7 +30,7 @@ describe('VehicleMapIcon', () => {
     specify('viewBox should start at the top-left corner', () => {
       const topLeftCorner = '0 0'
 
-      const icon = createVehicleIcon()
+      const icon = createIcon()
       mountIcon(icon)
 
       cy.get('svg').should('have.attr', 'viewBox').then((viewBox: unknown) => {
@@ -41,7 +41,7 @@ describe('VehicleMapIcon', () => {
     specify('viewBox should be 32 pixels wide and high', () => {
       const wantedSize = `${size} ${size}`
 
-      const icon = createVehicleIcon()
+      const icon = createIcon()
       mountIcon(icon)
 
       cy.get('svg').should('have.attr', 'viewBox').then((viewBox: unknown) => {
@@ -52,7 +52,7 @@ describe('VehicleMapIcon', () => {
 
   describe('Background', () => {
     specify('two circles should exist: first simulates stroke, second is fill', () => {
-      const icon = createVehicleIcon()
+      const icon = createIcon()
       mountIcon(icon)
 
       cy.get('svg').as('root')
@@ -62,7 +62,7 @@ describe('VehicleMapIcon', () => {
     })
 
     specify('circles should be positioned at the center', () => {
-      const icon = createVehicleIcon()
+      const icon = createIcon()
       mountIcon(icon)
 
       cy.get('svg').as('root')
@@ -75,7 +75,7 @@ describe('VehicleMapIcon', () => {
     })
 
     specify('circles should be full size with \'fill\' circle being slightly smaller', () => {
-      const icon = createVehicleIcon()
+      const icon = createIcon()
       mountIcon(icon)
 
       cy.get('svg').as('root')
@@ -85,7 +85,7 @@ describe('VehicleMapIcon', () => {
     })
 
     specify('circles should have different fill color', () => {
-      const icon = createVehicleIcon()
+      const icon = createIcon()
       mountIcon(icon)
 
       cy.get('svg').as('root')
@@ -96,7 +96,7 @@ describe('VehicleMapIcon', () => {
     })
 
     specify('circles should be under rotation group', () => {
-      const icon = createVehicleIcon(true, false)
+      const icon = createIcon(true, false)
       mountIcon(icon)
 
       cy.dataCy('rotation-group').dataCy('background-stroke').should('be.visible')
@@ -106,21 +106,21 @@ describe('VehicleMapIcon', () => {
 
   describe('Direction arrow', () => {
     it('should be rendered when property \'moving\' is true', () => {
-      const icon = createVehicleIcon(true)
+      const icon = createIcon(true)
       mountIcon(icon)
 
       cy.dataCy('direction-arrow').should('exist')
     })
 
     it('should not be rendered when property \'moving\' is false', () => {
-      const icon = createVehicleIcon(false)
+      const icon = createIcon(false)
       mountIcon(icon)
 
       cy.dataCy('direction-arrow').should('not.exist')
     })
 
     it('should be node of type \'path\'', () => {
-      const icon = createVehicleIcon(true)
+      const icon = createIcon(true)
       mountIcon(icon)
 
       cy.dataCy('direction-arrow').then($el => {
@@ -129,35 +129,35 @@ describe('VehicleMapIcon', () => {
     })
 
     it('should be above background', () => {
-      const icon = createVehicleIcon(true)
+      const icon = createIcon(true)
       mountIcon(icon)
 
       cy.get('[data-cy="background-fill"] ~ [data-cy="direction-arrow"]')
     })
 
     it('should have a stroke color', () => {
-      const icon = createVehicleIcon(true)
+      const icon = createIcon(true)
       mountIcon(icon)
 
       cy.dataCy('direction-arrow').should('have.attr', 'stroke') // not interested in actual color, covered by other tests
     })
 
     it('should have a stroke width of 1', () => {
-      const icon = createVehicleIcon(true)
+      const icon = createIcon(true)
       mountIcon(icon)
 
       cy.dataCy('direction-arrow').should('have.attr', 'stroke-width', 1)
     })
 
     it('should have a fill color', () => {
-      const icon = createVehicleIcon(true)
+      const icon = createIcon(true)
       mountIcon(icon)
 
       cy.dataCy('direction-arrow').should('have.attr', 'fill') // not interested in actual color, covered by other tests
     })
 
     it('should have a shape', () => {
-      const icon = createVehicleIcon(true)
+      const icon = createIcon(true)
       mountIcon(icon)
 
       cy.dataCy('direction-arrow').should('have.attr', 'd') // shape is a bit complex, test it visually
@@ -165,7 +165,7 @@ describe('VehicleMapIcon', () => {
     })
 
     it('should be under rotation group', () => {
-      const icon = createVehicleIcon(true, false)
+      const icon = createIcon(true, false)
       mountIcon(icon)
 
       cy.dataCy('rotation-group').dataCy('direction-arrow').should('be.visible')
@@ -173,7 +173,7 @@ describe('VehicleMapIcon', () => {
 
     describe('Rotation', () => {
       it('should rotate around center of the icon', () => {
-        const icon = createVehicleIcon(true, false)
+        const icon = createIcon(true, false)
         mountIcon(icon)
 
         const center = `${centerX} ${centerY}`
@@ -182,7 +182,7 @@ describe('VehicleMapIcon', () => {
       })
 
       it('should have a default value of 0', () => {
-        const icon = createVehicleIcon(true, false)
+        const icon = createIcon(true, false)
         mountIcon(icon)
 
         iconRotationShouldBe(0)
@@ -191,7 +191,7 @@ describe('VehicleMapIcon', () => {
       const rotations = [15, 270]
       rotations.forEach((rotation, i) => {
         it(`case ${i + 1}: rotation = ${rotation}`, () => {
-          const icon = createVehicleIcon(true, false, rotation)
+          const icon = createIcon(true, false, rotation)
           mountIcon(icon)
 
           iconRotationShouldBe(rotation)
@@ -201,7 +201,7 @@ describe('VehicleMapIcon', () => {
 
     describe('Colors', () => {
       it('should have a yellow-like stroke & fill color when property \'ignition\' is false', () => {
-        const icon = createVehicleIcon(true, false)
+        const icon = createIcon(true, false)
         mountIcon(icon)
 
         cy.dataCy('direction-arrow').should('have.attr', 'stroke', colors.yellow.stroke)
@@ -209,7 +209,7 @@ describe('VehicleMapIcon', () => {
       })
 
       it('should have a green-like stroke & fill color when property \'ignition\' is true', () => {
-        const icon = createVehicleIcon(true, true)
+        const icon = createIcon(true, true)
         mountIcon(icon)
 
         cy.dataCy('direction-arrow').should('have.attr', 'stroke', colors.green.stroke)
@@ -220,21 +220,21 @@ describe('VehicleMapIcon', () => {
 
   describe('Stop indicator', () => {
     it('should be rendered when property \'moving\' is false', () => {
-      const icon = createVehicleIcon(false)
+      const icon = createIcon(false)
       mountIcon(icon)
 
       cy.dataCy('stop-indicator').should('exist')
     })
 
     it('should not be rendered when property \'moving\' is true', () => {
-      const icon = createVehicleIcon(true)
+      const icon = createIcon(true)
       mountIcon(icon)
 
       cy.dataCy('stop-indicator').should('not.exist')
     })
 
     it('should be node of type \'rect\'', () => {
-      const icon = createVehicleIcon(false)
+      const icon = createIcon(false)
       mountIcon(icon)
 
       cy.dataCy('stop-indicator').then($el => {
@@ -243,14 +243,14 @@ describe('VehicleMapIcon', () => {
     })
 
     it('should be above background', () => {
-      const icon = createVehicleIcon(false)
+      const icon = createIcon(false)
       mountIcon(icon)
 
       cy.get('[data-cy="background-fill"] ~ [data-cy="stop-indicator"]')
     })
 
     it(`should be ${stopIndicatorSize} units wide and high`, () => {
-      const icon = createVehicleIcon(false)
+      const icon = createIcon(false)
       mountIcon(icon)
 
       cy.dataCy('stop-indicator').should('have.attr', 'width', stopIndicatorSize)
@@ -258,7 +258,7 @@ describe('VehicleMapIcon', () => {
     })
 
     it('should be positioned at the center', () => {
-      const icon = createVehicleIcon(false)
+      const icon = createIcon(false)
       mountIcon(icon)
 
       cy.dataCy('stop-indicator').should('have.attr', 'x', stopIndicatorCenter)
@@ -266,21 +266,21 @@ describe('VehicleMapIcon', () => {
     })
 
     it('should have a stroke color', () => {
-      const icon = createVehicleIcon(false)
+      const icon = createIcon(false)
       mountIcon(icon)
 
       cy.dataCy('stop-indicator').should('have.attr', 'stroke') // not interested in actual color, covered by other tests
     })
 
     it('should have a stroke width of 1', () => {
-      const icon = createVehicleIcon(false)
+      const icon = createIcon(false)
       mountIcon(icon)
 
       cy.dataCy('stop-indicator').should('have.attr', 'stroke-width', 1)
     })
 
     it('should have a fill color', () => {
-      const icon = createVehicleIcon(false)
+      const icon = createIcon(false)
       mountIcon(icon)
 
       cy.dataCy('stop-indicator').should('have.attr', 'fill') // not interested in actual color, covered by other tests
@@ -290,7 +290,7 @@ describe('VehicleMapIcon', () => {
       const rotations = [35, 190]
       rotations.forEach(rotation => {
         it(`it should not rotate the icon when rotation = ${rotation}`, () => {
-          const icon = createVehicleIcon(false, false, rotation)
+          const icon = createIcon(false, false, rotation)
           mountIcon(icon)
 
           iconRotationShouldBe(0)
@@ -300,7 +300,7 @@ describe('VehicleMapIcon', () => {
 
     describe('Colors', () => {
       it('should have a yellow-like stroke & fill color when property \'ignition\' is false', () => {
-        const icon = createVehicleIcon(false, false)
+        const icon = createIcon(false, false)
         mountIcon(icon)
 
         cy.dataCy('stop-indicator').should('have.attr', 'stroke', colors.yellow.stroke)
@@ -308,7 +308,7 @@ describe('VehicleMapIcon', () => {
       })
 
       it('should have a green-like stroke & fill color when property \'ignition\' is true', () => {
-        const icon = createVehicleIcon(false, true)
+        const icon = createIcon(false, true)
         mountIcon(icon)
 
         cy.dataCy('stop-indicator').should('have.attr', 'stroke', colors.green.stroke)
