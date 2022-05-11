@@ -1,3 +1,10 @@
+export const size = 32
+export const radius = size / 2
+export const centerX = radius
+export const centerY = radius
+export const stopIndicatorSize = 12
+export const stopIndicatorCenter = radius - (stopIndicatorSize / 2)
+
 export const colors = {
   yellow: {
     stroke: '#d78200',
@@ -23,20 +30,20 @@ const createStopIndicator = (fillColor: string, strokeColor: string) =>
   fill="${fillColor}"
   stroke="${strokeColor}"
   stroke-width="1"
-  width="12"
-  height="12"
-  x="10"
-  y="10"
+  width="${stopIndicatorSize}"
+  height="${stopIndicatorSize}"
+  x="${stopIndicatorCenter}"
+  y="${stopIndicatorCenter}"
 />`
 
 export function createVehicleIcon (moving = false, ignition = false, rotationInDegrees = 0): string {
   const rotation = moving ? rotationInDegrees : 0
   const { stroke, fill } = colors[ignition ? 'green' : 'yellow']
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-    <g data-cy="rotation-group" transform="rotate(${rotation} 16 16)">
-        <circle cx="16" cy="16" data-cy="background-stroke" r="16" fill="#aaaaaa" />
-        <circle cx="16" cy="16" data-cy="background-fill" r="15" fill="#ebebeb" />
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}">
+    <g data-cy="rotation-group" transform="rotate(${rotation} ${radius} ${radius})">
+        <circle cx="${centerX}" cy="${centerY}" data-cy="background-stroke" r="${radius}" fill="#aaaaaa" />
+        <circle cx="${centerX}" cy="${centerY}" data-cy="background-fill" r="${radius - 1}" fill="#ebebeb" />
 
         ${moving ? createDirectionArrow(fill, stroke) : createStopIndicator(fill, stroke)}
     </g>

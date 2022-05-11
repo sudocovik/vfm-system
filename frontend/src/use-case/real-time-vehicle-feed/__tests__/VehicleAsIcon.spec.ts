@@ -1,4 +1,13 @@
-import { colors, createVehicleIcon } from '../VehicleAsIcon'
+import {
+  colors,
+  createVehicleIcon,
+  centerX,
+  centerY,
+  radius,
+  size,
+  stopIndicatorSize,
+  stopIndicatorCenter
+} from '../VehicleAsIcon'
 
 describe('VehicleAsIcon', () => {
   beforeEach(resetScene)
@@ -30,13 +39,13 @@ describe('VehicleAsIcon', () => {
     })
 
     specify('viewBox should be 32 pixels wide and high', () => {
-      const size = '32 32'
+      const wantedSize = `${size} ${size}`
 
       const icon = createVehicleIcon()
       mountIcon(icon)
 
       cy.get('svg').should('have.attr', 'viewBox').then((viewBox: unknown) => {
-        expect((viewBox as string).endsWith(size)).to.equal(true)
+        expect((viewBox as string).endsWith(wantedSize)).to.equal(true)
       })
     })
   })
@@ -58,11 +67,11 @@ describe('VehicleAsIcon', () => {
 
       cy.get('svg').as('root')
 
-      cy.get('@root').dataCy('background-stroke').should('have.attr', 'cx', 16)
-      cy.get('@root').dataCy('background-stroke').should('have.attr', 'cy', 16)
+      cy.get('@root').dataCy('background-stroke').should('have.attr', 'cx', centerX)
+      cy.get('@root').dataCy('background-stroke').should('have.attr', 'cy', centerY)
 
-      cy.get('@root').dataCy('background-fill').should('have.attr', 'cx', 16)
-      cy.get('@root').dataCy('background-fill').should('have.attr', 'cx', 16)
+      cy.get('@root').dataCy('background-fill').should('have.attr', 'cx', centerX)
+      cy.get('@root').dataCy('background-fill').should('have.attr', 'cx', centerY)
     })
 
     specify('circles should be full size with \'fill\' circle being slightly smaller', () => {
@@ -71,8 +80,8 @@ describe('VehicleAsIcon', () => {
 
       cy.get('svg').as('root')
 
-      cy.get('@root').dataCy('background-stroke').should('have.attr', 'r', 16)
-      cy.get('@root').dataCy('background-fill').should('have.attr', 'r', 15)
+      cy.get('@root').dataCy('background-stroke').should('have.attr', 'r', radius)
+      cy.get('@root').dataCy('background-fill').should('have.attr', 'r', radius - 1)
     })
 
     specify('circles should have different fill color', () => {
@@ -167,7 +176,7 @@ describe('VehicleAsIcon', () => {
         const icon = createVehicleIcon(true, false)
         mountIcon(icon)
 
-        const center = '16 16'
+        const center = `${centerX} ${centerY}`
 
         cy.dataCy('rotation-group').should('have.attr', 'transform').should('match', new RegExp(`rotate\\(\\d ${center}\\)`))
       })
@@ -240,21 +249,20 @@ describe('VehicleAsIcon', () => {
       cy.get('[data-cy="background-fill"] ~ [data-cy="stop-indicator"]')
     })
 
-    it('should be 12 units wide and high', () => {
+    it(`should be ${stopIndicatorSize} units wide and high`, () => {
       const icon = createVehicleIcon(false)
       mountIcon(icon)
 
-      cy.dataCy('stop-indicator').should('have.attr', 'width', 12)
-      cy.dataCy('stop-indicator').should('have.attr', 'height', 12)
+      cy.dataCy('stop-indicator').should('have.attr', 'width', stopIndicatorSize)
+      cy.dataCy('stop-indicator').should('have.attr', 'height', stopIndicatorSize)
     })
 
     it('should be positioned at the center', () => {
       const icon = createVehicleIcon(false)
       mountIcon(icon)
 
-      const center = 10
-      cy.dataCy('stop-indicator').should('have.attr', 'x', center)
-      cy.dataCy('stop-indicator').should('have.attr', 'y', center)
+      cy.dataCy('stop-indicator').should('have.attr', 'x', stopIndicatorCenter)
+      cy.dataCy('stop-indicator').should('have.attr', 'y', stopIndicatorCenter)
     })
 
     it('should have a stroke color', () => {
