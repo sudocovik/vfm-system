@@ -7,9 +7,9 @@ import {
   size,
   stopIndicatorSize,
   stopIndicatorCenter
-} from '../VehicleAsIcon'
+} from '../VehicleMapIcon'
 
-describe('VehicleAsIcon', () => {
+describe('VehicleMapIcon', () => {
   beforeEach(resetScene)
 
   it('should have only one root SVG node', () => {
