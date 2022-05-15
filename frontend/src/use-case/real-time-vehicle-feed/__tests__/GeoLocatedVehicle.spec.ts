@@ -3,7 +3,7 @@ import GeoLocatedVehicle, { MAP_HEIGHT } from '../GeoLocatedVehicle.vue'
 import { BaseMap, icon as MarkerIcon, MapMarker } from 'components/Map'
 import { ComponentUnderTest } from 'test/support/api'
 import { VueWrapper } from '@vue/test-utils'
-import { createIcon as VehicleMapIcon } from '../VehicleMapIcon'
+import { colors as StatusColors, createIcon as VehicleMapIcon } from '../VehicleMapIcon'
 
 describe('GeoLocatedVehicle', () => {
   describe('(prop): latitude', () => {
@@ -201,6 +201,23 @@ describe('GeoLocatedVehicle', () => {
         .then(getMapMarker)
         .then(marker => cy.wrap(marker.exists()))
         .should('equal', true)
+    })
+  })
+
+  describe('Title', () => {
+    it('should consist of icon and license plate', () => {
+      mountGeoLocatedVehicle()
+
+      cy.get('[data-cy="title"] > [data-cy="icon"]')
+      cy.get('[data-cy="title"] > [data-cy="license-plate"]')
+    })
+
+    it('should be yellow when prop \'ignition\' is false but green when it\'s true', () => {
+      mountGeoLocatedVehicle({ ignition: false })
+      cy.dataCy('title').should('have.css', 'color').and('be.colored', StatusColors.yellow.fill)
+
+      ComponentUnderTest.changeProperties({ ignition: true })
+      cy.dataCy('title').should('have.css', 'color').and('be.colored', StatusColors.green.fill)
     })
   })
 

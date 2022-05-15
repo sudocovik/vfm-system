@@ -13,7 +13,11 @@
       />
     </BaseMap>
 
-    <q-card-section class="text-h6">
+    <q-card-section
+      class="text-h6"
+      :style="{ color: ignitionBasedColor }"
+      data-cy="title"
+    >
       <q-icon
         :name="icon"
         size="sm"
@@ -40,7 +44,7 @@
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
 import { BaseMap, icon as MarkerIcon, MapMarker } from 'components/Map'
-import { createIcon as VehicleMapIcon, size as mapIconSize } from './VehicleMapIcon'
+import { colors as StatusColors, createIcon as VehicleMapIcon, size as mapIconSize } from './VehicleMapIcon'
 
 export const MAP_HEIGHT = 200
 
@@ -93,6 +97,7 @@ export default defineComponent({
   },
 
   setup (props) {
+    const ignitionBasedColor = computed(() => props.ignition ? StatusColors.green.fill : StatusColors.yellow.fill)
     const icon = computed(() => props.moving ? 'mdi-truck-fast' : 'mdi-truck')
     const mapCssStyle = { height: `${MAP_HEIGHT}px`, width: '100%', overflow: 'hidden' }
     const ignitionAndMovementAwareIcon = computed(() =>
@@ -104,7 +109,8 @@ export default defineComponent({
     return {
       icon,
       mapCssStyle,
-      ignitionAndMovementAwareIcon
+      ignitionAndMovementAwareIcon,
+      ignitionBasedColor
     }
   }
 })
