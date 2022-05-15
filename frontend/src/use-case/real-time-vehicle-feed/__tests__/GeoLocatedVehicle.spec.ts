@@ -1,8 +1,9 @@
 import { mount } from '@cypress/vue'
 import GeoLocatedVehicle, { MAP_HEIGHT } from '../GeoLocatedVehicle.vue'
-import { BaseMap, MapMarker } from 'components/Map'
+import { BaseMap, icon as MarkerIcon, MapMarker } from 'components/Map'
 import { ComponentUnderTest } from 'test/support/api'
 import { VueWrapper } from '@vue/test-utils'
+import { createIcon as VehicleMapIcon } from '../VehicleMapIcon'
 
 describe('GeoLocatedVehicle', () => {
   describe('(prop): latitude', () => {
@@ -133,6 +134,24 @@ describe('GeoLocatedVehicle', () => {
     })
   })
 
+  describe('(prop): ignition', () => {
+    it('should be false by default', () => {
+      mountGeoLocatedVehicle()
+
+      cy.then(() => Cypress.vueWrapper.props('ignition') as boolean)
+        .then(ignition => expect(ignition).to.equal(false))
+    })
+  })
+
+  describe('(prop): course', () => {
+    it('should be 0 by default', () => {
+      mountGeoLocatedVehicle()
+
+      cy.then(() => Cypress.vueWrapper.props('course') as number)
+        .then(course => expect(course).to.equal(0))
+    })
+  })
+
   it('should render speed', () => {
     mountGeoLocatedVehicle()
 
@@ -182,6 +201,112 @@ describe('GeoLocatedVehicle', () => {
         .then(getMapMarker)
         .then(marker => cy.wrap(marker.exists()))
         .should('equal', true)
+    })
+  })
+
+  describe('Map icon', () => {
+    it('should be an SVG icon', () => {
+      mountGeoLocatedVehicle()
+
+      cy.then(getBaseMap)
+        .then(getMapMarker)
+        .then(marker => marker.props('icon') as unknown)
+        .then(icon => expect(icon).to.be.instanceof(MarkerIcon.SVG))
+    })
+
+    it('should be 32 pixels wide', () => {
+      mountGeoLocatedVehicle()
+
+      cy.then(getBaseMap)
+        .then(getMapMarker)
+        .then(marker => marker.props('icon') as MarkerIcon.SVG)
+        .then(icon => expect(icon.width()).to.equal(32))
+    })
+
+    it('should be 32 pixels high', () => {
+      mountGeoLocatedVehicle()
+
+      cy.then(getBaseMap)
+        .then(getMapMarker)
+        .then(marker => marker.props('icon') as MarkerIcon.SVG)
+        .then(icon => expect(icon.height()).to.equal(32))
+    })
+
+    it('should be centered', () => {
+      mountGeoLocatedVehicle()
+
+      cy.then(getBaseMap)
+        .then(getMapMarker)
+        .then(marker => cy.wrap(marker.props('iconCenter')))
+        .should('equal', true)
+    })
+
+    it('should render stop indicator when prop \'moving\' is false', () => {
+      const movingStatus = false
+      const stopIndicator = new MarkerIcon.SVG(VehicleMapIcon(movingStatus))
+      mountGeoLocatedVehicle({ moving: movingStatus })
+
+      markerIconShouldBe(stopIndicator)
+    })
+
+    it('should render direction arrow when prop \'moving\' is true', () => {
+      const movingStatus = true
+      const directionArrow = new MarkerIcon.SVG(VehicleMapIcon(movingStatus))
+      mountGeoLocatedVehicle({ moving: movingStatus })
+
+      markerIconShouldBe(directionArrow)
+    })
+
+    it('should render icon in orange color when prop \'ignition\' is false', () => {
+      const ignitionStatus = false
+      const orangeIcon = new MarkerIcon.SVG(VehicleMapIcon(false, ignitionStatus))
+      mountGeoLocatedVehicle({ ignition: ignitionStatus })
+
+      markerIconShouldBe(orangeIcon)
+    })
+
+    it('should render icon in green color when prop \'ignition\' is true', () => {
+      const ignitionStatus = true
+      const greenIcon = new MarkerIcon.SVG(VehicleMapIcon(false, ignitionStatus))
+      mountGeoLocatedVehicle({ ignition: ignitionStatus })
+
+      markerIconShouldBe(greenIcon)
+    })
+
+    it('should render icon facing east when prop \'course\' is 90 degrees', () => {
+      const east = 90
+      const facingEast = new MarkerIcon.SVG(VehicleMapIcon(true, true, east))
+      mountGeoLocatedVehicle({ moving: true, ignition: true, course: east })
+
+      markerIconShouldBe(facingEast)
+    })
+
+    it('should render icon facing west when prop \'course\' is 270 degrees', () => {
+      const west = 270
+      const facingWest = new MarkerIcon.SVG(VehicleMapIcon(true, true, west))
+      mountGeoLocatedVehicle({ moving: true, ignition: true, course: west })
+
+      markerIconShouldBe(facingWest)
+    })
+
+    it('should be reactive', () => {
+      const stationary = false, hasIgnition = true, north = 0
+      const greenStopIndicatorFacingNorth = new MarkerIcon.SVG(VehicleMapIcon(stationary, hasIgnition, north))
+      mountGeoLocatedVehicle({
+        moving: stationary,
+        ignition: hasIgnition,
+        course: north
+      })
+      markerIconShouldBe(greenStopIndicatorFacingNorth)
+
+      const moving = true, noIgnition = false, west = 270
+      const yellowDirectionArrowFacingWest = new MarkerIcon.SVG(VehicleMapIcon(moving, noIgnition, west))
+      ComponentUnderTest.changeProperties({
+        moving,
+        ignition: noIgnition,
+        course: west
+      })
+      markerIconShouldBe(yellowDirectionArrowFacingWest)
     })
   })
 })
@@ -265,4 +390,11 @@ function mapInteractivityShouldBe (expectedInteractivity: boolean) {
   cy.then(getBaseMap)
     .then(baseMap => cy.wrap(baseMap.props('interactive')))
     .should('equal', expectedInteractivity)
+}
+
+function markerIconShouldBe (expectedIcon: MarkerIcon.SVG) {
+  cy.then(getBaseMap)
+    .then(getMapMarker)
+    .then(marker => marker.props('icon') as MarkerIcon.SVG)
+    .then(icon => expect(icon.toUrl()).to.equal(expectedIcon.toUrl()))
 }

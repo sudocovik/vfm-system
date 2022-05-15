@@ -8,6 +8,8 @@
       <MapMarker
         :latitude="latitude"
         :longitude="longitude"
+        :icon="ignitionAndMovementAwareIcon"
+        :icon-center="true"
       />
     </BaseMap>
 
@@ -37,7 +39,8 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
-import { BaseMap, MapMarker } from 'components/Map'
+import { BaseMap, icon as MarkerIcon, MapMarker } from 'components/Map'
+import { createIcon as VehicleMapIcon, size as mapIconSize } from './VehicleMapIcon'
 
 export const MAP_HEIGHT = 200
 
@@ -74,16 +77,34 @@ export default defineComponent({
       type: Boolean,
       required: false,
       default: false
+    },
+
+    ignition: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+
+    course: {
+      type: Number,
+      required: false,
+      default: 0
     }
   },
 
   setup (props) {
     const icon = computed(() => props.moving ? 'mdi-truck-fast' : 'mdi-truck')
     const mapCssStyle = { height: `${MAP_HEIGHT}px`, width: '100%', overflow: 'hidden' }
+    const ignitionAndMovementAwareIcon = computed(() =>
+      new MarkerIcon.SVG(VehicleMapIcon(props.moving, props.ignition, props.course))
+        .havingWidth(mapIconSize)
+        .havingHeight(mapIconSize)
+    )
 
     return {
       icon,
-      mapCssStyle
+      mapCssStyle,
+      ignitionAndMovementAwareIcon
     }
   }
 })
