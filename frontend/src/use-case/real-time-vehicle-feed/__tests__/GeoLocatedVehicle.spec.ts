@@ -357,7 +357,7 @@ function getBaseMap () {
   return Cypress.vueWrapper.findComponent(BaseMap)
 }
 
-function getMapMarker (baseMap: VueWrapper) {
+function getMapMarker (baseMap: VueWrapper<InstanceType<typeof BaseMap>>) {
   return baseMap.findComponent(MapMarker)
 }
 
