@@ -97,7 +97,7 @@ export default defineComponent({
   },
 
   setup (props) {
-    const ignitionBasedColor = computed(() => props.ignition ? StatusColors.green.fill : StatusColors.yellow.fill)
+    const ignitionBasedColor = computed(() => props.ignition ? StatusColors.green.stroke : StatusColors.yellow.fill)
     const icon = computed(() => props.moving ? 'mdi-truck-fast' : 'mdi-truck')
     const mapCssStyle = { height: `${MAP_HEIGHT}px`, width: '100%', overflow: 'hidden' }
     const ignitionAndMovementAwareIcon = computed(() =>

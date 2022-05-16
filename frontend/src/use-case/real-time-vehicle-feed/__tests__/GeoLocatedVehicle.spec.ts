@@ -217,7 +217,7 @@ describe('GeoLocatedVehicle', () => {
       cy.dataCy('title').should('have.css', 'color').and('be.colored', StatusColors.yellow.fill)
 
       ComponentUnderTest.changeProperties({ ignition: true })
-      cy.dataCy('title').should('have.css', 'color').and('be.colored', StatusColors.green.fill)
+      cy.dataCy('title').should('have.css', 'color').and('be.colored', StatusColors.green.stroke)
     })
   })
 
