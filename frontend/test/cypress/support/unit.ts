@@ -14,6 +14,7 @@
 // ***********************************************************
 
 import './commands'
+import './assertions/colors'
 
 // Change this if you have a different entrypoint for the main scss.
 import 'src/css/app.sass'
