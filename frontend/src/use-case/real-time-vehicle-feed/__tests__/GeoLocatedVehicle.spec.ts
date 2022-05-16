@@ -335,12 +335,8 @@ function mountGeoLocatedVehicle (props?: Record<string, unknown>) {
     licensePlate: 'ZD-TEST',
     address: 'Test address'
   }
-
   const allProps = { ...defaultProps, ...props }
 
-  // For some reason, after adding 'licensePlate' as required property, TS complains 'props' object does not exist...
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
   mount(GeoLocatedVehicle, {
     global: {
       renderStubDefaultSlot: true,
