@@ -222,6 +222,35 @@ describe('VehicleService', () => {
 
         allPositions.forEach((position, i) => positionShouldEqualTraccarPosition(position, rawExpectedPositions[i]))
       })
+
+      describe('Ignition', function () {
+        it('should be false if server sent no data about ignition', async () => {
+          const missingIgnitionData = {}
+          const mockedPosition = { ...rawPositions[0].raw, ...{ attributes: missingIgnitionData } }
+          simulateManyPositions([mockedPosition])
+
+          const position = (await positionList.fetchAllMostRecent())[0]
+          expect(position.ignition()).toEqual(false)
+        })
+      })
+
+      it('should be false if server said ignition is off', async () => {
+        const ignitionOff = { ignition: false }
+        const mockedPosition = { ...rawPositions[0].raw, ...{ attributes: ignitionOff } }
+        simulateManyPositions([mockedPosition])
+
+        const position = (await positionList.fetchAllMostRecent())[0]
+        expect(position.ignition()).toEqual(false)
+      })
+
+      it('should be true if server said ignition is on', async () => {
+        const ignitionOn = { ignition: true }
+        const mockedPosition = { ...rawPositions[0].raw, ...{ attributes: ignitionOn } }
+        simulateManyPositions([mockedPosition])
+
+        const position = (await positionList.fetchAllMostRecent())[0]
+        expect(position.ignition()).toEqual(true)
+      })
     })
   })
 })
