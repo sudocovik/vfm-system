@@ -167,19 +167,7 @@ describe('VehicleService', () => {
         const vehicles = await vehicleList.fetchAll()
         const actualVehicle = vehicles[0]
 
-        expect(actualVehicle).toBeInstanceOf(GeoLocatedVehicle)
-        expect(actualVehicle.id()).toEqual(expectations.vehicleId)
-        expect(actualVehicle.licensePlate()).toEqual(expectations.licensePlate)
-        expect(actualVehicle.imei()).toEqual(expectations.imei)
-        expect(actualVehicle.isOnline()).toEqual(expectations.isOnline)
-        expect(actualVehicle.isOffline()).toEqual(expectations.isOffline)
-        expect(actualVehicle.latitude()).toEqual(expectations.latitude)
-        expect(actualVehicle.longitude()).toEqual(expectations.longitude)
-        expect(actualVehicle.altitude()).toEqual(expectations.altitude)
-        expect(actualVehicle.speed()).toEqual(expectations.speed)
-        expect(actualVehicle.course()).toEqual(expectations.course)
-        expect(actualVehicle.address()).toEqual(expectations.address)
-        expect(actualVehicle.fixationTime()).toEqual(expectations.fixationTime)
+        validateGeoLocatedVehicle(actualVehicle, expectations)
       })
 
       it('should return two vehicles with their position if user has two vehicles working properly', async () => {
