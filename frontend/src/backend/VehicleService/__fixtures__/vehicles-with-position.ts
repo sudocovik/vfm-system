@@ -1,4 +1,5 @@
 import type { TraccarDevice, TraccarPosition } from 'src/backend/VehicleService'
+import { Speed } from 'src/support/measurement-units/speed'
 
 export type VehicleWithPositionExpectations = {
   vehicleId: number
@@ -9,7 +10,7 @@ export type VehicleWithPositionExpectations = {
   latitude: number
   longitude: number
   altitude: number
-  speed: number
+  speed: Speed
   course: number
   address: string
   fixationTime: Date
@@ -70,7 +71,7 @@ export const firstVehicle = (): VehicleWithPositionFixture => {
       latitude: 44.0901797,
       longitude: 15.2176099,
       altitude: 30,
-      speed: 28,
+      speed: Speed.fromKnots(15),
       course: 270,
       address: 'My street 1',
       fixationTime: new Date(2022, 2, 16, 16, 39, 0, 0)
@@ -127,7 +128,7 @@ export const secondVehicle = (): VehicleWithPositionFixture => {
       latitude: 44.11689198,
       longitude: 15.2355778,
       altitude: 15,
-      speed: 56,
+      speed: Speed.fromKnots(30),
       course: 30,
       address: 'Ulica Bana Josipa Jelačića, 23000 Zadar, HR',
       fixationTime: new Date(2022, 3, 19, 13, 59, 0, 0)

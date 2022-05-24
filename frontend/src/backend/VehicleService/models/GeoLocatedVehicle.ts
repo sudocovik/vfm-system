@@ -1,4 +1,5 @@
 import { Position } from './Position'
+import { Speed } from 'src/support/measurement-units/speed'
 
 export class GeoLocatedVehicle {
   public constructor (
@@ -45,7 +46,7 @@ export class GeoLocatedVehicle {
     return this._position.course()
   }
 
-  public speed (): number {
+  public speed (): Speed {
     return this._position.speed()
   }
 

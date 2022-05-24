@@ -1,4 +1,5 @@
 import { parseISO } from 'date-fns'
+import { Speed } from 'src/support/measurement-units/speed'
 
 export class Position {
   public constructor (
@@ -8,7 +9,7 @@ export class Position {
     private _longitude: number,
     private _altitude: number,
     private _course: number,
-    private _speed: number,
+    private _speed: Speed,
     private _address: string,
     private _fixationTime: string,
     private _sentTime: string,
@@ -40,8 +41,8 @@ export class Position {
     return this._course
   }
 
-  public speed (): number {
-    return Math.round(this._speed * 1.852)
+  public speed (): Speed {
+    return this._speed
   }
 
   public address (): string {

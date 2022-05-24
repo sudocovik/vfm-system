@@ -16,6 +16,7 @@ import {
 } from '../__fixtures__/vehicles-with-position'
 import MockAdapter from 'axios-mock-adapter'
 import axios from 'axios'
+import { Speed } from 'src/support/measurement-units/speed'
 
 interface ExpectedPosition {
   id: number
@@ -23,7 +24,7 @@ interface ExpectedPosition {
   latitude: number
   longitude: number
   altitude: number
-  speed: number
+  speed: Speed
   course: number
   address: string
   fixationTime: Date
@@ -58,7 +59,7 @@ const rawPositions: ({ raw: TraccarPosition, expected: ExpectedPosition })[] = [
       latitude: 44.0901797,
       longitude: 15.2176099,
       altitude: 30,
-      speed: 28,
+      speed: Speed.fromKnots(15),
       course: 270,
       address: 'My street 1',
       fixationTime: new Date(2022, 2, 16, 16, 39, 0, 0),
@@ -92,7 +93,7 @@ const rawPositions: ({ raw: TraccarPosition, expected: ExpectedPosition })[] = [
       latitude: 44.11660,
       longitude: 15.27059,
       altitude: 70,
-      speed: 167,
+      speed: Speed.fromKnots(90),
       course: 17,
       address: 'Your street 1',
       fixationTime: new Date(2022, 3, 12, 12, 2, 2, 0),
@@ -258,7 +259,7 @@ function positionShouldEqualTraccarPosition (position: Position, expectedPositio
   expect(position.latitude()).toEqual(expectedPosition.latitude)
   expect(position.longitude()).toEqual(expectedPosition.longitude)
   expect(position.course()).toEqual(expectedPosition.course)
-  expect(position.speed()).toEqual(expectedPosition.speed)
+  expect(position.speed().toKnots()).toEqual(expectedPosition.speed.toKnots())
   expect(position.altitude()).toEqual(expectedPosition.altitude)
   expect(position.address()).toEqual(expectedPosition.address)
   expect(position.fixationTime()).toEqual(expectedPosition.fixationTime)
@@ -276,7 +277,7 @@ function validateGeoLocatedVehicle (vehicle: GeoLocatedVehicle, expectations: Ve
   expect(vehicle.latitude()).toEqual(expectations.latitude)
   expect(vehicle.longitude()).toEqual(expectations.longitude)
   expect(vehicle.altitude()).toEqual(expectations.altitude)
-  expect(vehicle.speed()).toEqual(expectations.speed)
+  expect(vehicle.speed().toKnots()).toEqual(expectations.speed.toKnots())
   expect(vehicle.course()).toEqual(expectations.course)
   expect(vehicle.address()).toEqual(expectations.address)
   expect(vehicle.fixationTime()).toEqual(expectations.fixationTime)

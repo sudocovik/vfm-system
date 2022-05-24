@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { Position } from './models/'
 import { TraccarPosition } from './response-schema/'
+import { Speed } from 'src/support/measurement-units/speed'
 
 export class PositionList {
   public static readonly positionEndpoint = '/api/position'
@@ -16,7 +17,7 @@ export class PositionList {
       position.longitude,
       position.altitude,
       position.course,
-      position.speed,
+      Speed.fromKnots(position.speed),
       position.address,
       position.fixTime,
       position.deviceTime,
