@@ -29,7 +29,7 @@ Test cases are scoped per measurement unit so feel free to take a look at past t
 1. Implement static constructor starting with `from` and use abbreviated unit name.
 If your new measurement unit is Miles per hour name the constructor `fromMph`.
 Static constructor accepts only one parameter (number).
-The class (private) constructor only accepts knots as value so make sure you convert the parameter from static constructor to knots.
+The class constructor only accepts knots as value so make sure you convert the parameter from static constructor to knots.
 2. Implement `to<<unit-name>>()` method which returns the speed as number in unit you are implementing.
 This means you have to convert value in Knots to your unit.
 Use Google to find out ratio.

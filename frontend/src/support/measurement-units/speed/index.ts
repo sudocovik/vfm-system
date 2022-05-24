@@ -7,7 +7,7 @@ export class Speed {
     return new Speed(value / 1.852)
   }
 
-  private constructor (private knots: number) {}
+  public constructor (private knots: number) {}
 
   public toKnots (): number {
     return this.knots
