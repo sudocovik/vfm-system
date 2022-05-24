@@ -35,7 +35,7 @@
         <span data-cy="address">{{ address }}</span>
       </div>
       <div class="q-mt-xs">
-        <span data-cy="speed">30 km/h</span>
+        <span data-cy="speed">{{ speedInKph }} km/h</span>
       </div>
     </q-card-section>
   </q-card>
@@ -45,6 +45,7 @@
 import { computed, defineComponent } from 'vue'
 import { BaseMap, icon as MarkerIcon, MapMarker } from 'components/Map'
 import { colors as StatusColors, createIcon as VehicleMapIcon, size as mapIconSize } from './VehicleMapIcon'
+import { Speed } from 'src/support/measurement-units/speed'
 
 export const MAP_HEIGHT = 200
 
@@ -77,6 +78,11 @@ export default defineComponent({
       required: true
     },
 
+    speed: {
+      type: Speed,
+      required: true
+    },
+
     moving: {
       type: Boolean,
       required: false,
@@ -105,12 +111,14 @@ export default defineComponent({
         .havingWidth(mapIconSize)
         .havingHeight(mapIconSize)
     )
+    const speedInKph = computed(() => Math.round(props.speed.toKph()))
 
     return {
       icon,
       mapCssStyle,
       ignitionAndMovementAwareIcon,
-      ignitionBasedColor
+      ignitionBasedColor,
+      speedInKph
     }
   }
 })

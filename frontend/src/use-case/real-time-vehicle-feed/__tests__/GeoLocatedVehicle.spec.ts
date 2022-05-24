@@ -4,6 +4,7 @@ import { BaseMap, icon as MarkerIcon, MapMarker } from 'components/Map'
 import { ComponentUnderTest } from 'test/support/api'
 import { VueWrapper } from '@vue/test-utils'
 import { colors as StatusColors, createIcon as VehicleMapIcon } from '../VehicleMapIcon'
+import { Speed } from 'src/support/measurement-units/speed'
 
 describe('GeoLocatedVehicle', () => {
   describe('(prop): latitude', () => {
@@ -152,10 +153,36 @@ describe('GeoLocatedVehicle', () => {
     })
   })
 
-  it('should render speed', () => {
-    mountGeoLocatedVehicle()
+  describe('(prop): speed', () => {
+    const speedInKph = [50, 70]
 
-    cy.dataCy('speed').should('have.text', '30 km/h')
+    speedInKph.forEach(speed => {
+      it(`should render ${speed} km/h`, () => {
+        const targetSpeed = Speed.fromKph(speed)
+        mountGeoLocatedVehicle({ speed: targetSpeed })
+
+        speedShouldBe(targetSpeed)
+      })
+    })
+
+    it('should round the actual speed value', () => {
+      const speedWithDecimals = Speed.fromKph(41.93)
+      const roundedSpeed = Speed.fromKph(42)
+
+      mountGeoLocatedVehicle({ speed: speedWithDecimals })
+      speedShouldBe(roundedSpeed)
+    })
+
+    it('should be reactive', () => {
+      const fifty = Speed.fromKph(speedInKph[0])
+      const seventy = Speed.fromKph(speedInKph[1])
+
+      mountGeoLocatedVehicle({ speed: fifty })
+      speedShouldBe(fifty)
+
+      ComponentUnderTest.changeProperties({ speed: seventy })
+      speedShouldBe(seventy)
+    })
   })
 
   describe('(component): BaseMap', () => {
@@ -333,7 +360,8 @@ function mountGeoLocatedVehicle (props?: Record<string, unknown>) {
     latitude: 0,
     longitude: 0,
     licensePlate: 'ZD-TEST',
-    address: 'Test address'
+    address: 'Test address',
+    speed: Speed.fromKph(30)
   }
   const allProps = { ...defaultProps, ...props }
 
@@ -419,4 +447,8 @@ function markerIconShouldBe (expectedIcon: MarkerIcon.SVG) {
     .then(getMapMarker)
     .then(marker => marker.props('icon') as MarkerIcon.SVG)
     .then(icon => expect(icon.toUrl()).to.equal(expectedIcon.toUrl()))
+}
+
+function speedShouldBe (targetSpeed: Speed) {
+  cy.dataCy('speed').should('have.text', `${targetSpeed.toKph()} km/h`)
 }
