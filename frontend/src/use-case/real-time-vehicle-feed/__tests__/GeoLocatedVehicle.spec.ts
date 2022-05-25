@@ -135,24 +135,6 @@ describe('GeoLocatedVehicle', () => {
     })
   })
 
-  describe('(prop): ignition', () => {
-    it('should be false by default', () => {
-      mountGeoLocatedVehicle()
-
-      cy.then(() => Cypress.vueWrapper.props('ignition') as boolean)
-        .then(ignition => expect(ignition).to.equal(false))
-    })
-  })
-
-  describe('(prop): course', () => {
-    it('should be 0 by default', () => {
-      mountGeoLocatedVehicle()
-
-      cy.then(() => Cypress.vueWrapper.props('course') as number)
-        .then(course => expect(course).to.equal(0))
-    })
-  })
-
   describe('(prop): speed', () => {
     const speedInKph = [50, 70]
 
@@ -361,7 +343,10 @@ function mountGeoLocatedVehicle (props?: Record<string, unknown>) {
     longitude: 0,
     licensePlate: 'ZD-TEST',
     address: 'Test address',
-    speed: Speed.fromKph(30)
+    speed: Speed.fromKph(0),
+    moving: false,
+    ignition: false,
+    course: 0
   }
   const allProps = { ...defaultProps, ...props }
 

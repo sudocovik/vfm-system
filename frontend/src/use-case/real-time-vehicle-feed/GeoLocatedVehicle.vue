@@ -85,20 +85,17 @@ export default defineComponent({
 
     moving: {
       type: Boolean,
-      required: false,
-      default: false
+      required: true
     },
 
     ignition: {
       type: Boolean,
-      required: false,
-      default: false
+      required: true
     },
 
     course: {
       type: Number,
-      required: false,
-      default: 0
+      required: true
     }
   },
 
