@@ -1,95 +1,12 @@
 import { describe, expect, it } from '@jest/globals'
-import { PositionList } from '../PositionList'
 import MockAdapter from 'axios-mock-adapter'
 import axios from 'axios'
-import { Speed } from 'src/support/measurement-units/speed'
-import { TraccarPosition } from '../response-schema'
-import { Position } from '../models'
-
-interface ExpectedPosition {
-  id: number
-  vehicleId: number
-  latitude: number
-  longitude: number
-  altitude: number
-  speed: Speed
-  course: number
-  address: string
-  fixationTime: Date
-  sentTime: Date
-  receivedTime: Date
-}
-
-const rawPositions: ({ raw: TraccarPosition, expected: ExpectedPosition })[] = [
-  {
-    raw: {
-      id: 1,
-      deviceId: 1,
-      protocol: 'teltonika',
-      fixTime: '2022-03-16T16:39:00.000+00:00',
-      deviceTime: '2022-03-16T16:39:01.000+00:00',
-      serverTime: '2022-03-16T16:39:05.000+00:00',
-      outdated: false,
-      valid: true,
-      latitude: 44.0901797,
-      longitude: 15.2176099,
-      altitude: 30,
-      speed: 15,
-      course: 270,
-      address: 'My street 1',
-      accuracy: 0,
-      network: {},
-      attributes: {}
-    },
-    expected: {
-      id: 1,
-      vehicleId: 1,
-      latitude: 44.0901797,
-      longitude: 15.2176099,
-      altitude: 30,
-      speed: Speed.fromKnots(15),
-      course: 270,
-      address: 'My street 1',
-      fixationTime: new Date(2022, 2, 16, 16, 39, 0, 0),
-      sentTime: new Date(2022, 2, 16, 16, 39, 1, 0),
-      receivedTime: new Date(2022, 2, 16, 16, 39, 5, 0)
-    }
-  },
-  {
-    raw: {
-      id: 2,
-      deviceId: 2,
-      protocol: 'teltonika',
-      fixTime: '2022-04-12T12:02:02.000+00:00',
-      deviceTime: '2022-04-12T12:02:05.000+00:00',
-      serverTime: '2022-04-12T12:02:07.000+00:00',
-      outdated: false,
-      valid: true,
-      latitude: 44.11660,
-      longitude: 15.27059,
-      altitude: 70,
-      speed: 90,
-      course: 17,
-      address: 'Your street 1',
-      accuracy: 0,
-      network: {},
-      attributes: {}
-    },
-    expected: {
-      id: 2,
-      vehicleId: 2,
-      latitude: 44.11660,
-      longitude: 15.27059,
-      altitude: 70,
-      speed: Speed.fromKnots(90),
-      course: 17,
-      address: 'Your street 1',
-      fixationTime: new Date(2022, 3, 12, 12, 2, 2, 0),
-      sentTime: new Date(2022, 3, 12, 12, 2, 5, 0),
-      receivedTime: new Date(2022, 3, 12, 12, 2, 7, 0)
-    }
-  }
-]
+import {
+  Position,
+  PositionList,
+  TraccarPosition
+} from 'src/backend/VehicleService'
+import { PositionExpectations, PositionFixture, positionFixtures } from '../__fixtures__/positions'
 
 describe('PositionList', () => {
   const positionList = new PositionList()
@@ -103,33 +20,33 @@ describe('PositionList', () => {
       expect(allPositions).toHaveLength(0)
     })
 
-    it.each(rawPositions)('should return single position in array if only one vehicle has sent it\'s position (Index: %#)', async ({ raw, expected }) => {
-      simulateManyPositions([raw])
+    it.each(positionFixtures)('should return single position in array if only one vehicle has sent it\'s position (Index: %#)', async (fixture: PositionFixture) => {
+      const { position: rawPosition, expectations } = fixture
+      simulateManyPositions([rawPosition])
 
       const allPositions = await positionList.fetchAllMostRecent()
       const position = allPositions[0]
 
       expect(allPositions).toHaveLength(1)
-
-      positionShouldEqualTraccarPosition(position, expected)
+      validatePosition(position, expectations)
     })
 
     it('should return multiple positions in array if multiple devices sent their positions', async () => {
-      const rawBackendPositions = rawPositions.map(({ raw }) => raw)
-      const rawExpectedPositions = rawPositions.map(({ expected }) => expected)
+      const rawBackendPositions = positionFixtures.map(({ position }) => position)
+      const rawExpectedPositions = positionFixtures.map(({ expectations }) => expectations)
       simulateManyPositions(rawBackendPositions)
 
       const allPositions = await positionList.fetchAllMostRecent()
 
       expect(allPositions).toHaveLength(rawBackendPositions.length)
 
-      allPositions.forEach((position, i) => positionShouldEqualTraccarPosition(position, rawExpectedPositions[i]))
+      allPositions.forEach((position, i) => validatePosition(position, rawExpectedPositions[i]))
     })
 
     describe('Ignition', function () {
       it('should be false if server sent no data about ignition', async () => {
         const missingIgnitionData = {}
-        const mockedPosition = { ...rawPositions[0].raw, ...{ attributes: missingIgnitionData } }
+        const mockedPosition = { ...positionFixtures[0].position, ...{ attributes: missingIgnitionData } }
         simulateManyPositions([mockedPosition])
 
         const position = (await positionList.fetchAllMostRecent())[0]
@@ -138,7 +55,7 @@ describe('PositionList', () => {
 
       it('should be false if server said ignition is off', async () => {
         const ignitionOff = { ignition: false }
-        const mockedPosition = { ...rawPositions[0].raw, ...{ attributes: ignitionOff } }
+        const mockedPosition = { ...positionFixtures[0].position, ...{ attributes: ignitionOff } }
         simulateManyPositions([mockedPosition])
 
         const position = (await positionList.fetchAllMostRecent())[0]
@@ -147,7 +64,7 @@ describe('PositionList', () => {
 
       it('should be true if server said ignition is on', async () => {
         const ignitionOn = { ignition: true }
-        const mockedPosition = { ...rawPositions[0].raw, ...{ attributes: ignitionOn } }
+        const mockedPosition = { ...positionFixtures[0].position, ...{ attributes: ignitionOn } }
         simulateManyPositions([mockedPosition])
 
         const position = (await positionList.fetchAllMostRecent())[0]
@@ -158,7 +75,7 @@ describe('PositionList', () => {
     describe('Moving', () => {
       it('should be false if server sent no data about motion status', async () => {
         const missingMotionData = {}
-        const mockedPosition = { ...rawPositions[0].raw, ...{ attributes: missingMotionData } }
+        const mockedPosition = { ...positionFixtures[0].position, ...{ attributes: missingMotionData } }
         simulateManyPositions([mockedPosition])
 
         const position = (await positionList.fetchAllMostRecent())[0]
@@ -167,7 +84,7 @@ describe('PositionList', () => {
 
       it('should be false if server said vehicle is stationary', async () => {
         const stationary = { moving: false }
-        const mockedPosition = { ...rawPositions[0].raw, ...{ attributes: stationary } }
+        const mockedPosition = { ...positionFixtures[0].position, ...{ attributes: stationary } }
         simulateManyPositions([mockedPosition])
 
         const position = (await positionList.fetchAllMostRecent())[0]
@@ -176,7 +93,7 @@ describe('PositionList', () => {
 
       it('should be false if server said vehicle is moving', async () => {
         const moving = { moving: true }
-        const mockedPosition = { ...rawPositions[0].raw, ...{ attributes: moving } }
+        const mockedPosition = { ...positionFixtures[0].position, ...{ attributes: moving } }
         simulateManyPositions([mockedPosition])
 
         const position = (await positionList.fetchAllMostRecent())[0]
@@ -194,7 +111,7 @@ function simulateManyPositions (positions: TraccarPosition[]) {
   new MockAdapter(axios).onGet(PositionList.positionEndpoint).reply(200, positions)
 }
 
-function positionShouldEqualTraccarPosition (position: Position, expectedPosition: ExpectedPosition) {
+function validatePosition (position: Position, expectedPosition: PositionExpectations) {
   expect(position).toBeInstanceOf(Position)
   expect(position.id()).toEqual(expectedPosition.id)
   expect(position.vehicleId()).toEqual(expectedPosition.vehicleId)
