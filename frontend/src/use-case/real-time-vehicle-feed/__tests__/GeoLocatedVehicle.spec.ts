@@ -208,6 +208,12 @@ describe('GeoLocatedVehicle', () => {
 
       mapZoomShouldBeMoreThan(closeEnoughToTheGround)
     })
+
+    it('should not render POI', () => {
+      mountGeoLocatedVehicle()
+
+      mapPoiShouldBeDisabled()
+    })
   })
 
   describe('(component): MapMarker', () => {
@@ -439,6 +445,12 @@ function mapZoomShouldBeMoreThan (zoom: number) {
   cy.then(getBaseMap)
     .then(baseMap => cy.wrap(baseMap.props('zoom')))
     .should('be.greaterThan', zoom)
+}
+
+function mapPoiShouldBeDisabled () {
+  cy.then(getBaseMap)
+    .then(baseMap => cy.wrap(baseMap.props('renderPOI')))
+    .should('equal', false)
 }
 
 function markerIconShouldBe (expectedIcon: MarkerIcon.SVG) {

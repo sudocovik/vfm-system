@@ -5,6 +5,7 @@
       :interactive="false"
       :center="{ lat: latitude, lng: longitude }"
       :zoom="17"
+      :render-p-o-i="false"
     >
       <MapMarker
         :latitude="latitude"
