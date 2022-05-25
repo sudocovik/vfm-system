@@ -20,6 +20,7 @@ export class PositionList {
       Speed.fromKnots(position.speed),
       position.address,
       !!position.attributes.ignition,
+      !!position.attributes.moving,
       position.fixTime,
       position.deviceTime,
       position.serverTime

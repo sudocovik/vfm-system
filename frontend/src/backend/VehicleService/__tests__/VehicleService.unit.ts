@@ -252,6 +252,35 @@ describe('VehicleService', () => {
         expect(position.ignition()).toEqual(true)
       })
     })
+
+    describe('Moving', () => {
+      it('should be false if server sent no data about motion status', async () => {
+        const missingMotionData = {}
+        const mockedPosition = { ...rawPositions[0].raw, ...{ attributes: missingMotionData } }
+        simulateManyPositions([mockedPosition])
+
+        const position = (await positionList.fetchAllMostRecent())[0]
+        expect(position.moving()).toEqual(false)
+      })
+
+      it('should be false if server said vehicle is stationary', async () => {
+        const stationary = { moving: false }
+        const mockedPosition = { ...rawPositions[0].raw, ...{ attributes: stationary } }
+        simulateManyPositions([mockedPosition])
+
+        const position = (await positionList.fetchAllMostRecent())[0]
+        expect(position.moving()).toEqual(false)
+      })
+
+      it('should be false if server said vehicle is moving', async () => {
+        const moving = { moving: true }
+        const mockedPosition = { ...rawPositions[0].raw, ...{ attributes: moving } }
+        simulateManyPositions([mockedPosition])
+
+        const position = (await positionList.fetchAllMostRecent())[0]
+        expect(position.moving()).toEqual(true)
+      })
+    })
   })
 })
 

@@ -12,6 +12,7 @@ export class Position {
     private _speed: Speed,
     private _address: string,
     private _ignition: boolean,
+    private _moving: boolean,
     private _fixationTime: string,
     private _sentTime: string,
     private _receivedTime: string
@@ -52,6 +53,10 @@ export class Position {
 
   public ignition (): boolean {
     return this._ignition
+  }
+
+  public moving (): boolean {
+    return this._moving
   }
 
   public fixationTime (): Date {
