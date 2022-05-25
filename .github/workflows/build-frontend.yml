@@ -9,6 +9,8 @@ on:
         required: true
       registry_password:
         required: true
+      google_maps_key:
+        required: true
 
 jobs:
   test-environment:
@@ -105,6 +107,8 @@ jobs:
           password: ${{ secrets.registry_password }}
 
       - name: "Build container image"
+        env:
+          VUE_APP_GOOGLE_MAPS_KEY: ${{ secrets.google_maps_key }}
         run: make
 
       - name: "Push image to GitHub Container Registry"

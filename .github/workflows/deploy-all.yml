@@ -25,6 +25,7 @@ jobs:
       registry_url: ghcr.io
       registry_username: ${{ github.repository_owner }}
       registry_password: ${{ secrets.GHCR_TOKEN }}
+      google_maps_key: ${{ secrets.GOOGLE_MAPS_KEY }}
 
   deploy-infrastructure:
     name: "Infrastructure"
