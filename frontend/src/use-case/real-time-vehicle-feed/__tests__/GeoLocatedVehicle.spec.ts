@@ -200,6 +200,14 @@ describe('GeoLocatedVehicle', () => {
 
       mapInteractivityShouldBe(false)
     })
+
+    it('should have zoom close enough to the ground', () => {
+      const closeEnoughToTheGround = 16
+
+      mountGeoLocatedVehicle()
+
+      mapZoomShouldBeMoreThan(closeEnoughToTheGround)
+    })
   })
 
   describe('(component): MapMarker', () => {
@@ -425,6 +433,12 @@ function mapInteractivityShouldBe (expectedInteractivity: boolean) {
   cy.then(getBaseMap)
     .then(baseMap => cy.wrap(baseMap.props('interactive')))
     .should('equal', expectedInteractivity)
+}
+
+function mapZoomShouldBeMoreThan (zoom: number) {
+  cy.then(getBaseMap)
+    .then(baseMap => cy.wrap(baseMap.props('zoom')))
+    .should('be.greaterThan', zoom)
 }
 
 function markerIconShouldBe (expectedIcon: MarkerIcon.SVG) {

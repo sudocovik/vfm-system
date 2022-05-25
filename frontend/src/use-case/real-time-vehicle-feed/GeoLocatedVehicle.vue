@@ -4,6 +4,7 @@
       :style="mapCssStyle"
       :interactive="false"
       :center="{ lat: latitude, lng: longitude }"
+      :zoom="17"
     >
       <MapMarker
         :latitude="latitude"
