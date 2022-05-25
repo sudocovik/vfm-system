@@ -30,6 +30,6 @@ export class InputField {
   }
 
   private static findComponent (this: void): InputComponent {
-    return Cypress.vueWrapper.findComponent(QInput)
+    return Cypress.vueWrapper.findComponent(QInput) as InputComponent
   }
 }
