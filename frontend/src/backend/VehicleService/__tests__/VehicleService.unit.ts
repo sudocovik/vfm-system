@@ -16,6 +16,7 @@ import {
 import MockAdapter from 'axios-mock-adapter'
 import axios from 'axios'
 import { Speed } from 'src/support/measurement-units/speed'
+const axiosMock = new MockAdapter(axios)
 
 interface ExpectedPosition {
   id: number
@@ -102,102 +103,91 @@ const rawPositions: ({ raw: TraccarPosition, expected: ExpectedPosition })[] = [
   }
 ]
 
-describe('VehicleService', () => {
-  describe('VehicleList', () => {
-    const vehicleList = new VehicleList()
+describe('VehicleList', () => {
+  const vehicleList = new VehicleList()
 
-    describe('fetchAllWithoutPositions', () => {
-      it('should return empty array if user has no vehiclesWithoutPosition', async () => {
-        simulateUserHasNoVehicles()
-        const vehicles = await vehicleList.fetchAllWithoutPositions()
+  describe('fetchAllWithoutPositions', () => {
+    it('should return empty array if user has no vehiclesWithoutPosition', async () => {
+      simulateUserHasNoVehicles()
+      const vehicles = await vehicleList.fetchAllWithoutPositions()
 
-        expect(vehicles).toBeInstanceOf(Array)
-        expect(vehicles).toHaveLength(0)
-      })
-
-      it.each(vehiclesWithoutPosition)('should return single vehicle in array if user has only one device (Index: %#)', async (expectedVehicle: TraccarDevice) => {
-        simulateUserHasVehicles([expectedVehicle])
-
-        const vehicles = await vehicleList.fetchAllWithoutPositions()
-        const actualVehicle = vehicles[0]
-
-        expect(vehicles).toHaveLength(1)
-        vehicleShouldEqualTraccarDevice(actualVehicle, expectedVehicle)
-      })
-
-      it('should return multiple vehicles in array if user has multiple devices', async () => {
-        simulateUserHasVehicles(vehiclesWithoutPosition)
-
-        const vehicles = await vehicleList.fetchAllWithoutPositions()
-
-        expect(vehicles).toHaveLength(vehicles.length)
-        vehicles.forEach((vehicle, i) => vehicleShouldEqualTraccarDevice(vehicle, vehiclesWithoutPosition[i]))
-      })
+      expect(vehicles).toBeInstanceOf(Array)
+      expect(vehicles).toHaveLength(0)
     })
 
-    describe('fetchAll', () => {
-      it('should return empty array if user has zero vehicles', async () => {
-        simulateUserHasNoVehicles()
-        simulateNoPositions()
+    it.each(vehiclesWithoutPosition)('should return single vehicle in array if user has only one device (Index: %#)', async (expectedVehicle: TraccarDevice) => {
+      simulateUserHasVehiclesWithoutPosition([expectedVehicle])
 
-        const vehicles = await vehicleList.fetchAll()
+      const vehicles = await vehicleList.fetchAllWithoutPositions()
+      const actualVehicle = vehicles[0]
 
-        expect(vehicles).toBeInstanceOf(Array)
-        expect(vehicles).toHaveLength(0)
-      })
+      expect(vehicles).toHaveLength(1)
+      validateVehicleWithoutPosition(actualVehicle, expectedVehicle)
+    })
 
-      it('should return empty array if user has zero vehicles but has some positions', async () => {
-        // This is a behaviour which should never happen in production
-        // but having extra checks does not cost anything significant
-        simulateUserHasNoVehicles()
-        simulateManyPositions(rawPositions.map(({ raw }) => raw))
+    it('should return multiple vehicles in array if user has multiple devices', async () => {
+      simulateUserHasVehiclesWithoutPosition(vehiclesWithoutPosition)
 
-        const vehicles = await vehicleList.fetchAll()
+      const vehicles = await vehicleList.fetchAllWithoutPositions()
 
-        expect(vehicles).toBeInstanceOf(Array)
-        expect(vehicles).toHaveLength(0)
-      })
+      expect(vehicles).toHaveLength(vehicles.length)
+      vehicles.forEach((vehicle, i) => validateVehicleWithoutPosition(vehicle, vehiclesWithoutPosition[i]))
+    })
+  })
 
-      it.each(vehiclesWithPositions)('should return single vehicle with position if user has single vehicle which works properly', async (vehicleMock: VehicleWithPositionFixture) => {
-        const { vehicle, position, expectations } = vehicleMock
+  describe('fetchAll', () => {
+    it('should return empty array if user has zero vehicles', async () => {
+      simulateUserHasNoVehicles()
 
-        simulateUserHasVehicles([vehicle])
-        simulateManyPositions([position])
+      const vehicles = await vehicleList.fetchAll()
 
-        const vehicles = await vehicleList.fetchAll()
-        const actualVehicle = vehicles[0]
+      expect(vehicles).toBeInstanceOf(Array)
+      expect(vehicles).toHaveLength(0)
+    })
 
-        validateGeoLocatedVehicle(actualVehicle, expectations)
-      })
+    it('should return empty array if user has zero vehicles but has some positions', async () => {
+      // This is a behaviour which should never happen in production
+      // but having extra checks does not cost anything significant
+      simulateNoVehiclesButManyPositions(rawPositions.map(({ raw }) => raw))
 
-      it('should return two vehicles with their position if user has two vehicles working properly', async () => {
-        const [first, second] = vehiclesWithPositions
-        const { vehicle: firstVehicle, position: firstPosition, expectations: firstExpectations } = first
-        const { vehicle: secondVehicle, position: secondPosition, expectations: secondExpectations } = second
+      const vehicles = await vehicleList.fetchAll()
 
-        simulateUserHasVehicles([firstVehicle, secondVehicle])
-        simulateManyPositions([firstPosition, secondPosition])
+      expect(vehicles).toBeInstanceOf(Array)
+      expect(vehicles).toHaveLength(0)
+    })
 
-        const vehicles = await vehicleList.fetchAll()
+    it.each(vehiclesWithPositions)('should return single vehicle with position if user has single vehicle which works properly', async (expectedVehicle: VehicleWithPositionFixture) => {
+      simulateUserHasVehiclesWithPositions([expectedVehicle])
 
-        expect(vehicles).toHaveLength(2)
-        validateGeoLocatedVehicle(vehicles[0], firstExpectations)
-        validateGeoLocatedVehicle(vehicles[1], secondExpectations)
-      })
+      const vehicles = await vehicleList.fetchAll()
+      const actualVehicle = vehicles[0]
+
+      validateGeoLocatedVehicle(actualVehicle, expectedVehicle.expectations)
+    })
+
+    it('should return two vehicles with their position if user has two vehicles working properly', async () => {
+      const [first, second] = vehiclesWithPositions
+      simulateUserHasVehiclesWithPositions([first, second])
+
+      const vehicles = await vehicleList.fetchAll()
+
+      expect(vehicles).toHaveLength(2)
+      validateGeoLocatedVehicle(vehicles[0], first.expectations)
+      validateGeoLocatedVehicle(vehicles[1], second.expectations)
     })
   })
 })
 
-const axiosMock = new MockAdapter(axios)
 function simulateUserHasNoVehicles () {
   axiosMock.onGet(VehicleList.vehicleEndpoint).reply(200, [])
+  axiosMock.onGet(PositionList.positionEndpoint).reply(200, [])
 }
 
-function simulateUserHasVehicles (vehicles: TraccarDevice[]) {
+function simulateUserHasVehiclesWithoutPosition (vehicles: TraccarDevice[]) {
   axiosMock.onGet(VehicleList.vehicleEndpoint).reply(200, vehicles)
 }
 
-function vehicleShouldEqualTraccarDevice (actualVehicle: VehicleWithoutPosition, expectedVehicle: TraccarDevice) {
+function validateVehicleWithoutPosition (actualVehicle: VehicleWithoutPosition, expectedVehicle: TraccarDevice) {
   expect(actualVehicle).toBeInstanceOf(VehicleWithoutPosition)
   expect(actualVehicle.id()).toEqual(expectedVehicle.id)
   expect(actualVehicle.licensePlate()).toEqual(expectedVehicle.name)
@@ -206,11 +196,16 @@ function vehicleShouldEqualTraccarDevice (actualVehicle: VehicleWithoutPosition,
   expect(actualVehicle.isOffline()).toEqual(expectedVehicle.status === 'offline')
 }
 
-function simulateNoPositions () {
-  axiosMock.onGet(PositionList.positionEndpoint).reply(200, [])
+function simulateNoVehiclesButManyPositions (positions: TraccarPosition[]) {
+  axiosMock.onGet(VehicleList.vehicleEndpoint).reply(200, [])
+  axiosMock.onGet(PositionList.positionEndpoint).reply(200, positions)
 }
 
-function simulateManyPositions (positions: TraccarPosition[]) {
+function simulateUserHasVehiclesWithPositions (vehiclesWithPosition: VehicleWithPositionFixture[]) {
+  const vehicles = vehiclesWithPosition.map(({ vehicle }) => vehicle)
+  const positions = vehiclesWithPosition.map(({ position }) => position)
+
+  axiosMock.onGet(VehicleList.vehicleEndpoint).reply(200, vehicles)
   axiosMock.onGet(PositionList.positionEndpoint).reply(200, positions)
 }
 
