@@ -36,8 +36,8 @@ export const GESTURE_HANDLING = {
 }
 
 export const POI_VISIBILITY = {
-  VISIBLE: 'yes',
-  INVISIBLE: 'no'
+  VISIBLE: 'on',
+  INVISIBLE: 'off'
 }
 
 export default defineComponent({
