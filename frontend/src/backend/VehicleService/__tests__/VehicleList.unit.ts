@@ -1,4 +1,6 @@
 import { describe, expect, it } from '@jest/globals'
+import MockAdapter from 'axios-mock-adapter'
+import axios from 'axios'
 import {
   GeoLocatedVehicle,
   PositionList,
@@ -7,15 +9,14 @@ import {
   VehicleList,
   VehicleWithoutPosition
 } from 'src/backend/VehicleService'
+import { Speed } from 'src/support/measurement-units/speed'
 import { vehiclesWithoutPosition } from '../__fixtures__/vehicles-without-position'
 import {
   vehiclesWithPositions,
   VehicleWithPositionExpectations,
   VehicleWithPositionFixture
 } from '../__fixtures__/vehicles-with-position'
-import MockAdapter from 'axios-mock-adapter'
-import axios from 'axios'
-import { Speed } from 'src/support/measurement-units/speed'
+
 const axiosMock = new MockAdapter(axios)
 
 interface ExpectedPosition {
