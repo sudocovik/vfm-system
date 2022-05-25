@@ -3,7 +3,7 @@
     no-caps
     active-color="primary"
     indicator-color="transparent"
-    class="bg-white text-grey-9"
+    class="bg-grey-2 text-grey-9 shadow-3"
   >
     <q-route-tab
       to="/"
