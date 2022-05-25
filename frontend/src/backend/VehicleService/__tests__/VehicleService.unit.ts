@@ -232,53 +232,53 @@ describe('VehicleService', () => {
           const position = (await positionList.fetchAllMostRecent())[0]
           expect(position.ignition()).toEqual(false)
         })
+
+        it('should be false if server said ignition is off', async () => {
+          const ignitionOff = { ignition: false }
+          const mockedPosition = { ...rawPositions[0].raw, ...{ attributes: ignitionOff } }
+          simulateManyPositions([mockedPosition])
+
+          const position = (await positionList.fetchAllMostRecent())[0]
+          expect(position.ignition()).toEqual(false)
+        })
+
+        it('should be true if server said ignition is on', async () => {
+          const ignitionOn = { ignition: true }
+          const mockedPosition = { ...rawPositions[0].raw, ...{ attributes: ignitionOn } }
+          simulateManyPositions([mockedPosition])
+
+          const position = (await positionList.fetchAllMostRecent())[0]
+          expect(position.ignition()).toEqual(true)
+        })
       })
 
-      it('should be false if server said ignition is off', async () => {
-        const ignitionOff = { ignition: false }
-        const mockedPosition = { ...rawPositions[0].raw, ...{ attributes: ignitionOff } }
-        simulateManyPositions([mockedPosition])
+      describe('Moving', () => {
+        it('should be false if server sent no data about motion status', async () => {
+          const missingMotionData = {}
+          const mockedPosition = { ...rawPositions[0].raw, ...{ attributes: missingMotionData } }
+          simulateManyPositions([mockedPosition])
 
-        const position = (await positionList.fetchAllMostRecent())[0]
-        expect(position.ignition()).toEqual(false)
-      })
+          const position = (await positionList.fetchAllMostRecent())[0]
+          expect(position.moving()).toEqual(false)
+        })
 
-      it('should be true if server said ignition is on', async () => {
-        const ignitionOn = { ignition: true }
-        const mockedPosition = { ...rawPositions[0].raw, ...{ attributes: ignitionOn } }
-        simulateManyPositions([mockedPosition])
+        it('should be false if server said vehicle is stationary', async () => {
+          const stationary = { moving: false }
+          const mockedPosition = { ...rawPositions[0].raw, ...{ attributes: stationary } }
+          simulateManyPositions([mockedPosition])
 
-        const position = (await positionList.fetchAllMostRecent())[0]
-        expect(position.ignition()).toEqual(true)
-      })
-    })
+          const position = (await positionList.fetchAllMostRecent())[0]
+          expect(position.moving()).toEqual(false)
+        })
 
-    describe('Moving', () => {
-      it('should be false if server sent no data about motion status', async () => {
-        const missingMotionData = {}
-        const mockedPosition = { ...rawPositions[0].raw, ...{ attributes: missingMotionData } }
-        simulateManyPositions([mockedPosition])
+        it('should be false if server said vehicle is moving', async () => {
+          const moving = { moving: true }
+          const mockedPosition = { ...rawPositions[0].raw, ...{ attributes: moving } }
+          simulateManyPositions([mockedPosition])
 
-        const position = (await positionList.fetchAllMostRecent())[0]
-        expect(position.moving()).toEqual(false)
-      })
-
-      it('should be false if server said vehicle is stationary', async () => {
-        const stationary = { moving: false }
-        const mockedPosition = { ...rawPositions[0].raw, ...{ attributes: stationary } }
-        simulateManyPositions([mockedPosition])
-
-        const position = (await positionList.fetchAllMostRecent())[0]
-        expect(position.moving()).toEqual(false)
-      })
-
-      it('should be false if server said vehicle is moving', async () => {
-        const moving = { moving: true }
-        const mockedPosition = { ...rawPositions[0].raw, ...{ attributes: moving } }
-        simulateManyPositions([mockedPosition])
-
-        const position = (await positionList.fetchAllMostRecent())[0]
-        expect(position.moving()).toEqual(true)
+          const position = (await positionList.fetchAllMostRecent())[0]
+          expect(position.moving()).toEqual(true)
+        })
       })
     })
   })
