@@ -40,7 +40,7 @@ export function createIcon (moving = false, ignition = false, rotationInDegrees 
   const rotation = moving ? rotationInDegrees : 0
   const { stroke, fill } = colors[ignition ? 'green' : 'yellow']
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}">
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">
     <g data-cy="rotation-group" transform="rotate(${rotation} ${radius} ${radius})">
         <circle cx="${centerX}" cy="${centerY}" data-cy="background-stroke" r="${radius}" fill="#aaaaaa" />
         <circle cx="${centerX}" cy="${centerY}" data-cy="background-fill" r="${radius - 1}" fill="#ebebeb" />

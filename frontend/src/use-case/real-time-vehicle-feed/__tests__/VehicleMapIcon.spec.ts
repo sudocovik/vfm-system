@@ -1,12 +1,12 @@
 import {
-  colors,
-  createIcon,
   centerX,
   centerY,
+  colors,
+  createIcon,
   radius,
   size,
-  stopIndicatorSize,
-  stopIndicatorCenter
+  stopIndicatorCenter,
+  stopIndicatorSize
 } from '../VehicleMapIcon'
 
 describe('VehicleMapIcon', () => {
@@ -38,13 +38,15 @@ describe('VehicleMapIcon', () => {
       })
     })
 
-    specify('viewBox should be 32 pixels wide and high', () => {
+    it('should be 32 pixels wide and high', () => {
       const wantedSize = `${size} ${size}`
 
       const icon = createIcon()
       mountIcon(icon)
 
-      cy.get('svg').should('have.attr', 'viewBox').then((viewBox: unknown) => {
+      cy.get('svg').as('root').should('have.attr', 'width', size)
+      cy.get('@root').should('have.attr', 'height', size)
+      cy.get('@root').should('have.attr', 'viewBox').then((viewBox: unknown) => {
         expect((viewBox as string).endsWith(wantedSize)).to.equal(true)
       })
     })
