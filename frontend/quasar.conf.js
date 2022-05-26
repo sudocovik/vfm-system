@@ -51,7 +51,7 @@ module.exports = configure(function (ctx) {
       vueRouterMode: 'history', // available values: 'hash', 'history'
 
       env: ctx.dev ? getEnvFromFile() : {
-        VUE_APP_GOOGLE_MAPS_KEY: process.env.VUE_APP_GOOGLE_MAPS_KEY
+        GOOGLE_MAPS_KEY: process.env.GOOGLE_MAPS_KEY
       },
 
       // transpile: false,

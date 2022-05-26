@@ -108,7 +108,7 @@ jobs:
 
       - name: "Build container image"
         env:
-          VUE_APP_GOOGLE_MAPS_KEY: ${{ secrets.google_maps_key }}
+          GOOGLE_MAPS_KEY: ${{ secrets.google_maps_key }}
         run: make
 
       - name: "Push image to GitHub Container Registry"
