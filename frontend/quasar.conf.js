@@ -11,6 +11,10 @@
 const { configure } = require('quasar/wrappers')
 const path = require('path')
 
+function getEnvFromFile () {
+  return require('dotenv').config().parsed
+}
+
 module.exports = configure(function (ctx) {
   return {
     // https://quasar.dev/quasar-cli/supporting-ts
@@ -46,7 +50,9 @@ module.exports = configure(function (ctx) {
     build: {
       vueRouterMode: 'history', // available values: 'hash', 'history'
 
-      env: require('dotenv').config().parsed,
+      env: ctx.dev ? getEnvFromFile() : {
+        VUE_APP_GOOGLE_MAPS_KEY: process.env.VUE_APP_GOOGLE_MAPS_KEY
+      },
 
       // transpile: false,
       // publicPath: '/',

@@ -17,6 +17,8 @@ COPY . .
 
 
 FROM base AS production-artifact
+ARG google_maps_key
+ENV VUE_APP_GOOGLE_MAPS_KEY=$google_maps_key
 WORKDIR /build
 COPY --from=source /source /build
 RUN npx quasar build -m pwa

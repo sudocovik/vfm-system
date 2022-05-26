@@ -5,7 +5,10 @@ TEST_ENVIRONMENT_IMAGE_NAME=ghcr.io/covik/vfm-frontend-testing:$(IMAGE_VERSION)
 .PHONY: *
 
 build:
-	DOCKER_BUILDKIT=1 docker build . --target=production-server --tag=$(IMAGE_NAME)
+	DOCKER_BUILDKIT=1 docker build . \
+		--build-arg google_maps_key=$(VUE_APP_GOOGLE_MAPS_KEY)  \
+		--target=production-server \
+		--tag=$(IMAGE_NAME)
 
 push:
 	docker push $(IMAGE_NAME)
