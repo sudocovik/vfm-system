@@ -141,8 +141,8 @@ describe('BaseMap', () => {
   describe('(prop): renderPOI', () => {
     const { INVISIBLE, VISIBLE } = POI_VISIBILITY as { INVISIBLE: string, VISIBLE: string }
     const renderPOIStates = [
-      { renderPOI: false, expectedVisibility: INVISIBLE },
-      { renderPOI: true, expectedVisibility: VISIBLE }
+      { renderPOI: false, expectedVisibility: INVISIBLE, iconsClickable: false },
+      { renderPOI: true, expectedVisibility: VISIBLE, iconsClickable: true }
     ]
     const defaultState = renderPOIStates[1]
 
@@ -150,15 +150,15 @@ describe('BaseMap', () => {
       mountMap()
 
       cy.then(() => expect(Cypress.vueWrapper.props('renderPOI')).to.equal(defaultState.renderPOI))
-      poiVisibilityShouldBe(defaultState.expectedVisibility)
+      poiVisibilityShouldBe(defaultState.expectedVisibility, defaultState.iconsClickable)
     })
 
     describe('should correctly configure \'styles\' property of the GoogleMap component', () => {
-      renderPOIStates.forEach(({ renderPOI, expectedVisibility }, i) => {
+      renderPOIStates.forEach(({ renderPOI, expectedVisibility, iconsClickable }, i) => {
         it(`case ${i + 1}: renderPOI = ${String(renderPOI)}`, () => {
           mountMap({ renderPOI })
 
-          poiVisibilityShouldBe(expectedVisibility)
+          poiVisibilityShouldBe(expectedVisibility, iconsClickable)
         })
       })
     })
@@ -167,10 +167,10 @@ describe('BaseMap', () => {
       const firstState = renderPOIStates[0]
       const secondState = renderPOIStates[1]
       mountMap({ renderPOI: firstState.renderPOI })
-      poiVisibilityShouldBe(firstState.expectedVisibility)
+      poiVisibilityShouldBe(firstState.expectedVisibility, firstState.iconsClickable)
 
       ComponentUnderTest.changeProperties({ renderPOI: secondState.renderPOI })
-      poiVisibilityShouldBe(secondState.expectedVisibility)
+      poiVisibilityShouldBe(secondState.expectedVisibility, secondState.iconsClickable)
     })
   })
 
@@ -248,7 +248,7 @@ function mountMap (props?: Record<string, unknown>) {
     global: {
       stubs: {
         GoogleMap: {
-          props: ['center', 'zoom', 'disableDefaultUi', 'gestureHandling', 'styles', 'apiKey']
+          props: ['center', 'zoom', 'disableDefaultUi', 'gestureHandling', 'styles', 'apiKey', 'clickableIcons']
         }
       }
     },
@@ -325,7 +325,7 @@ function getTransitStyles () {
   return { transitStyling, transitVisibility }
 }
 
-function poiVisibilityShouldBe (visibility: string) {
+function poiVisibilityShouldBe (visibility: string, areIconsClickable: boolean) {
   cy.then(() => {
     const { poiStyling, poiVisibility } = getPoiStyles()
 
@@ -339,6 +339,11 @@ function poiVisibilityShouldBe (visibility: string) {
     expect(transitStyling).to.have.property('elementType', 'all')
     expect(transitVisibility).to.equal(visibility)
   })
+
+  cy.then(getGoogleMap)
+    .then(map => map.props('clickableIcons') as boolean)
+    .then(clickableIcons => cy.wrap(clickableIcons))
+    .should('equal', areIconsClickable)
 }
 
 function mapCssClassesShouldBe (classNames: string) {

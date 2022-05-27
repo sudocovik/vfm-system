@@ -4,6 +4,7 @@
     :zoom="zoom"
     :disable-default-ui="areUiControlsDisabled"
     :gesture-handling="gestureHandling"
+    :clickable-icons="renderPOI"
     :styles="styles"
     :api-key="apiKey"
     :class="$attrs.class"
