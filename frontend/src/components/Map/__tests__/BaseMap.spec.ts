@@ -317,12 +317,27 @@ function getPoiStyles () {
   return { poiStyling, poiVisibility }
 }
 
+function getTransitStyles () {
+  const allStyles = <google.maps.MapTypeStyle[]>(getGoogleMap().props('styles'))
+  const transitStyling = allStyles.find(({ featureType }) => featureType === 'transit')
+  const transitVisibility = (transitStyling?.stylers[0] as { visibility: string }).visibility
+
+  return { transitStyling, transitVisibility }
+}
+
 function poiVisibilityShouldBe (visibility: string) {
   cy.then(() => {
     const { poiStyling, poiVisibility } = getPoiStyles()
 
     expect(poiStyling).to.have.property('elementType', 'labels')
     expect(poiVisibility).to.equal(visibility)
+  })
+
+  cy.then(() => {
+    const { transitStyling, transitVisibility } = getTransitStyles()
+
+    expect(transitStyling).to.have.property('elementType', 'all')
+    expect(transitVisibility).to.equal(visibility)
   })
 }
 

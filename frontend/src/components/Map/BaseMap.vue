@@ -81,6 +81,12 @@ export default defineComponent({
       stylers: [
         { visibility: props.renderPOI ? POI_VISIBILITY.VISIBLE : POI_VISIBILITY.INVISIBLE }
       ]
+    }, {
+      featureType: 'transit',
+      elementType: 'all',
+      stylers: [
+        { visibility: props.renderPOI ? POI_VISIBILITY.VISIBLE : POI_VISIBILITY.INVISIBLE }
+      ]
     }])
 
     const apiKey = GoogleMapOptions.apiKey()
