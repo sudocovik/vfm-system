@@ -4,6 +4,9 @@
       {{ title }}
     </div>
 
+    <VehicleSkeletonLoader class="q-mt-md" />
+    <VehicleSkeletonLoader class="q-mt-md" />
+
     <GeoLocatedVehicle
       license-plate="ZD547GC"
       address="Ulica Ante Starčevića 2, 23000 Zadar, HR"
@@ -13,6 +16,7 @@
       :moving="false"
       :course="50"
       :speed="Speed.fromKnots(0)"
+      class="q-mt-md"
     />
 
     <GeoLocatedVehicle
@@ -54,10 +58,15 @@ import ListOfNotInstalledVehicles from './ListOfNotInstalledVehicles.vue'
 import { VehicleWithoutPosition } from '../../backend/VehicleService'
 import GeoLocatedVehicle from './GeoLocatedVehicle.vue'
 import { Speed } from 'src/support/measurement-units/speed'
+import VehicleSkeletonLoader from './VehicleSkeletonLoader.vue'
 
 export default defineComponent({
   name: 'RealTimeVehicleFeedPage',
-  components: { GeoLocatedVehicle, ListOfNotInstalledVehicles },
+  components: {
+    VehicleSkeletonLoader,
+    GeoLocatedVehicle,
+    ListOfNotInstalledVehicles
+  },
   setup () {
     const title = t('vehicles')
 
