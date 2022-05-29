@@ -3,6 +3,7 @@ import RealTimeVehicleFeedPage from '../RealTimeVehicleFeedPage.vue'
 import routes from 'src/router/routes'
 import { mount } from '@cypress/vue'
 import { QPage } from 'quasar'
+import VehicleSkeletonLoader from '../VehicleSkeletonLoader.vue'
 
 describe('RealTimeVehicleFeedPage', () => {
   inAllLanguages.it('should have a title', (t) => {
@@ -32,11 +33,26 @@ describe('RealTimeVehicleFeedPage', () => {
       .then(exists => cy.wrap(exists))
       .should('equal', true)
   })
+
+  describe('States', () => {
+    describe('Loading state', () => {
+      it('should render two skeleton loaders', () => {
+        mountRealTimeVehicleFeedPage()
+
+        cy.then(() => Cypress.vueWrapper.findAllComponents(VehicleSkeletonLoader))
+          .then(skeletons => console.log(skeletons))
+          .then(skeletons => skeletons.length)
+          .then(count => cy.wrap(count))
+          .should('equal', 2)
+      })
+    })
+  })
 })
 
 function mountRealTimeVehicleFeedPage () {
   mount(RealTimeVehicleFeedPage, {
     global: {
+      renderStubDefaultSlot: true,
       stubs: {
         QPage: true
       }
