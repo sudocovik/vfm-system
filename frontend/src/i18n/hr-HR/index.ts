@@ -11,5 +11,7 @@ export default {
   'general-application-error': 'Neočekivana greška u aplikaciji. Pokušajte ponovo.',
   vehicles: 'Vozila',
   'ordering-gps-trackers': 'Naručujemo GPS uređaje',
-  'gps-ordering-notification': 'Biti ćete obaviješteni kad stignu i kad ih instaliramo u vozila.'
+  'gps-ordering-notification': 'Biti ćete obaviješteni kad stignu i kad ih instaliramo u vozila.',
+  'failed-to-fetch-data': 'Učitavanje podataka nije uspjelo',
+  retry: 'Pokušaj ponovo'
 }

@@ -11,5 +11,7 @@ export default {
   'general-application-error': 'Unexpected application error. Try again.',
   vehicles: 'Vehicles',
   'ordering-gps-trackers': 'Ordering GPS trackers',
-  'gps-ordering-notification': 'You will be notified once they arrive and are installed in vehicles.'
+  'gps-ordering-notification': 'You will be notified once they arrive and are installed in vehicles.',
+  'failed-to-fetch-data': 'Failed to fetch data',
+  retry: 'Retry'
 }
