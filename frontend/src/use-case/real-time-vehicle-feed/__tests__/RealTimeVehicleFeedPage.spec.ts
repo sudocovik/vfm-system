@@ -2,6 +2,7 @@ import { inAllLanguages } from 'test/support/api'
 import RealTimeVehicleFeedPage from '../RealTimeVehicleFeedPage.vue'
 import routes from 'src/router/routes'
 import { mount } from '@cypress/vue'
+import { QPage } from 'quasar'
 
 describe('RealTimeVehicleFeedPage', () => {
   inAllLanguages.it('should have a title', (t) => {
@@ -22,8 +23,23 @@ describe('RealTimeVehicleFeedPage', () => {
       expect((await route.component()).default).to.equal(RealTimeVehicleFeedPage)
     })
   })
+
+  it('should be a page', () => {
+    mountRealTimeVehicleFeedPage()
+
+    cy.then(() => Cypress.vueWrapper.findComponent(QPage))
+      .then(component => component.exists())
+      .then(exists => cy.wrap(exists))
+      .should('equal', true)
+  })
 })
 
 function mountRealTimeVehicleFeedPage () {
-  mount(RealTimeVehicleFeedPage)
+  mount(RealTimeVehicleFeedPage, {
+    global: {
+      stubs: {
+        QPage: true
+      }
+    }
+  })
 }
