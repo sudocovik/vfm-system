@@ -34,4 +34,12 @@
   </q-card>
 </template>
 
-<script lang="ts" setup>import { MAP_HEIGHT } from './GeoLocatedVehicle.vue'</script>
+<script lang="ts">
+export default {
+  name: 'VehicleSkeletonLoader'
+}
+</script>
+
+<script lang="ts" setup>
+import { MAP_HEIGHT } from './GeoLocatedVehicle.vue'
+</script>
