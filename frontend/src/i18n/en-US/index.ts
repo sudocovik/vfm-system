@@ -9,5 +9,7 @@ export default {
   'general-server-error': 'Unexpected server error. Try again.',
   'network-error': 'Problem with the network. Check your internet connection and try again.',
   'general-application-error': 'Unexpected application error. Try again.',
-  vehicles: 'Vehicles'
+  vehicles: 'Vehicles',
+  'ordering-gps-trackers': 'Ordering GPS trackers',
+  'gps-ordering-notification': 'You will be notified once they arrive and are installed in vehicles.'
 }

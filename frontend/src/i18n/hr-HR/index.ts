@@ -9,5 +9,7 @@ export default {
   'general-server-error': 'Neočekivana greška na serveru. Pokušajte ponovo.',
   'network-error': 'Problem s mrežom. Provjerite internetsku vezu i pokušajte ponovno.',
   'general-application-error': 'Neočekivana greška u aplikaciji. Pokušajte ponovo.',
-  vehicles: 'Vozila'
+  vehicles: 'Vozila',
+  'ordering-gps-trackers': 'Naručujemo GPS uređaje',
+  'gps-ordering-notification': 'Biti ćete obaviješteni kad stignu i kad ih instaliramo u vozila.'
 }
