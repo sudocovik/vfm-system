@@ -40,7 +40,6 @@ describe('RealTimeVehicleFeedPage', () => {
         mountRealTimeVehicleFeedPage()
 
         cy.then(() => Cypress.vueWrapper.findAllComponents(VehicleSkeletonLoader))
-          .then(skeletons => console.log(skeletons))
           .then(skeletons => skeletons.length)
           .then(count => cy.wrap(count))
           .should('equal', 2)
