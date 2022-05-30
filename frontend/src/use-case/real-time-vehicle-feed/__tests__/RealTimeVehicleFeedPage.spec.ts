@@ -4,6 +4,7 @@ import routes from 'src/router/routes'
 import { mount } from '@cypress/vue'
 import { QPage } from 'quasar'
 import VehicleSkeletonLoader from '../VehicleSkeletonLoader.vue'
+import NoVehiclesFound from '../NoVehiclesFound.vue'
 
 describe('RealTimeVehicleFeedPage', () => {
   inAllLanguages.it('should have a title', (t) => {
@@ -43,6 +44,17 @@ describe('RealTimeVehicleFeedPage', () => {
           .then(skeletons => skeletons.length)
           .then(count => cy.wrap(count))
           .should('equal', 2)
+      })
+    })
+
+    describe('Empty state', () => {
+      it('should render NoVehiclesFound component', () => {
+        mountRealTimeVehicleFeedPage()
+
+        cy.then(() => Cypress.vueWrapper.findComponent(NoVehiclesFound))
+          .then(noVehiclesFound => noVehiclesFound.exists())
+          .then(exists => cy.wrap(exists))
+          .should('equal', true)
       })
     })
   })
