@@ -5,6 +5,7 @@ import { mount } from '@cypress/vue'
 import { QPage } from 'quasar'
 import VehicleSkeletonLoader from '../VehicleSkeletonLoader.vue'
 import NoVehiclesFound from '../NoVehiclesFound.vue'
+import FailedToFetchData from 'components/FailedToFetchData.vue'
 
 describe('RealTimeVehicleFeedPage', () => {
   inAllLanguages.it('should have a title', (t) => {
@@ -52,6 +53,17 @@ describe('RealTimeVehicleFeedPage', () => {
         mountRealTimeVehicleFeedPage()
 
         cy.then(() => Cypress.vueWrapper.findComponent(NoVehiclesFound))
+          .then(noVehiclesFound => noVehiclesFound.exists())
+          .then(exists => cy.wrap(exists))
+          .should('equal', true)
+      })
+    })
+
+    describe('Error state', () => {
+      it('should render FailedToFetchData component', () => {
+        mountRealTimeVehicleFeedPage()
+
+        cy.then(() => Cypress.vueWrapper.findComponent(FailedToFetchData))
           .then(noVehiclesFound => noVehiclesFound.exists())
           .then(exists => cy.wrap(exists))
           .should('equal', true)

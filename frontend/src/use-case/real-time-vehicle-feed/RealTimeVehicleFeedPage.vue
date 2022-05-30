@@ -3,6 +3,7 @@
     <VehicleSkeletonLoader class="q-mt-md" />
     <VehicleSkeletonLoader class="q-mt-md" />
     <NoVehiclesFound />
+    <FailedToFetchData />
   </q-page>
 </template>
 
@@ -12,11 +13,12 @@ import { useMeta } from 'quasar'
 import { t } from 'boot/i18n'
 import VehicleSkeletonLoader from './VehicleSkeletonLoader.vue'
 import NoVehiclesFound from './NoVehiclesFound.vue'
+import FailedToFetchData from 'components/FailedToFetchData.vue'
 
 export default defineComponent({
   name: 'RealTimeVehicleFeedPage',
 
-  components: { NoVehiclesFound, VehicleSkeletonLoader },
+  components: { FailedToFetchData, NoVehiclesFound, VehicleSkeletonLoader },
 
   setup () {
     const title = t('vehicles')
