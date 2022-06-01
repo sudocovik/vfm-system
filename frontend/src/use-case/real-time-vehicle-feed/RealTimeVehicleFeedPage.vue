@@ -4,6 +4,7 @@
     <VehicleSkeletonLoader class="q-mt-md" />
     <NoVehiclesFound />
     <FailedToFetchData />
+    <ListOfVehicles />
   </q-page>
 </template>
 
@@ -14,11 +15,17 @@ import { t } from 'boot/i18n'
 import VehicleSkeletonLoader from './VehicleSkeletonLoader.vue'
 import NoVehiclesFound from './NoVehiclesFound.vue'
 import FailedToFetchData from 'components/FailedToFetchData.vue'
+import ListOfVehicles from './ListOfVehicles.vue'
 
 export default defineComponent({
   name: 'RealTimeVehicleFeedPage',
 
-  components: { FailedToFetchData, NoVehiclesFound, VehicleSkeletonLoader },
+  components: {
+    ListOfVehicles,
+    FailedToFetchData,
+    NoVehiclesFound,
+    VehicleSkeletonLoader
+  },
 
   setup () {
     const title = t('vehicles')
