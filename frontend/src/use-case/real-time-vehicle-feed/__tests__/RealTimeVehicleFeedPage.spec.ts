@@ -8,6 +8,15 @@ import FailedToFetchData from 'components/FailedToFetchData.vue'
 import ListOfVehicles from '../ListOfVehicles.vue'
 import VehiclesLoadingIndicator from '../VehiclesLoadingIndicator.vue'
 
+const stateComponentMap = {
+  loading: VehiclesLoadingIndicator,
+  empty: NoVehiclesFound,
+  error: FailedToFetchData,
+  success: ListOfVehicles
+} as const
+type State = keyof typeof stateComponentMap
+type ComponentFromState = typeof stateComponentMap[State]
+
 describe('RealTimeVehicleFeedPage', () => {
   inAllLanguages.it('should have a title', (t) => {
     mountRealTimeVehicleFeedPage()
@@ -42,10 +51,7 @@ describe('RealTimeVehicleFeedPage', () => {
       it('should render two skeleton loaders', () => {
         mountRealTimeVehicleFeedPage()
 
-        cy.then(() => Cypress.vueWrapper.findComponent(VehiclesLoadingIndicator))
-          .then(loadingIndicator => loadingIndicator.exists())
-          .then(count => cy.wrap(count))
-          .should('equal', true)
+        assertComponentExists(VehiclesLoadingIndicator)
       })
     })
 
@@ -53,10 +59,7 @@ describe('RealTimeVehicleFeedPage', () => {
       it('should render NoVehiclesFound component', () => {
         mountRealTimeVehicleFeedPage()
 
-        cy.then(() => Cypress.vueWrapper.findComponent(NoVehiclesFound))
-          .then(noVehiclesFound => noVehiclesFound.exists())
-          .then(exists => cy.wrap(exists))
-          .should('equal', true)
+        assertComponentExists(NoVehiclesFound)
       })
     })
 
@@ -64,10 +67,7 @@ describe('RealTimeVehicleFeedPage', () => {
       it('should render FailedToFetchData component', () => {
         mountRealTimeVehicleFeedPage()
 
-        cy.then(() => Cypress.vueWrapper.findComponent(FailedToFetchData))
-          .then(noVehiclesFound => noVehiclesFound.exists())
-          .then(exists => cy.wrap(exists))
-          .should('equal', true)
+        assertComponentExists(FailedToFetchData)
       })
     })
 
@@ -75,10 +75,7 @@ describe('RealTimeVehicleFeedPage', () => {
       it('should render ListOfVehicles component', () => {
         mountRealTimeVehicleFeedPage()
 
-        cy.then(() => Cypress.vueWrapper.findComponent(ListOfVehicles))
-          .then(noVehiclesFound => noVehiclesFound.exists())
-          .then(exists => cy.wrap(exists))
-          .should('equal', true)
+        assertComponentExists(ListOfVehicles)
       })
     })
   })
@@ -93,4 +90,11 @@ function mountRealTimeVehicleFeedPage () {
       }
     }
   })
+}
+
+function assertComponentExists (component: ComponentFromState) {
+  cy.then(() => Cypress.vueWrapper.findComponent(component))
+    .then(noVehiclesFound => noVehiclesFound.exists())
+    .then(exists => cy.wrap(exists))
+    .should('equal', true)
 }
