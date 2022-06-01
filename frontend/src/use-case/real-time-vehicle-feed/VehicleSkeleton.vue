@@ -36,7 +36,7 @@
 
 <script lang="ts">
 export default {
-  name: 'VehicleSkeletonLoader'
+  name: 'VehicleSkeleton'
 }
 </script>
 

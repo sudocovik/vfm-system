@@ -3,7 +3,7 @@ import RealTimeVehicleFeedPage from '../RealTimeVehicleFeedPage.vue'
 import routes from 'src/router/routes'
 import { mount } from '@cypress/vue'
 import { QPage } from 'quasar'
-import VehicleSkeletonLoader from '../VehicleSkeletonLoader.vue'
+import VehicleSkeleton from '../VehicleSkeleton.vue'
 import NoVehiclesFound from '../NoVehiclesFound.vue'
 import FailedToFetchData from 'components/FailedToFetchData.vue'
 import ListOfVehicles from '../ListOfVehicles.vue'
@@ -42,7 +42,7 @@ describe('RealTimeVehicleFeedPage', () => {
       it('should render two skeleton loaders', () => {
         mountRealTimeVehicleFeedPage()
 
-        cy.then(() => Cypress.vueWrapper.findAllComponents(VehicleSkeletonLoader))
+        cy.then(() => Cypress.vueWrapper.findAllComponents(VehicleSkeleton))
           .then(skeletons => skeletons.length)
           .then(count => cy.wrap(count))
           .should('equal', 2)
