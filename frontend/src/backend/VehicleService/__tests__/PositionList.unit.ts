@@ -9,12 +9,10 @@ import {
 import { PositionExpectations, PositionFixture, positionFixtures } from '../__fixtures__/positions'
 
 describe('PositionList', () => {
-  const positionList = new PositionList()
-
   describe('fetchAllMostRecent', () => {
     it('should return empty array if no vehicle has sent it\'s position', async () => {
       simulateNoPositions()
-      const allPositions = await positionList.fetchAllMostRecent()
+      const allPositions = await PositionList.fetchAllMostRecent()
 
       expect(allPositions).toBeInstanceOf(Array)
       expect(allPositions).toHaveLength(0)
@@ -24,7 +22,7 @@ describe('PositionList', () => {
       const { position: rawPosition, expectations } = fixture
       simulateManyPositions([rawPosition])
 
-      const allPositions = await positionList.fetchAllMostRecent()
+      const allPositions = await PositionList.fetchAllMostRecent()
       const position = allPositions[0]
 
       expect(allPositions).toHaveLength(1)
@@ -36,7 +34,7 @@ describe('PositionList', () => {
       const rawExpectedPositions = positionFixtures.map(({ expectations }) => expectations)
       simulateManyPositions(rawBackendPositions)
 
-      const allPositions = await positionList.fetchAllMostRecent()
+      const allPositions = await PositionList.fetchAllMostRecent()
 
       expect(allPositions).toHaveLength(rawBackendPositions.length)
 
@@ -49,7 +47,7 @@ describe('PositionList', () => {
         const mockedPosition = { ...positionFixtures[0].position, ...{ attributes: missingIgnitionData } }
         simulateManyPositions([mockedPosition])
 
-        const position = (await positionList.fetchAllMostRecent())[0]
+        const position = (await PositionList.fetchAllMostRecent())[0]
         expect(position.ignition()).toEqual(false)
       })
 
@@ -58,7 +56,7 @@ describe('PositionList', () => {
         const mockedPosition = { ...positionFixtures[0].position, ...{ attributes: ignitionOff } }
         simulateManyPositions([mockedPosition])
 
-        const position = (await positionList.fetchAllMostRecent())[0]
+        const position = (await PositionList.fetchAllMostRecent())[0]
         expect(position.ignition()).toEqual(false)
       })
 
@@ -67,7 +65,7 @@ describe('PositionList', () => {
         const mockedPosition = { ...positionFixtures[0].position, ...{ attributes: ignitionOn } }
         simulateManyPositions([mockedPosition])
 
-        const position = (await positionList.fetchAllMostRecent())[0]
+        const position = (await PositionList.fetchAllMostRecent())[0]
         expect(position.ignition()).toEqual(true)
       })
     })
@@ -78,7 +76,7 @@ describe('PositionList', () => {
         const mockedPosition = { ...positionFixtures[0].position, ...{ attributes: missingMotionData } }
         simulateManyPositions([mockedPosition])
 
-        const position = (await positionList.fetchAllMostRecent())[0]
+        const position = (await PositionList.fetchAllMostRecent())[0]
         expect(position.moving()).toEqual(false)
       })
 
@@ -87,7 +85,7 @@ describe('PositionList', () => {
         const mockedPosition = { ...positionFixtures[0].position, ...{ attributes: stationary } }
         simulateManyPositions([mockedPosition])
 
-        const position = (await positionList.fetchAllMostRecent())[0]
+        const position = (await PositionList.fetchAllMostRecent())[0]
         expect(position.moving()).toEqual(false)
       })
 
@@ -96,7 +94,7 @@ describe('PositionList', () => {
         const mockedPosition = { ...positionFixtures[0].position, ...{ attributes: moving } }
         simulateManyPositions([mockedPosition])
 
-        const position = (await positionList.fetchAllMostRecent())[0]
+        const position = (await PositionList.fetchAllMostRecent())[0]
         expect(position.moving()).toEqual(true)
       })
     })

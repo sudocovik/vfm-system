@@ -19,12 +19,10 @@ import { PositionFixture, positionFixtures } from '../__fixtures__/positions'
 const axiosMock = new MockAdapter(axios)
 
 describe('VehicleList', () => {
-  const vehicleList = new VehicleList()
-
   describe('fetchAllWithoutPositions', () => {
     it('should return empty array if user has no vehiclesWithoutPosition', async () => {
       simulateUserHasNoVehicles()
-      const vehicles = await vehicleList.fetchAllWithoutPositions()
+      const vehicles = await VehicleList.fetchAllWithoutPositions()
 
       expect(vehicles).toBeInstanceOf(Array)
       expect(vehicles).toHaveLength(0)
@@ -33,7 +31,7 @@ describe('VehicleList', () => {
     it.each(vehiclesWithoutPosition)('should return single vehicle in array if user has only one device (Index: %#)', async (expectedVehicle: TraccarDevice) => {
       simulateUserHasVehiclesWithoutPosition([expectedVehicle])
 
-      const vehicles = await vehicleList.fetchAllWithoutPositions()
+      const vehicles = await VehicleList.fetchAllWithoutPositions()
       const actualVehicle = vehicles[0]
 
       expect(vehicles).toHaveLength(1)
@@ -43,7 +41,7 @@ describe('VehicleList', () => {
     it('should return multiple vehicles in array if user has multiple devices', async () => {
       simulateUserHasVehiclesWithoutPosition(vehiclesWithoutPosition)
 
-      const vehicles = await vehicleList.fetchAllWithoutPositions()
+      const vehicles = await VehicleList.fetchAllWithoutPositions()
 
       expect(vehicles).toHaveLength(vehicles.length)
       vehicles.forEach((vehicle, i) => validateVehicleWithoutPosition(vehicle, vehiclesWithoutPosition[i]))
@@ -54,7 +52,7 @@ describe('VehicleList', () => {
     it('should return empty array if user has zero vehicles', async () => {
       simulateUserHasNoVehicles()
 
-      const vehicles = await vehicleList.fetchAll()
+      const vehicles = await VehicleList.fetchAll()
 
       expect(vehicles).toBeInstanceOf(Array)
       expect(vehicles).toHaveLength(0)
@@ -65,7 +63,7 @@ describe('VehicleList', () => {
       // but having extra checks does not cost anything significant
       simulateNoVehiclesButManyPositions(positionFixtures)
 
-      const vehicles = await vehicleList.fetchAll()
+      const vehicles = await VehicleList.fetchAll()
 
       expect(vehicles).toBeInstanceOf(Array)
       expect(vehicles).toHaveLength(0)
@@ -74,7 +72,7 @@ describe('VehicleList', () => {
     it.each(vehiclesWithPositions)('should return single vehicle with position if user has single vehicle which works properly', async (expectedVehicle: VehicleWithPositionFixture) => {
       simulateUserHasVehiclesWithPositions([expectedVehicle])
 
-      const vehicles = await vehicleList.fetchAll()
+      const vehicles = await VehicleList.fetchAll()
       const actualVehicle = vehicles[0]
 
       validateGeoLocatedVehicle(actualVehicle, expectedVehicle.expectations)
@@ -84,7 +82,7 @@ describe('VehicleList', () => {
       const [first, second] = vehiclesWithPositions
       simulateUserHasVehiclesWithPositions([first, second])
 
-      const vehicles = await vehicleList.fetchAll()
+      const vehicles = await VehicleList.fetchAll()
 
       expect(vehicles).toHaveLength(2)
       validateGeoLocatedVehicle(vehicles[0], first.expectations)

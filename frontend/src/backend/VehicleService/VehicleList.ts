@@ -6,7 +6,7 @@ import { TraccarDevice } from './response-schema/'
 export class VehicleList {
   public static vehicleEndpoint = '/api/devices'
 
-  public async fetchAllWithoutPositions (): Promise<VehicleWithoutPosition[]> {
+  public static async fetchAllWithoutPositions (): Promise<VehicleWithoutPosition[]> {
     const response = await axios.get(VehicleList.vehicleEndpoint)
     const devices = response.data as TraccarDevice[]
 
@@ -20,9 +20,9 @@ export class VehicleList {
     return devices.map(convertDeviceToVehicle)
   }
 
-  public async fetchAll (): Promise<GeoLocatedVehicle[]> {
-    const vehicles = await this.fetchAllWithoutPositions()
-    const positions = await new PositionList().fetchAllMostRecent()
+  public static async fetchAll (): Promise<GeoLocatedVehicle[]> {
+    const vehicles = await VehicleList.fetchAllWithoutPositions()
+    const positions = await PositionList.fetchAllMostRecent()
 
     const vehicleWithPosition = (vehicle: VehicleWithoutPosition) => {
       const position = positions.find(position => position.vehicleId() === vehicle.id()) as Position
