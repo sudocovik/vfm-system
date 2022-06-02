@@ -3,6 +3,7 @@ import RealTimeVehicleFeedPage from '../RealTimeVehicleFeedPage.vue'
 import routes from 'src/router/routes'
 import { mount } from '@cypress/vue'
 import { QPage } from 'quasar'
+import { StateMachine } from '../StateMachine'
 import NoVehiclesFound from '../NoVehiclesFound.vue'
 import FailedToFetchData from 'components/FailedToFetchData.vue'
 import ListOfVehicles from '../ListOfVehicles.vue'
@@ -49,33 +50,41 @@ describe('RealTimeVehicleFeedPage', () => {
   describe('States', () => {
     describe('Loading state', () => {
       it('should render two skeleton loaders', () => {
+        simulateLoadingState()
+
         mountRealTimeVehicleFeedPage()
 
-        assertComponentExists(VehiclesLoadingIndicator)
+        assertStateIs('loading')
       })
     })
 
     describe('Empty state', () => {
       it('should render NoVehiclesFound component', () => {
+        simulateEmptyState()
+
         mountRealTimeVehicleFeedPage()
 
-        assertComponentExists(NoVehiclesFound)
+        assertStateIs('empty')
       })
     })
 
     describe('Error state', () => {
       it('should render FailedToFetchData component', () => {
+        simulateErrorState()
+
         mountRealTimeVehicleFeedPage()
 
-        assertComponentExists(FailedToFetchData)
+        assertStateIs('error')
       })
     })
 
-    describe('Loaded state', () => {
+    describe('Success state', () => {
       it('should render ListOfVehicles component', () => {
+        simulateSuccessState()
+
         mountRealTimeVehicleFeedPage()
 
-        assertComponentExists(ListOfVehicles)
+        assertStateIs('success')
       })
     })
   })
@@ -93,8 +102,49 @@ function mountRealTimeVehicleFeedPage () {
 }
 
 function assertComponentExists (component: ComponentFromState) {
-  cy.then(() => Cypress.vueWrapper.findComponent(component))
-    .then(noVehiclesFound => noVehiclesFound.exists())
+  cy.then(() => Cypress.vueWrapper.findComponent(component).exists())
     .then(exists => cy.wrap(exists))
     .should('equal', true)
+}
+
+function assertComponentDoesNotExist (component: ComponentFromState) {
+  cy.then(() => Cypress.vueWrapper.findComponent(component).exists())
+    .then(exists => cy.wrap(exists))
+    .should('equal', false)
+}
+
+function assertStateIs (targetState: State) {
+  const targetComponent = stateComponentMap[targetState]
+  const components = Object.values(stateComponentMap).filter(component => component !== targetComponent)
+
+  assertComponentExists(targetComponent)
+  components.forEach(component => assertComponentDoesNotExist(component))
+}
+
+function simulateLoadingState () {
+  cy.stub(StateMachine, 'isLoadingState').returns(true)
+  cy.stub(StateMachine, 'isEmptyState').returns(false)
+  cy.stub(StateMachine, 'isErrorState').returns(false)
+  cy.stub(StateMachine, 'isSuccessState').returns(false)
+}
+
+function simulateEmptyState () {
+  cy.stub(StateMachine, 'isLoadingState').returns(false)
+  cy.stub(StateMachine, 'isEmptyState').returns(true)
+  cy.stub(StateMachine, 'isErrorState').returns(false)
+  cy.stub(StateMachine, 'isSuccessState').returns(false)
+}
+
+function simulateErrorState () {
+  cy.stub(StateMachine, 'isLoadingState').returns(false)
+  cy.stub(StateMachine, 'isEmptyState').returns(false)
+  cy.stub(StateMachine, 'isErrorState').returns(true)
+  cy.stub(StateMachine, 'isSuccessState').returns(false)
+}
+
+function simulateSuccessState () {
+  cy.stub(StateMachine, 'isLoadingState').returns(false)
+  cy.stub(StateMachine, 'isEmptyState').returns(false)
+  cy.stub(StateMachine, 'isErrorState').returns(false)
+  cy.stub(StateMachine, 'isSuccessState').returns(true)
 }

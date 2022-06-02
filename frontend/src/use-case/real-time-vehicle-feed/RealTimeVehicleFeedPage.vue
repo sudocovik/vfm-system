@@ -1,9 +1,9 @@
 <template>
   <q-page class="q-pa-md">
-    <VehiclesLoadingIndicator />
-    <NoVehiclesFound />
-    <FailedToFetchData />
-    <ListOfVehicles />
+    <VehiclesLoadingIndicator v-if="StateMachine.isLoadingState()" />
+    <NoVehiclesFound v-if="StateMachine.isEmptyState()" />
+    <FailedToFetchData v-if="StateMachine.isErrorState()" />
+    <ListOfVehicles v-if="StateMachine.isSuccessState()" />
   </q-page>
 </template>
 
@@ -11,6 +11,7 @@
 import { defineComponent } from 'vue'
 import { useMeta } from 'quasar'
 import { t } from 'boot/i18n'
+import { StateMachine } from './StateMachine'
 import FailedToFetchData from 'components/FailedToFetchData.vue'
 import ListOfVehicles from './ListOfVehicles.vue'
 import NoVehiclesFound from './NoVehiclesFound.vue'
@@ -30,6 +31,10 @@ export default defineComponent({
     const title = t('vehicles')
 
     useMeta({ title: title + ' | Zara Fleet' })
+
+    return {
+      StateMachine
+    }
   }
 })
 </script>
