@@ -137,9 +137,8 @@ describe('RealTimeVehicleFeedPage', () => {
       cy.then(() => {
         endSimulation()
         StateMachine.transitionTo(STATES.LOADING)
+        assertStateIs('loading')
       })
-
-      assertStateIs('loading')
     })
   })
 })
