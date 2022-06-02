@@ -1,9 +1,21 @@
 <template>
   <q-page class="q-pa-md">
-    <VehiclesLoadingIndicator v-if="isLoadingState" />
-    <NoVehiclesFound v-if="isEmptyState" />
-    <FailedToFetchData v-if="isErrorState" />
-    <ListOfVehicles v-if="isSuccessState" />
+    <VehiclesLoadingIndicator
+      v-if="isLoadingState"
+      data-cy="loading-indicator"
+    />
+    <NoVehiclesFound
+      v-if="isEmptyState"
+      data-cy="no-vehicles"
+    />
+    <FailedToFetchData
+      v-if="isErrorState"
+      data-cy="fetch-failure"
+    />
+    <ListOfVehicles
+      v-if="isSuccessState"
+      data-cy="vehicle-list"
+    />
   </q-page>
 </template>
 

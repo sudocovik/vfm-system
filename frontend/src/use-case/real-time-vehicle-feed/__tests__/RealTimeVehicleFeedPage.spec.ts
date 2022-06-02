@@ -4,19 +4,14 @@ import routes from 'src/router/routes'
 import { mount } from '@cypress/vue'
 import { QPage } from 'quasar'
 import { StateMachine, STATES } from '../StateMachine'
-import NoVehiclesFound from '../NoVehiclesFound.vue'
-import FailedToFetchData from 'components/FailedToFetchData.vue'
-import ListOfVehicles from '../ListOfVehicles.vue'
-import VehiclesLoadingIndicator from '../VehiclesLoadingIndicator.vue'
 
-const stateComponentMap = {
-  loading: VehiclesLoadingIndicator,
-  empty: NoVehiclesFound,
-  error: FailedToFetchData,
-  success: ListOfVehicles
+const stateSelectorMap = {
+  loading: 'loading-indicator',
+  empty: 'no-vehicles',
+  error: 'fetch-failure',
+  success: 'vehicle-list'
 } as const
-type State = keyof typeof stateComponentMap
-type ComponentFromState = typeof stateComponentMap[State]
+type State = keyof typeof stateSelectorMap
 
 describe('RealTimeVehicleFeedPage', () => {
   inAllLanguages.it('should have a title', (t) => {
@@ -155,24 +150,12 @@ function mountRealTimeVehicleFeedPage () {
   })
 }
 
-function assertComponentExists (component: ComponentFromState) {
-  cy.then(() => Cypress.vueWrapper.findComponent(component).exists())
-    .then(exists => cy.wrap(exists))
-    .should('equal', true)
-}
-
-function assertComponentDoesNotExist (component: ComponentFromState) {
-  cy.then(() => Cypress.vueWrapper.findComponent(component).exists())
-    .then(exists => cy.wrap(exists))
-    .should('equal', false)
-}
-
 function assertStateIs (targetState: State) {
-  const targetComponent = stateComponentMap[targetState]
-  const components = Object.values(stateComponentMap).filter(component => component !== targetComponent)
+  const targetSelector = stateSelectorMap[targetState]
+  const allSelectorsMinusTargetSelector = Object.values(stateSelectorMap).filter(component => component !== targetSelector)
 
-  assertComponentExists(targetComponent)
-  components.forEach(component => assertComponentDoesNotExist(component))
+  cy.dataCy(targetSelector).should('exist')
+  allSelectorsMinusTargetSelector.forEach(selector => void cy.dataCy(selector).should('not.exist'))
 }
 
 function simulateLoadingState () {

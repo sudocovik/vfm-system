@@ -1,6 +1,8 @@
 <template>
-  <VehicleSkeleton class="q-mt-md" />
-  <VehicleSkeleton class="q-mt-md" />
+  <div>
+    <VehicleSkeleton class="q-mt-md" />
+    <VehicleSkeleton class="q-mt-md" />
+  </div>
 </template>
 
 <script lang="ts">
