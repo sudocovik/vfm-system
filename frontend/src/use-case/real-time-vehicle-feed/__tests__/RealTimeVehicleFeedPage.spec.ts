@@ -14,6 +14,8 @@ const stateSelectorMap = {
 type State = keyof typeof stateSelectorMap
 
 describe('RealTimeVehicleFeedPage', () => {
+  beforeEach(resetStateMachine)
+
   inAllLanguages.it('should have a title', (t) => {
     mountRealTimeVehicleFeedPage()
 
@@ -137,6 +139,16 @@ describe('RealTimeVehicleFeedPage', () => {
       assertStateIs(STATES.LOADING)
     })
   })
+
+  describe('Behavior', () => {
+    it(`should initially be in ${STATES.LOADING} state`, () => {
+      preventStateTransitions()
+
+      mountRealTimeVehicleFeedPage()
+
+      assertStateIs(STATES.LOADING)
+    })
+  })
 })
 
 function mountRealTimeVehicleFeedPage () {
@@ -176,4 +188,12 @@ function simulateErrorState () {
 
 function simulateSuccessState () {
   cy.stub(StateMachine, 'currentState').returns(STATES.SUCCESS)
+}
+
+function preventStateTransitions () {
+  cy.stub(StateMachine, 'transitionTo')
+}
+
+function resetStateMachine () {
+  StateMachine.reset()
 }
