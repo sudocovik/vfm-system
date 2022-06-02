@@ -6,10 +6,10 @@ import { QPage } from 'quasar'
 import { StateMachine, STATES } from '../StateMachine'
 
 const stateSelectorMap = {
-  loading: 'loading-indicator',
-  empty: 'no-vehicles',
-  error: 'fetch-failure',
-  success: 'vehicle-list'
+  [STATES.LOADING]: 'loading-indicator',
+  [STATES.EMPTY]: 'no-vehicles',
+  [STATES.ERROR]: 'fetch-failure',
+  [STATES.SUCCESS]: 'vehicle-list'
 } as const
 type State = keyof typeof stateSelectorMap
 
@@ -49,7 +49,7 @@ describe('RealTimeVehicleFeedPage', () => {
 
         mountRealTimeVehicleFeedPage()
 
-        assertStateIs('loading')
+        assertStateIs(STATES.LOADING)
       })
     })
 
@@ -59,7 +59,7 @@ describe('RealTimeVehicleFeedPage', () => {
 
         mountRealTimeVehicleFeedPage()
 
-        assertStateIs('empty')
+        assertStateIs(STATES.EMPTY)
       })
     })
 
@@ -79,29 +79,29 @@ describe('RealTimeVehicleFeedPage', () => {
 
         mountRealTimeVehicleFeedPage()
 
-        assertStateIs('success')
+        assertStateIs(STATES.SUCCESS)
       })
     })
   })
 
   describe('State transitions', () => {
-    it('loading -> empty', () => {
+    it(`${STATES.LOADING} -> ${STATES.EMPTY}`, () => {
       const { endSimulation } = simulateLoadingState()
       mountRealTimeVehicleFeedPage()
-      assertStateIs('loading')
+      assertStateIs(STATES.LOADING)
 
       cy.then(() => {
         endSimulation()
         StateMachine.transitionTo(STATES.EMPTY)
       })
 
-      assertStateIs('empty')
+      assertStateIs(STATES.EMPTY)
     })
 
-    it('loading -> error', () => {
+    it(`${STATES.LOADING} -> ${STATES.ERROR}`, () => {
       const { endSimulation } = simulateLoadingState()
       mountRealTimeVehicleFeedPage()
-      assertStateIs('loading')
+      assertStateIs(STATES.LOADING)
 
       cy.then(() => {
         endSimulation()
@@ -111,30 +111,30 @@ describe('RealTimeVehicleFeedPage', () => {
       assertStateIs('error')
     })
 
-    it('loading -> success', () => {
+    it(`${STATES.LOADING} -> ${STATES.SUCCESS}`, () => {
       const { endSimulation } = simulateLoadingState()
       mountRealTimeVehicleFeedPage()
-      assertStateIs('loading')
+      assertStateIs(STATES.LOADING)
 
       cy.then(() => {
         endSimulation()
         StateMachine.transitionTo(STATES.SUCCESS)
       })
 
-      assertStateIs('success')
+      assertStateIs(STATES.SUCCESS)
     })
 
-    it('error -> loading', () => {
+    it(`${STATES.ERROR} -> ${STATES.LOADING}`, () => {
       const { endSimulation } = simulateErrorState()
       mountRealTimeVehicleFeedPage()
-      assertStateIs('error')
+      assertStateIs(STATES.ERROR)
 
       cy.then(() => {
         endSimulation()
         StateMachine.transitionTo(STATES.LOADING)
       })
 
-      assertStateIs('loading')
+      assertStateIs(STATES.LOADING)
     })
   })
 })
