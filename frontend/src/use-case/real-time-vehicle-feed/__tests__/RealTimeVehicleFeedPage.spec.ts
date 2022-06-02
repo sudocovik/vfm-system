@@ -3,7 +3,7 @@ import RealTimeVehicleFeedPage from '../RealTimeVehicleFeedPage.vue'
 import routes from 'src/router/routes'
 import { mount } from '@cypress/vue'
 import { QPage } from 'quasar'
-import { StateMachine } from '../StateMachine'
+import { StateMachine, STATES } from '../StateMachine'
 import NoVehiclesFound from '../NoVehiclesFound.vue'
 import FailedToFetchData from 'components/FailedToFetchData.vue'
 import ListOfVehicles from '../ListOfVehicles.vue'
@@ -88,6 +88,60 @@ describe('RealTimeVehicleFeedPage', () => {
       })
     })
   })
+
+  describe('State transitions', () => {
+    it('loading -> empty', () => {
+      const { endSimulation } = simulateLoadingState()
+      mountRealTimeVehicleFeedPage()
+      assertStateIs('loading')
+
+      cy.then(() => {
+        endSimulation()
+        StateMachine.transitionTo(STATES.EMPTY)
+      })
+
+      assertStateIs('empty')
+    })
+
+    it('loading -> error', () => {
+      const { endSimulation } = simulateLoadingState()
+      mountRealTimeVehicleFeedPage()
+      assertStateIs('loading')
+
+      cy.then(() => {
+        endSimulation()
+        StateMachine.transitionTo(STATES.ERROR)
+      })
+
+      assertStateIs('error')
+    })
+
+    it('loading -> success', () => {
+      const { endSimulation } = simulateLoadingState()
+      mountRealTimeVehicleFeedPage()
+      assertStateIs('loading')
+
+      cy.then(() => {
+        endSimulation()
+        StateMachine.transitionTo(STATES.SUCCESS)
+      })
+
+      assertStateIs('success')
+    })
+
+    it('error -> loading', () => {
+      const { endSimulation } = simulateErrorState()
+      mountRealTimeVehicleFeedPage()
+      assertStateIs('error')
+
+      cy.then(() => {
+        endSimulation()
+        StateMachine.transitionTo(STATES.LOADING)
+      })
+
+      assertStateIs('loading')
+    })
+  })
 })
 
 function mountRealTimeVehicleFeedPage () {
@@ -122,29 +176,21 @@ function assertStateIs (targetState: State) {
 }
 
 function simulateLoadingState () {
-  cy.stub(StateMachine, 'isLoadingState').returns(true)
-  cy.stub(StateMachine, 'isEmptyState').returns(false)
-  cy.stub(StateMachine, 'isErrorState').returns(false)
-  cy.stub(StateMachine, 'isSuccessState').returns(false)
+  const state = cy.stub(StateMachine, 'currentState').returns(STATES.LOADING)
+
+  return { endSimulation: () => state.restore() }
 }
 
 function simulateEmptyState () {
-  cy.stub(StateMachine, 'isLoadingState').returns(false)
-  cy.stub(StateMachine, 'isEmptyState').returns(true)
-  cy.stub(StateMachine, 'isErrorState').returns(false)
-  cy.stub(StateMachine, 'isSuccessState').returns(false)
+  cy.stub(StateMachine, 'currentState').returns(STATES.EMPTY)
 }
 
 function simulateErrorState () {
-  cy.stub(StateMachine, 'isLoadingState').returns(false)
-  cy.stub(StateMachine, 'isEmptyState').returns(false)
-  cy.stub(StateMachine, 'isErrorState').returns(true)
-  cy.stub(StateMachine, 'isSuccessState').returns(false)
+  const state = cy.stub(StateMachine, 'currentState').returns(STATES.ERROR)
+
+  return { endSimulation: () => state.restore() }
 }
 
 function simulateSuccessState () {
-  cy.stub(StateMachine, 'isLoadingState').returns(false)
-  cy.stub(StateMachine, 'isEmptyState').returns(false)
-  cy.stub(StateMachine, 'isErrorState').returns(false)
-  cy.stub(StateMachine, 'isSuccessState').returns(true)
+  cy.stub(StateMachine, 'currentState').returns(STATES.SUCCESS)
 }

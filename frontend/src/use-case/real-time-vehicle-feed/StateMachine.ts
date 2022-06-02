@@ -1,17 +1,21 @@
+export const STATES = {
+  LOADING: 'loading',
+  EMPTY: 'empty',
+  ERROR: 'error',
+  SUCCESS: 'success'
+} as const
+
 export class StateMachine {
-  public static isLoadingState (): boolean {
-    return false
+  private static _currentState = ''
+
+  public static onTransition: () => unknown = () => { /* nothing to do by default */ }
+
+  public static currentState (): string {
+    return this._currentState
   }
 
-  public static isEmptyState (): boolean {
-    return false
-  }
-
-  public static isErrorState (): boolean {
-    return false
-  }
-
-  public static isSuccessState (): boolean {
-    return false
+  public static transitionTo (state: typeof STATES[keyof typeof STATES]): void {
+    this._currentState = state
+    this.onTransition()
   }
 }
