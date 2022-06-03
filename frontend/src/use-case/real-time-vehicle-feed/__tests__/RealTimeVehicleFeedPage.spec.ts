@@ -189,7 +189,8 @@ function mountRealTimeVehicleFeedPage () {
     global: {
       renderStubDefaultSlot: true,
       stubs: {
-        QPage: true
+        QPage: true,
+        ListOfVehicles: true
       }
     }
   })
