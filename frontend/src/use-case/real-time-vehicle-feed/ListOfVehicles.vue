@@ -2,6 +2,9 @@
   <div data-cy="root-node" />
   <template v-if="geoLocatedVehicles.length">
     <GeoLocatedVehicle
+      v-for="vehicle in geoLocatedVehicles"
+      :key="vehicle.id()"
+
       :license-plate="vehicle.licensePlate()"
       :latitude="vehicle.latitude()"
       :longitude="vehicle.longitude()"
@@ -15,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from 'vue'
+import { defineComponent } from 'vue'
 import GeoLocatedVehicle from './GeoLocatedVehicle.vue'
 import { GeoLocatedVehicle as Vehicle } from 'src/backend/VehicleService'
 
@@ -26,18 +29,16 @@ export default defineComponent({
 
   props: {
     vehicles: {
-      type: Array as PropType<Vehicle[]>,
+      type: Array,
       required: true
     }
   },
 
   setup (props) {
-    const vehicle = computed<Vehicle>(() => props.vehicles[0])
-    const geoLocatedVehicles = props.vehicles.filter(vehicle => vehicle instanceof Vehicle)
+    const geoLocatedVehicles = props.vehicles.filter(vehicle => vehicle instanceof Vehicle) as Vehicle[]
 
     return {
-      geoLocatedVehicles,
-      vehicle
+      geoLocatedVehicles
     }
   }
 })
