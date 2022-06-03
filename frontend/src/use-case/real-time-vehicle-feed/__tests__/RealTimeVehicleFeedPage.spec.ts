@@ -7,6 +7,8 @@ import { StateMachine, STATES } from '../StateMachine'
 import { GeoLocatedVehicle, Position, VehicleList } from 'src/backend/VehicleService'
 import { Speed } from 'src/support/measurement-units/speed'
 import type { SinonStub } from 'cypress/types/sinon'
+import { firstGeoLocatedVehicle, secondGeoLocatedVehicle } from '../__fixtures__/geo-located-vehicles'
+import ListOfVehicles from '../ListOfVehicles.vue'
 
 const stateSelectorMap = {
   [STATES.LOADING]: 'loading-indicator',
@@ -181,6 +183,18 @@ describe('RealTimeVehicleFeedPage', () => {
 
       assertStateIs(STATES.SUCCESS)
     })
+
+    it(`should pass vehicles from backend request to ListOfVehicles component when in ${STATES.SUCCESS} state`, () => {
+      const vehiclesFromBackend = [firstGeoLocatedVehicle, secondGeoLocatedVehicle]
+      simulateResultFromBackend([firstGeoLocatedVehicle, secondGeoLocatedVehicle])
+
+      mountRealTimeVehicleFeedPage()
+
+      cy.then(() => Cypress.vueWrapper.findComponent(ListOfVehicles))
+        .then(component => component.props('vehicles') as GeoLocatedVehicle[])
+        .then(vehicles => cy.wrap(vehicles))
+        .should('deep.equal', vehiclesFromBackend)
+    })
   })
 })
 
@@ -190,7 +204,7 @@ function mountRealTimeVehicleFeedPage () {
       renderStubDefaultSlot: true,
       stubs: {
         QPage: true,
-        ListOfVehicles: true
+        BaseMap: true
       }
     }
   })

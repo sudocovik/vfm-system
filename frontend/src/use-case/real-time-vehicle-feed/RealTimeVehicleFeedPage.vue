@@ -15,6 +15,7 @@
     <ListOfVehicles
       v-if="isSuccessState"
       data-cy="vehicle-list"
+      :vehicles="vehicles"
     />
   </q-page>
 </template>
@@ -28,7 +29,7 @@ import FailedToFetchData from 'components/FailedToFetchData.vue'
 import ListOfVehicles from './ListOfVehicles.vue'
 import NoVehiclesFound from './NoVehiclesFound.vue'
 import VehiclesLoadingIndicator from './VehiclesLoadingIndicator.vue'
-import { VehicleList } from 'src/backend/VehicleService'
+import { GeoLocatedVehicle, VehicleList } from 'src/backend/VehicleService'
 
 export default defineComponent({
   name: 'RealTimeVehicleFeedPage',
@@ -53,15 +54,19 @@ export default defineComponent({
     const isErrorState = computed(() => state.value === STATES.ERROR)
     const isSuccessState = computed(() => state.value === STATES.SUCCESS)
 
+    const vehicles = ref<GeoLocatedVehicle[]>([])
     void VehicleList.fetchAll().then(result => {
-      StateMachine.transitionTo(result.length ? STATES.SUCCESS : STATES.EMPTY)
+      const isSuccess = result.length > 0
+      isSuccess && (vehicles.value = result)
+      StateMachine.transitionTo(isSuccess ? STATES.SUCCESS : STATES.EMPTY)
     }).catch(() => StateMachine.transitionTo(STATES.ERROR))
 
     return {
       isLoadingState,
       isEmptyState,
       isErrorState,
-      isSuccessState
+      isSuccessState,
+      vehicles
     }
   }
 })
