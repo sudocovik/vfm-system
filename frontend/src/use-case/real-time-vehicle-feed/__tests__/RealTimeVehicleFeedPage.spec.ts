@@ -4,6 +4,9 @@ import routes from 'src/router/routes'
 import { mount } from '@cypress/vue'
 import { QPage } from 'quasar'
 import { StateMachine, STATES } from '../StateMachine'
+import { GeoLocatedVehicle, Position, VehicleList } from 'src/backend/VehicleService'
+import { Speed } from 'src/support/measurement-units/speed'
+import type { SinonStub } from 'cypress/types/sinon'
 
 const stateSelectorMap = {
   [STATES.LOADING]: 'loading-indicator',
@@ -13,8 +16,11 @@ const stateSelectorMap = {
 } as const
 type State = keyof typeof stateSelectorMap
 
+let vehicleFetchStub: SinonStub
+
 describe('RealTimeVehicleFeedPage', () => {
   beforeEach(resetStateMachine)
+  beforeEach(stubVehicleFetching)
 
   inAllLanguages.it('should have a title', (t) => {
     mountRealTimeVehicleFeedPage()
@@ -148,6 +154,33 @@ describe('RealTimeVehicleFeedPage', () => {
 
       assertStateIs(STATES.LOADING)
     })
+
+    it(`should go to ${STATES.EMPTY} state if backend request returns empty array`, () => {
+      simulateResultFromBackend([])
+
+      mountRealTimeVehicleFeedPage()
+
+      assertStateIs(STATES.EMPTY)
+    })
+
+    it(`should go to ${STATES.ERROR} state if backend request fails`, () => {
+      simulateExceptionFromBackend()
+
+      mountRealTimeVehicleFeedPage()
+
+      assertStateIs(STATES.ERROR)
+    })
+
+    const samplePosition = new Position(1, 1, 44.12, 15.63, 140, 70, Speed.fromKph(50), 'Test address', true, true, '2022-01-01 0:00:00', '2022-01-01 0:00:00', '2022-01-01 0:00:00')
+    const sampleVehicle = new GeoLocatedVehicle(1, 'ZD-000-AA', '123456789', true, samplePosition)
+
+    it(`should go to ${STATES.SUCCESS} state if backend request returns at least one vehicle`, () => {
+      simulateResultFromBackend([sampleVehicle])
+
+      mountRealTimeVehicleFeedPage()
+
+      assertStateIs(STATES.SUCCESS)
+    })
   })
 })
 
@@ -196,4 +229,16 @@ function preventStateTransitions () {
 
 function resetStateMachine () {
   StateMachine.reset()
+}
+
+function stubVehicleFetching () {
+  vehicleFetchStub = cy.stub(VehicleList, 'fetchAll').resolves()
+}
+
+function simulateResultFromBackend (result: GeoLocatedVehicle[]) {
+  vehicleFetchStub.resolves(result)
+}
+
+function simulateExceptionFromBackend () {
+  vehicleFetchStub.rejects()
 }

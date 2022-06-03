@@ -28,6 +28,7 @@ import FailedToFetchData from 'components/FailedToFetchData.vue'
 import ListOfVehicles from './ListOfVehicles.vue'
 import NoVehiclesFound from './NoVehiclesFound.vue'
 import VehiclesLoadingIndicator from './VehiclesLoadingIndicator.vue'
+import { VehicleList } from 'src/backend/VehicleService'
 
 export default defineComponent({
   name: 'RealTimeVehicleFeedPage',
@@ -51,6 +52,10 @@ export default defineComponent({
     const isEmptyState = computed(() => state.value === STATES.EMPTY)
     const isErrorState = computed(() => state.value === STATES.ERROR)
     const isSuccessState = computed(() => state.value === STATES.SUCCESS)
+
+    void VehicleList.fetchAll().then(result => {
+      StateMachine.transitionTo(result.length ? STATES.SUCCESS : STATES.EMPTY)
+    }).catch(() => StateMachine.transitionTo(STATES.ERROR))
 
     return {
       isLoadingState,
