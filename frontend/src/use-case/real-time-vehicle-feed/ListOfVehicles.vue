@@ -13,6 +13,7 @@
         :ignition="vehicle.ignition()"
         :moving="vehicle.moving()"
         :course="vehicle.course()"
+        class="q-mt-md"
       />
     </template>
   </div>
