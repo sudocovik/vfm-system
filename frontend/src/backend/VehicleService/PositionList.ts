@@ -4,7 +4,7 @@ import { TraccarPosition } from './response-schema/'
 import { Speed } from 'src/support/measurement-units/speed'
 
 export class PositionList {
-  public static readonly positionEndpoint = '/api/position'
+  public static readonly positionEndpoint = '/api/positions'
 
   public static async fetchAllMostRecent (): Promise<Position[]> {
     const response = await axios.get(PositionList.positionEndpoint)
