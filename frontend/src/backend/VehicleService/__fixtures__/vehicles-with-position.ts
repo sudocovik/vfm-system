@@ -13,6 +13,8 @@ export type VehicleWithPositionExpectations = {
   speed: Speed
   course: number
   address: string
+  ignition: boolean
+  moving: boolean
   fixationTime: Date
 }
 
@@ -60,7 +62,10 @@ export const firstVehicle = (): VehicleWithPositionFixture => {
       address: 'My street 1',
       accuracy: 0,
       network: {},
-      attributes: {}
+      attributes: {
+        ignition: true,
+        moving: true
+      }
     },
     expectations: {
       vehicleId,
@@ -74,6 +79,8 @@ export const firstVehicle = (): VehicleWithPositionFixture => {
       speed: Speed.fromKnots(15),
       course: 270,
       address: 'My street 1',
+      ignition: true,
+      moving: true,
       fixationTime: new Date(2022, 2, 16, 16, 39, 0, 0)
     }
   }
@@ -98,7 +105,10 @@ export const secondVehicle = (): VehicleWithPositionFixture => {
       contact: '',
       category: null,
       geofenceIds: [],
-      attributes: {}
+      attributes: {
+        ignition: false,
+        moving: false
+      }
     },
     position: {
       id: positionId,
@@ -131,6 +141,8 @@ export const secondVehicle = (): VehicleWithPositionFixture => {
       speed: Speed.fromKnots(30),
       course: 30,
       address: 'Ulica Bana Josipa Jelačića, 23000 Zadar, HR',
+      ignition: false,
+      moving: false,
       fixationTime: new Date(2022, 3, 19, 13, 59, 0, 0)
     }
   }

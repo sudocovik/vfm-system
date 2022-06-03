@@ -7,6 +7,8 @@
       :longitude="vehicle.longitude()"
       :address="vehicle.address()"
       :speed="vehicle.speed()"
+      :ignition="vehicle.ignition()"
+      :moving="vehicle.moving()"
       :course="vehicle.course()"
     />
   </template>

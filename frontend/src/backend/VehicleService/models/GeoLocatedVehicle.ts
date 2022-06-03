@@ -54,6 +54,14 @@ export class GeoLocatedVehicle {
     return this._position.address()
   }
 
+  public ignition (): boolean {
+    return this._position.ignition()
+  }
+
+  public moving (): boolean {
+    return this._position.moving()
+  }
+
   public fixationTime (): Date {
     return this._position.fixationTime()
   }

@@ -23,7 +23,8 @@ describe('ListOfVehicles', () => {
         expect(geoLocatedVehicle.props('longitude')).to.equal(firstGeoLocatedVehicle.longitude())
         expect(geoLocatedVehicle.props('address')).to.equal(firstGeoLocatedVehicle.address())
         expect(geoLocatedVehicle.props('speed')).to.deep.equal(firstGeoLocatedVehicle.speed())
-        /* add moving & ignition */
+        expect(geoLocatedVehicle.props('ignition')).to.equal(firstGeoLocatedVehicle.ignition())
+        expect(geoLocatedVehicle.props('moving')).to.equal(firstGeoLocatedVehicle.moving())
         expect(geoLocatedVehicle.props('course')).to.equal(firstGeoLocatedVehicle.course())
       })
   })

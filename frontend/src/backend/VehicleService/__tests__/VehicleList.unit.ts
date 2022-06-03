@@ -135,5 +135,7 @@ function validateGeoLocatedVehicle (vehicle: GeoLocatedVehicle, expectations: Ve
   expect(vehicle.speed().toKnots()).toEqual(expectations.speed.toKnots())
   expect(vehicle.course()).toEqual(expectations.course)
   expect(vehicle.address()).toEqual(expectations.address)
+  expect(vehicle.ignition()).toEqual(expectations.ignition)
+  expect(vehicle.moving()).toEqual(expectations.moving)
   expect(vehicle.fixationTime()).toEqual(expectations.fixationTime)
 }
