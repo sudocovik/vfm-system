@@ -47,6 +47,16 @@ describe('ListOfVehicles', () => {
         allGeoLocatedVehicleComponents.forEach((component, i) => assertGeoLocatedVehicleProps(component, vehicles[i]))
       })
   })
+
+  it('should render vehicles under root node', () => {
+    const vehicles = [firstGeoLocatedVehicle]
+    mountListOfVehicles({ vehicles })
+
+    cy.then(() => Cypress.vueWrapper.findComponent(GeoLocatedVehicle))
+      .then(component => component.element as unknown as JQuery)
+      .then(element => element[0].outerHTML)
+      .then(html => cy.dataCy('root-node').should('have.html', html))
+  })
 })
 
 function mountListOfVehicles (props: Record<string, unknown>) {

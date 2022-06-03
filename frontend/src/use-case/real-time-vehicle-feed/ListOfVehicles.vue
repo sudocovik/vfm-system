@@ -1,20 +1,21 @@
 <template>
-  <div data-cy="root-node" />
-  <template v-if="geoLocatedVehicles.length">
-    <GeoLocatedVehicle
-      v-for="vehicle in geoLocatedVehicles"
-      :key="vehicle.id()"
+  <div data-cy="root-node">
+    <template v-if="geoLocatedVehicles.length">
+      <GeoLocatedVehicle
+        v-for="vehicle in geoLocatedVehicles"
+        :key="vehicle.id()"
 
-      :license-plate="vehicle.licensePlate()"
-      :latitude="vehicle.latitude()"
-      :longitude="vehicle.longitude()"
-      :address="vehicle.address()"
-      :speed="vehicle.speed()"
-      :ignition="vehicle.ignition()"
-      :moving="vehicle.moving()"
-      :course="vehicle.course()"
-    />
-  </template>
+        :license-plate="vehicle.licensePlate()"
+        :latitude="vehicle.latitude()"
+        :longitude="vehicle.longitude()"
+        :address="vehicle.address()"
+        :speed="vehicle.speed()"
+        :ignition="vehicle.ignition()"
+        :moving="vehicle.moving()"
+        :course="vehicle.course()"
+      />
+    </template>
+  </div>
 </template>
 
 <script lang="ts">
