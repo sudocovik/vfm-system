@@ -64,7 +64,7 @@ export const firstVehicle = (): VehicleWithPositionFixture => {
       network: {},
       attributes: {
         ignition: true,
-        moving: true
+        motion: true
       }
     },
     expectations: {
@@ -107,7 +107,7 @@ export const secondVehicle = (): VehicleWithPositionFixture => {
       geofenceIds: [],
       attributes: {
         ignition: false,
-        moving: false
+        motion: false
       }
     },
     position: {

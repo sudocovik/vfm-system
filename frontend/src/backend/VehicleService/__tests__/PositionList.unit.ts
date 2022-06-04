@@ -1,11 +1,7 @@
 import { describe, expect, it } from '@jest/globals'
 import MockAdapter from 'axios-mock-adapter'
 import axios from 'axios'
-import {
-  Position,
-  PositionList,
-  TraccarPosition
-} from 'src/backend/VehicleService'
+import { Position, PositionList, TraccarPosition } from 'src/backend/VehicleService'
 import { PositionExpectations, PositionFixture, positionFixtures } from '../__fixtures__/positions'
 
 describe('PositionList', () => {
@@ -81,7 +77,7 @@ describe('PositionList', () => {
       })
 
       it('should be false if server said vehicle is stationary', async () => {
-        const stationary = { moving: false }
+        const stationary = { motion: false }
         const mockedPosition = { ...positionFixtures[0].position, ...{ attributes: stationary } }
         simulateManyPositions([mockedPosition])
 
@@ -90,7 +86,7 @@ describe('PositionList', () => {
       })
 
       it('should be false if server said vehicle is moving', async () => {
-        const moving = { moving: true }
+        const moving = { motion: true }
         const mockedPosition = { ...positionFixtures[0].position, ...{ attributes: moving } }
         simulateManyPositions([mockedPosition])
 
