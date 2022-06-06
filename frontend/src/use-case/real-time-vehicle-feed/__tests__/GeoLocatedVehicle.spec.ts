@@ -202,7 +202,7 @@ describe('GeoLocatedVehicle', () => {
     })
 
     it('should have zoom close enough to the ground', () => {
-      const closeEnoughToTheGround = 16
+      const closeEnoughToTheGround = 12
 
       mountGeoLocatedVehicle()
 
