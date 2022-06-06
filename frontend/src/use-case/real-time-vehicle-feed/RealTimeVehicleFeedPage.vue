@@ -1,22 +1,36 @@
 <template>
-  <q-page class="q-pa-md">
-    <VehiclesLoadingIndicator
+  <q-page class="q-pa-md flex items-stretch">
+    <div
       v-if="isLoadingState"
       data-cy="loading-indicator"
-    />
-    <NoVehiclesFound
+      class="full-width"
+    >
+      <VehiclesLoadingIndicator />
+    </div>
+
+    <div
       v-if="isEmptyState"
       data-cy="no-vehicles"
-    />
-    <FailedToFetchData
+      class="full-width flex items-center justify-center"
+    >
+      <NoVehiclesFound />
+    </div>
+
+    <div
       v-if="isErrorState"
       data-cy="fetch-failure"
-    />
-    <ListOfVehicles
+      class="full-width flex items-center justify-center"
+    >
+      <FailedToFetchData />
+    </div>
+
+    <div
       v-if="isSuccessState"
       data-cy="vehicle-list"
-      :vehicles="vehicles"
-    />
+      class="full-width"
+    >
+      <ListOfVehicles :vehicles="vehicles" />
+    </div>
   </q-page>
 </template>
 
