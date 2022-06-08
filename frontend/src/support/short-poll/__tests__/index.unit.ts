@@ -51,6 +51,14 @@ describe('shortPoll', () => {
   })
 
   it('should not run next poll before resultHandler has finished executing', async () => {
+    const timeoutSpy = jest.spyOn(global, 'setTimeout')
+    const resultHandlerSpy = jest.fn()
 
+    const delayInMilliseconds = 150
+    const action = () => Promise.resolve()
+    const resultHandler = () => Promise.resolve().then(resultHandlerSpy)
+
+    await shortPoll.do(action, resultHandler, delayInMilliseconds)
+    expect(resultHandlerSpy.mock.invocationCallOrder[0]).toBeLessThan(timeoutSpy.mock.invocationCallOrder[0])
   })
 })

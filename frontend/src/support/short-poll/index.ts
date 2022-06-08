@@ -5,7 +5,7 @@ export const shortPoll = {
     delayInMilliseconds: number
   ) {
     const result = await action()
-    resultHandler(result)
+    await resultHandler(result)
     setTimeout(() => void shortPoll.do(action, resultHandler, delayInMilliseconds), delayInMilliseconds)
   }
 }
