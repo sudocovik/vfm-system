@@ -18,7 +18,7 @@ describe('shortPoll', () => {
   afterEach(() => (shortPoll.sleep = originalSleep))
 
   it('should execute action()', async () => {
-    const action = jest.fn().mockImplementationOnce(stubShortPoll) as () => Promise<unknown>
+    const action = jest.fn(stubShortPoll) as unknown as () => Promise<unknown>
 
     await shortPoll.do(action, () => Promise.resolve(), 10)
 
