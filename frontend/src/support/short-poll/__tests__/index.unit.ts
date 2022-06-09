@@ -19,20 +19,21 @@ describe('shortPoll', () => {
   })
 
   it('should pass action() result to a resultHandler()', async () => {
-    expect.assertions(1)
-
     const result = '123456'
+    let resultFromHandler = ''
     const action = () => {
       stubShortPoll()
       return Promise.resolve(result)
     }
     const resultHandler = ((response: Awaited<ReturnType<typeof action>>) => {
-      void expect(response).toEqual(result)
+      resultFromHandler = response
       return Promise.resolve()
     }) as ResultHandler
 
     const { poll } = shortPollFactory({ action, resultHandler })
     await poll()
+
+    expect(resultFromHandler).toEqual(result)
   })
 
   it('should wait for resultHandler() to finish before starting sleep()', async () => {
