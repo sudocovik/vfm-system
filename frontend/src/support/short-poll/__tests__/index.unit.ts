@@ -42,7 +42,7 @@ describe('shortPoll', () => {
   })
 
   it('should wait for resultHandler() to finish before starting sleep()', async () => {
-    const timeoutSpy = shortPoll.sleep = jest.fn()
+    const sleepSpy = shortPoll.sleep = jest.fn()
     const resultHandlerSpy = jest.fn()
 
     const delayInMilliseconds = 150
@@ -53,7 +53,7 @@ describe('shortPoll', () => {
     const resultHandler = () => Promise.resolve().then(resultHandlerSpy)
 
     await shortPoll.do(action, resultHandler, delayInMilliseconds)
-    expect(resultHandlerSpy.mock.invocationCallOrder[0]).toBeLessThan(timeoutSpy.mock.invocationCallOrder[0])
+    expect(resultHandlerSpy.mock.invocationCallOrder[0]).toBeLessThan(sleepSpy.mock.invocationCallOrder[0])
   })
 
   it('should wait for sleep() to finish before running next poll', async () => {
