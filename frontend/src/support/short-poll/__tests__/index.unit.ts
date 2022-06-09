@@ -2,10 +2,12 @@ import { describe, expect, it, jest } from '@jest/globals'
 import { shortPoll } from '../index'
 
 const originalShortPoll = shortPoll.do
+const originalSleep = shortPoll.sleep
 
 describe('shortPoll', () => {
   afterEach(() => jest.clearAllMocks())
   afterEach(() => (shortPoll.do = originalShortPoll))
+  afterEach(() => (shortPoll.sleep = originalSleep))
 
   it('should execute action()', async () => {
     const action = jest.fn().mockImplementationOnce(() => (shortPoll.do = jest.fn())) as () => Promise<unknown>
