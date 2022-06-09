@@ -1,5 +1,5 @@
 import { describe, expect, it, jest } from '@jest/globals'
-import { ActionHandler, ResultHandler, shortPoll } from '../index'
+import { ActionHandler, ResultHandler, shortPoll } from '../'
 
 const originalShortPoll = shortPoll.do
 const originalSleep = shortPoll.sleep
