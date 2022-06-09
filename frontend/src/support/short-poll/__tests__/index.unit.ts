@@ -75,4 +75,18 @@ describe('shortPoll', () => {
     await shortPoll.do(action, resultHandler, delayInMilliseconds)
     expect(sleepSpy).toHaveBeenCalledWith(delayInMilliseconds)
   })
+
+  it('should call next poll with the same arguments', async () => {
+    const shortPollSpy = jest.fn()
+
+    const delayInMilliseconds = 150
+    const action = () => {
+      shortPoll.do = shortPollSpy as typeof shortPoll.do
+      return Promise.resolve()
+    }
+    const resultHandler = () => Promise.resolve()
+
+    await shortPoll.do(action, resultHandler, delayInMilliseconds)
+    expect(shortPollSpy).toHaveBeenCalledWith(action, resultHandler, delayInMilliseconds)
+  })
 })
