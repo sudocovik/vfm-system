@@ -1,13 +1,14 @@
 import { describe, expect, it, jest } from '@jest/globals'
 import { ActionHandler, ResultHandler, shortPoll } from '../'
+import { sleep } from 'src/support/sleep'
 
 const originalShortPoll = shortPoll.do
-const originalSleep = shortPoll.sleep
+const originalSleep = sleep.now
 
 describe('shortPoll', () => {
   afterEach(() => jest.clearAllMocks())
   afterEach(resetShortPoll)
-  afterEach(() => (shortPoll.sleep = originalSleep))
+  afterEach(() => (sleep.now = originalSleep))
 
   it('should execute action()', async () => {
     const action = jest.fn(stubShortPoll) as unknown as () => Promise<unknown>
@@ -37,7 +38,7 @@ describe('shortPoll', () => {
   })
 
   it('should wait for resultHandler() to finish before starting sleep()', async () => {
-    const sleepSpy = shortPoll.sleep = jest.fn()
+    const sleepSpy = sleep.now = jest.fn()
     const resultHandlerSpy = jest.fn()
     const resultHandler = () => Promise.resolve().then(resultHandlerSpy)
 
@@ -49,7 +50,7 @@ describe('shortPoll', () => {
 
   it('should wait for sleep() to finish before running next poll', async () => {
     const sleepSpy = jest.fn()
-    shortPoll.sleep = () => Promise.resolve().then(sleepSpy)
+    sleep.now = () => Promise.resolve().then(sleepSpy)
 
     const { poll, shortPollSpy } = shortPollFactory()
     await poll()
@@ -58,7 +59,7 @@ describe('shortPoll', () => {
   })
 
   it('should pass delayInMilliseconds to a sleep()', async () => {
-    const sleepSpy = shortPoll.sleep = jest.fn()
+    const sleepSpy = sleep.now = jest.fn()
     const delayInMilliseconds = 150
 
     const { poll } = shortPollFactory({ delayInMilliseconds })
