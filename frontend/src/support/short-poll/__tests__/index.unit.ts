@@ -4,13 +4,21 @@ import { shortPoll } from '../index'
 const originalShortPoll = shortPoll.do
 const originalSleep = shortPoll.sleep
 
+function stubShortPoll () {
+  shortPoll.do = jest.fn()
+}
+
+function resetShortPoll () {
+  shortPoll.do = originalShortPoll
+}
+
 describe('shortPoll', () => {
   afterEach(() => jest.clearAllMocks())
-  afterEach(() => (shortPoll.do = originalShortPoll))
+  afterEach(resetShortPoll)
   afterEach(() => (shortPoll.sleep = originalSleep))
 
   it('should execute action()', async () => {
-    const action = jest.fn().mockImplementationOnce(() => (shortPoll.do = jest.fn())) as () => Promise<unknown>
+    const action = jest.fn().mockImplementationOnce(stubShortPoll) as () => Promise<unknown>
 
     await shortPoll.do(action, () => Promise.resolve(), 10)
 
@@ -22,7 +30,7 @@ describe('shortPoll', () => {
 
     const result = '123456'
     const action = () => {
-      shortPoll.do = jest.fn()
+      stubShortPoll()
       return Promise.resolve(result)
     }
     const resultHandler = (response: Awaited<ReturnType<typeof action>>) => {
@@ -39,7 +47,7 @@ describe('shortPoll', () => {
 
     const delayInMilliseconds = 150
     const action = () => {
-      shortPoll.do = jest.fn()
+      stubShortPoll()
       return Promise.resolve()
     }
     const resultHandler = () => Promise.resolve().then(resultHandlerSpy)
@@ -69,7 +77,7 @@ describe('shortPoll', () => {
 
     const delayInMilliseconds = 150
     const action = () => {
-      shortPoll.do = jest.fn()
+      stubShortPoll()
       return Promise.resolve()
     }
     const resultHandler = () => Promise.resolve()
