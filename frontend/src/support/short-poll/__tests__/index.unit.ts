@@ -61,4 +61,18 @@ describe('shortPoll', () => {
     await shortPoll.do(action, resultHandler, 10)
     expect(shortPollSpy.mock.invocationCallOrder[0]).toBeGreaterThan(sleepSpy.mock.invocationCallOrder[0])
   })
+
+  it('should pass delayInMilliseconds to a sleep()', async () => {
+    const sleepSpy = shortPoll.sleep = jest.fn()
+
+    const delayInMilliseconds = 150
+    const action = () => {
+      shortPoll.do = jest.fn()
+      return Promise.resolve()
+    }
+    const resultHandler = () => Promise.resolve()
+
+    await shortPoll.do(action, resultHandler, delayInMilliseconds)
+    expect(sleepSpy).toHaveBeenCalledWith(delayInMilliseconds)
+  })
 })
