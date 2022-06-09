@@ -31,32 +31,20 @@ describe('shortPoll', () => {
     await shortPoll.do(action, resultHandler, 10)
   })
 
-  it('should wait given delayInMilliseconds before next poll', async () => {
-    let order = ''
-    const stubbedSleep = shortPoll.sleep = jest.fn()
-    stubbedSleep.mockImplementation(() => {
-      return new Promise(resolve => {
-        setTimeout(() => {
-          order += 'Sleep'
-          resolve(undefined)
-        }, 500)
-      })
-    })
+  it('should wait for sleep() to finish before running next poll', async () => {
+    const sleepSpy = jest.fn()
+    const shortPollSpy = jest.fn()
 
-    const delayInMilliseconds = 150
+    shortPoll.sleep = () => Promise.resolve().then(sleepSpy)
+
     const action = () => {
-      const stubbedShortPoll = shortPoll.do = jest.fn()
-      stubbedShortPoll.mockImplementation(() => {
-        order += 'ShortPoll'
-        return Promise.resolve()
-      })
+      shortPoll.do = shortPollSpy as () => Promise<void>
       return Promise.resolve()
     }
     const resultHandler = () => Promise.resolve()
 
-    await shortPoll.do(action, resultHandler, delayInMilliseconds)
-
-    expect(order).toEqual('SleepShortPoll')
+    await shortPoll.do(action, resultHandler, 10)
+    expect(shortPollSpy.mock.invocationCallOrder[0]).toBeGreaterThan(sleepSpy.mock.invocationCallOrder[0])
   })
 
   it('should not run next poll before resultHandler has finished executing', async () => {
