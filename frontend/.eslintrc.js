@@ -112,6 +112,7 @@ module.exports = {
 
     'no-empty-function': 'off', // Does not understand types
     '@typescript-eslint/no-empty-function': ['error', { 'allow': ['private-constructors'] }],
+    '@typescript-eslint/unbound-method': ['error', { 'ignoreStatic': true }]
   },
 
   overrides: [
