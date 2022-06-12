@@ -9,6 +9,7 @@ import { Speed } from 'src/support/measurement-units/speed'
 import type { SinonStub } from 'cypress/types/sinon'
 import { firstGeoLocatedVehicle, secondGeoLocatedVehicle } from '../__fixtures__/geo-located-vehicles'
 import ListOfVehicles from '../ListOfVehicles.vue'
+import { shortPoll } from 'src/support/short-poll'
 
 const stateSelectorMap = {
   [STATES.LOADING]: 'loading-indicator',
@@ -23,6 +24,7 @@ let vehicleFetchStub: SinonStub
 describe('RealTimeVehicleFeedPage', () => {
   beforeEach(resetStateMachine)
   beforeEach(stubVehicleFetching)
+  beforeEach(stubShortPoll)
 
   inAllLanguages.it('should have a title', (t) => {
     mountRealTimeVehicleFeedPage()
@@ -248,6 +250,10 @@ function resetStateMachine () {
 
 function stubVehicleFetching () {
   vehicleFetchStub = cy.stub(VehicleList, 'fetchAll').resolves()
+}
+
+function stubShortPoll () {
+  cy.stub(shortPoll, 'do')
 }
 
 function simulateResultFromBackend (result: GeoLocatedVehicle[]) {
