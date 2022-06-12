@@ -73,76 +73,54 @@ describe('ListOfVehicles', () => {
       })
     })
 
-    specify('given two vehicles when first one updates it should re-render it', () => {
-      const initialVehicles = [firstGeoLocatedVehicle, secondGeoLocatedVehicle]
-      const updatedVehicles = [updatedFirstGeoLocatedVehicle, secondGeoLocatedVehicle]
+    const scenarios = {
+      'given two vehicles when first one updates it should re-render it': {
+        initial: [firstGeoLocatedVehicle, secondGeoLocatedVehicle],
+        update: [updatedFirstGeoLocatedVehicle, secondGeoLocatedVehicle],
+        expected: [updatedFirstGeoLocatedVehicle, secondGeoLocatedVehicle]
+      },
 
-      const { fetchVehiclesStub, waitForComponentsRerender } = simulateFetchedVehicles(updatedVehicles)
-      restoreShortPoll()
+      'given two vehicles when second one updates it should re-render it': {
+        initial: [firstGeoLocatedVehicle, secondGeoLocatedVehicle],
+        update: [firstGeoLocatedVehicle, updatedSecondGeoLocatedVehicle],
+        expected: [firstGeoLocatedVehicle, updatedSecondGeoLocatedVehicle]
+      },
 
-      mountListOfVehicles({ vehicles: initialVehicles })
-      assertRenderedVehiclesAre(initialVehicles)
-
-      cy.wrap(fetchVehiclesStub).should('have.been.calledOnce')
-      waitForComponentsRerender()
-      assertRenderedVehiclesAre(updatedVehicles)
-
-      stopShortPoll()
-    })
-
-    specify('given two vehicles when second one updates it should re-render it', () => {
-      const initialVehicles = [firstGeoLocatedVehicle, secondGeoLocatedVehicle]
-      const updatedVehicles = [firstGeoLocatedVehicle, updatedSecondGeoLocatedVehicle]
-
-      const { fetchVehiclesStub, waitForComponentsRerender } = simulateFetchedVehicles(updatedVehicles)
-      restoreShortPoll()
-
-      mountListOfVehicles({ vehicles: initialVehicles })
-      assertRenderedVehiclesAre(initialVehicles)
-
-      cy.wrap(fetchVehiclesStub).should('have.been.calledOnce')
-      waitForComponentsRerender()
-      assertRenderedVehiclesAre(updatedVehicles)
-
-      stopShortPoll()
-    })
-
-    specify('given n (2) vehicles when they all get deleted assume something went wrong and do not delete vehicles', () => {
       // if user has n vehicles and suddenly server says they have none,
       // assume something went wrong and instead of deleting them from the screen
       // keep them rendered with the last known state
-      const initialVehicles = [firstGeoLocatedVehicle, secondGeoLocatedVehicle]
-      const updatedVehicles = [] as Vehicle[]
+      'given n (2) vehicles when they all get deleted assume something went wrong and do not delete vehicles': {
+        initial: [firstGeoLocatedVehicle, secondGeoLocatedVehicle],
+        update: [],
+        expected: [firstGeoLocatedVehicle, secondGeoLocatedVehicle]
+      },
 
-      const { fetchVehiclesStub, waitForComponentsRerender } = simulateFetchedVehicles(updatedVehicles)
-      restoreShortPoll()
+      'given two vehicles when one of them gets deleted then delete it from the screen': {
+        initial: [firstGeoLocatedVehicle, secondGeoLocatedVehicle],
+        update: [firstGeoLocatedVehicle],
+        expected: [firstGeoLocatedVehicle]
+      }
+    }
 
-      mountListOfVehicles({ vehicles: initialVehicles })
-      assertRenderedVehiclesAre(initialVehicles)
+    for (const [caseDescription, data] of Object.entries(scenarios)) {
+      specify(caseDescription, () => {
+        const initialVehicles = data.initial
+        const updatedVehicles = data.update
+        const expectedVehiclesAfterUpdate = data.expected
 
-      cy.wrap(fetchVehiclesStub).should('have.been.calledOnce')
-      waitForComponentsRerender()
-      assertRenderedVehiclesAre(initialVehicles)
+        const { fetchVehiclesStub, waitForComponentsRerender } = simulateFetchedVehicles(updatedVehicles)
+        restoreShortPoll()
 
-      stopShortPoll()
-    })
+        mountListOfVehicles({ vehicles: initialVehicles })
+        assertRenderedVehiclesAre(initialVehicles)
 
-    specify('given two vehicles when one of them gets deleted then delete it from the screen', () => {
-      const initialVehicles = [firstGeoLocatedVehicle, secondGeoLocatedVehicle]
-      const updatedVehicles = [firstGeoLocatedVehicle]
+        cy.wrap(fetchVehiclesStub).should('have.been.calledOnce')
+        waitForComponentsRerender()
+        assertRenderedVehiclesAre(expectedVehiclesAfterUpdate)
 
-      const { fetchVehiclesStub, waitForComponentsRerender } = simulateFetchedVehicles(updatedVehicles)
-      restoreShortPoll()
-
-      mountListOfVehicles({ vehicles: initialVehicles })
-      assertRenderedVehiclesAre(initialVehicles)
-
-      cy.wrap(fetchVehiclesStub).should('have.been.calledOnce')
-      waitForComponentsRerender()
-      assertRenderedVehiclesAre(updatedVehicles)
-
-      stopShortPoll()
-    })
+        stopShortPoll()
+      })
+    }
   })
 })
 
