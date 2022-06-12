@@ -13,18 +13,6 @@ import { shortPoll } from 'src/support/short-poll'
 import { sleep } from 'src/support/sleep'
 import type { SinonStub } from 'cypress/types/sinon'
 
-function assertGeoLocatedVehicleProps (vehicleComponent: VueWrapper<InstanceType<typeof GeoLocatedVehicle>>, expectedVehicle: Vehicle) {
-  expect((vehicleComponent.vm as unknown as { $: { vnode: { key: number }}}).$.vnode.key).to.equal(expectedVehicle.id())
-  expect(vehicleComponent.props('licensePlate')).to.equal(expectedVehicle.licensePlate())
-  expect(vehicleComponent.props('latitude')).to.equal(expectedVehicle.latitude())
-  expect(vehicleComponent.props('longitude')).to.equal(expectedVehicle.longitude())
-  expect(vehicleComponent.props('address')).to.equal(expectedVehicle.address())
-  expect(vehicleComponent.props('speed')).to.deep.equal(expectedVehicle.speed())
-  expect(vehicleComponent.props('ignition')).to.equal(expectedVehicle.ignition())
-  expect(vehicleComponent.props('moving')).to.equal(expectedVehicle.moving())
-  expect(vehicleComponent.props('course')).to.equal(expectedVehicle.course())
-}
-
 let shortPollStub: SinonStub
 
 describe('ListOfVehicles', () => {
@@ -147,6 +135,18 @@ function assertRenderedVehiclesAre (vehicles: Vehicle[]) {
     .then(allGeoLocatedVehicleComponents => {
       allGeoLocatedVehicleComponents.forEach((component, i) => assertGeoLocatedVehicleProps(component, vehicles[i]))
     })
+}
+
+function assertGeoLocatedVehicleProps (vehicleComponent: VueWrapper<InstanceType<typeof GeoLocatedVehicle>>, expectedVehicle: Vehicle) {
+  expect((vehicleComponent.vm as unknown as { $: { vnode: { key: number }}}).$.vnode.key).to.equal(expectedVehicle.id())
+  expect(vehicleComponent.props('licensePlate')).to.equal(expectedVehicle.licensePlate())
+  expect(vehicleComponent.props('latitude')).to.equal(expectedVehicle.latitude())
+  expect(vehicleComponent.props('longitude')).to.equal(expectedVehicle.longitude())
+  expect(vehicleComponent.props('address')).to.equal(expectedVehicle.address())
+  expect(vehicleComponent.props('speed')).to.deep.equal(expectedVehicle.speed())
+  expect(vehicleComponent.props('ignition')).to.equal(expectedVehicle.ignition())
+  expect(vehicleComponent.props('moving')).to.equal(expectedVehicle.moving())
+  expect(vehicleComponent.props('course')).to.equal(expectedVehicle.course())
 }
 
 function stubShortPoll () {
