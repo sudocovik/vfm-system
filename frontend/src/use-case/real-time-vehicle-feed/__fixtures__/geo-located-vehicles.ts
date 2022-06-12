@@ -45,7 +45,7 @@ export const secondGeoLocatedVehicle = new GeoLocatedVehicle(
   )
 )
 
-export const updatedGeoLocatedVehicle = new GeoLocatedVehicle(
+export const updatedFirstGeoLocatedVehicle = new GeoLocatedVehicle(
   1,
   'ZD-000-AA',
   '123456789',
