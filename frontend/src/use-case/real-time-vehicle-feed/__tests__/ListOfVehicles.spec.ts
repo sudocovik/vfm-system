@@ -126,6 +126,23 @@ describe('ListOfVehicles', () => {
 
       stopShortPoll()
     })
+
+    specify('given two vehicles when one of them gets deleted then delete it from the screen', () => {
+      const initialVehicles = [firstGeoLocatedVehicle, secondGeoLocatedVehicle]
+      const updatedVehicles = [firstGeoLocatedVehicle]
+
+      const { fetchVehiclesStub, waitForComponentsRerender } = simulateFetchedVehicles(updatedVehicles)
+      restoreShortPoll()
+
+      mountListOfVehicles({ vehicles: initialVehicles })
+      assertRenderedVehiclesAre(initialVehicles)
+
+      cy.wrap(fetchVehiclesStub).should('have.been.calledOnce')
+      waitForComponentsRerender()
+      assertRenderedVehiclesAre(updatedVehicles)
+
+      stopShortPoll()
+    })
   })
 })
 
@@ -167,7 +184,7 @@ function stopShortPoll () {
 }
 
 function simulateFetchedVehicles (vehicles: Vehicle[]) {
-  const delayNeededForComponentsRerender = 50
+  const delayNeededForComponentsRerender = 150
 
   const fetchVehiclesStub = cy.stub(VehicleList, 'fetchAll').callsFake(async () => {
     await sleep.now(delayNeededForComponentsRerender)
