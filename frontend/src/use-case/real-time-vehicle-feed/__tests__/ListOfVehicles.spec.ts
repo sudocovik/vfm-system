@@ -106,6 +106,26 @@ describe('ListOfVehicles', () => {
 
       stopShortPoll()
     })
+
+    specify('given n (2) vehicles when they all get deleted assume something went wrong and do not delete vehicles', () => {
+      // if user has n vehicles and suddenly server says they have none,
+      // assume something went wrong and instead of deleting them from the screen
+      // keep them rendered with the last known state
+      const initialVehicles = [firstGeoLocatedVehicle, secondGeoLocatedVehicle]
+      const updatedVehicles = [] as Vehicle[]
+
+      const { fetchVehiclesStub, waitForComponentsRerender } = simulateFetchedVehicles(updatedVehicles)
+      restoreShortPoll()
+
+      mountListOfVehicles({ vehicles: initialVehicles })
+      assertRenderedVehiclesAre(initialVehicles)
+
+      cy.wrap(fetchVehiclesStub).should('have.been.calledOnce')
+      waitForComponentsRerender()
+      assertRenderedVehiclesAre(initialVehicles)
+
+      stopShortPoll()
+    })
   })
 })
 

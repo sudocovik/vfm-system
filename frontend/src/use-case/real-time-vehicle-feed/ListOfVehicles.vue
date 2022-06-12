@@ -43,8 +43,10 @@ export default defineComponent({
     const geoLocatedVehicles = ref(props.vehicles.filter(vehicle => vehicle instanceof Vehicle) as Vehicle[])
 
     void shortPoll.do(VehicleList.fetchAll, (result) => {
-      geoLocatedVehicles.value[0] = result[0]
-      geoLocatedVehicles.value[1] = result[1]
+      if (result.length !== 0) {
+        geoLocatedVehicles.value[0] = result[0]
+        geoLocatedVehicles.value[1] = result[1]
+      }
       return Promise.resolve()
     }, TWO_SECONDS)
 
