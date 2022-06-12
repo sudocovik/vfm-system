@@ -4,7 +4,8 @@ import GeoLocatedVehicle from '../GeoLocatedVehicle.vue'
 import {
   firstGeoLocatedVehicle,
   secondGeoLocatedVehicle,
-  updatedFirstGeoLocatedVehicle
+  updatedFirstGeoLocatedVehicle,
+  updatedSecondGeoLocatedVehicle
 } from '../__fixtures__/geo-located-vehicles'
 import { VueWrapper } from '@vue/test-utils'
 import { GeoLocatedVehicle as Vehicle, VehicleList } from 'src/backend/VehicleService'
@@ -75,6 +76,23 @@ describe('ListOfVehicles', () => {
     specify('given two vehicles when first one updates it should re-render it', () => {
       const initialVehicles = [firstGeoLocatedVehicle, secondGeoLocatedVehicle]
       const updatedVehicles = [updatedFirstGeoLocatedVehicle, secondGeoLocatedVehicle]
+
+      const { fetchVehiclesStub, waitForComponentsRerender } = simulateFetchedVehicles(updatedVehicles)
+      restoreShortPoll()
+
+      mountListOfVehicles({ vehicles: initialVehicles })
+      assertRenderedVehiclesAre(initialVehicles)
+
+      cy.wrap(fetchVehiclesStub).should('have.been.calledOnce')
+      waitForComponentsRerender()
+      assertRenderedVehiclesAre(updatedVehicles)
+
+      stopShortPoll()
+    })
+
+    specify('given two vehicles when second one updates it should re-render it', () => {
+      const initialVehicles = [firstGeoLocatedVehicle, secondGeoLocatedVehicle]
+      const updatedVehicles = [firstGeoLocatedVehicle, updatedSecondGeoLocatedVehicle]
 
       const { fetchVehiclesStub, waitForComponentsRerender } = simulateFetchedVehicles(updatedVehicles)
       restoreShortPoll()

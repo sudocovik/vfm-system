@@ -44,6 +44,7 @@ export default defineComponent({
 
     void shortPoll.do(VehicleList.fetchAll, (result) => {
       geoLocatedVehicles.value[0] = result[0]
+      geoLocatedVehicles.value[1] = result[1]
       return Promise.resolve()
     }, TWO_SECONDS)
 
