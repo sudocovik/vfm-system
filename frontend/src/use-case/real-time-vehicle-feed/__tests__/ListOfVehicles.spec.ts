@@ -146,7 +146,7 @@ function mountListOfVehicles (props?: Record<string, unknown>) {
 function assertRenderedVehiclesAre (vehicles: Vehicle[]) {
   return cy.then(() => Cypress.vueWrapper.findAllComponents(GeoLocatedVehicle))
     .then(allGeoLocatedVehicleComponents => {
-      expect(allGeoLocatedVehicleComponents.length).to.equal(2)
+      expect(allGeoLocatedVehicleComponents.length).to.equal(vehicles.length)
       return allGeoLocatedVehicleComponents
     })
     .then(allGeoLocatedVehicleComponents => {
