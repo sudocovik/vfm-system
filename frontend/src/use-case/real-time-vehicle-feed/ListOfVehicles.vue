@@ -20,9 +20,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import GeoLocatedVehicle from './GeoLocatedVehicle.vue'
-import { GeoLocatedVehicle as Vehicle } from 'src/backend/VehicleService'
+import { GeoLocatedVehicle as Vehicle, VehicleList } from 'src/backend/VehicleService'
+import { shortPoll } from 'src/support/short-poll'
+
+const TWO_SECONDS = 2000
 
 export default defineComponent({
   name: 'ListOfVehicles',
@@ -37,7 +40,12 @@ export default defineComponent({
   },
 
   setup (props) {
-    const geoLocatedVehicles = props.vehicles.filter(vehicle => vehicle instanceof Vehicle) as Vehicle[]
+    const geoLocatedVehicles = ref(props.vehicles.filter(vehicle => vehicle instanceof Vehicle) as Vehicle[])
+
+    void shortPoll.do(VehicleList.fetchAll, (result) => {
+      geoLocatedVehicles.value[0] = result[0]
+      return Promise.resolve()
+    }, TWO_SECONDS)
 
     return {
       geoLocatedVehicles

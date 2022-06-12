@@ -44,3 +44,25 @@ export const secondGeoLocatedVehicle = new GeoLocatedVehicle(
     '2022-01-01 1:00:00'
   )
 )
+
+export const updatedGeoLocatedVehicle = new GeoLocatedVehicle(
+  1,
+  'ZD-000-AA',
+  '123456789',
+  true,
+  new Position(
+    3,
+    1,
+    44.40,
+    15.41,
+    120,
+    60,
+    Speed.fromKph(60),
+    'Test address 1',
+    true,
+    true,
+    '2022-01-01 0:01:00',
+    '2022-01-01 0:01:00',
+    '2022-01-01 0:01:00'
+  )
+)
