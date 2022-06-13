@@ -1,20 +1,24 @@
 <template>
-  <div data-cy="root-node">
+  <div
+    data-cy="root-node"
+    class="full-width flex items-stretch"
+  >
     <template v-if="geoLocatedVehicles.length">
-      <GeoLocatedVehicle
-        v-for="vehicle in geoLocatedVehicles"
-        :key="vehicle.id()"
+      <div class="vehicle-grid">
+        <GeoLocatedVehicle
+          v-for="vehicle in geoLocatedVehicles"
+          :key="vehicle.id()"
 
-        :license-plate="vehicle.licensePlate()"
-        :latitude="vehicle.latitude()"
-        :longitude="vehicle.longitude()"
-        :address="vehicle.address()"
-        :speed="vehicle.speed()"
-        :ignition="vehicle.ignition()"
-        :moving="vehicle.moving()"
-        :course="vehicle.course()"
-        class="q-mt-md"
-      />
+          :license-plate="vehicle.licensePlate()"
+          :latitude="vehicle.latitude()"
+          :longitude="vehicle.longitude()"
+          :address="vehicle.address()"
+          :speed="vehicle.speed()"
+          :ignition="vehicle.ignition()"
+          :moving="vehicle.moving()"
+          :course="vehicle.course()"
+        />
+      </div>
     </template>
   </div>
 </template>
@@ -53,3 +57,20 @@ export default defineComponent({
   }
 })
 </script>
+
+<style lang="sass" scoped>
+.vehicle-grid
+  display: grid
+  grid-template-columns: 1fr
+  grid-gap: 16px // equal to .q-ma-md
+  width: 100%
+  grid-auto-rows: minmax(350px, auto)
+
+@media (min-width: $breakpoint-sm-max)
+  .vehicle-grid
+    grid-template-columns: 1fr 1fr
+
+@media (min-width: $breakpoint-md-max)
+  .vehicle-grid
+    grid-template-columns: 1fr 1fr 1fr
+</style>

@@ -27,7 +27,7 @@
     <div
       v-if="isSuccessState"
       data-cy="vehicle-list"
-      class="full-width"
+      class="full-width flex items-stretch"
     >
       <ListOfVehicles :vehicles="vehicles" />
     </div>

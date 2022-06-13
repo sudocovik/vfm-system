@@ -48,7 +48,7 @@ describe('ListOfVehicles', () => {
     cy.then(() => Cypress.vueWrapper.findComponent(GeoLocatedVehicle))
       .then(component => component.element as unknown as JQuery)
       .then(element => element[0].outerHTML)
-      .then(html => cy.dataCy('root-node').should('have.html', html))
+      .then(html => cy.dataCy('root-node').should('contain.html', html))
   })
 
   describe('Background refresh', () => {
