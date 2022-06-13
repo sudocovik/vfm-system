@@ -1,5 +1,5 @@
 import { mount } from '@cypress/vue'
-import GeoLocatedVehicle, { MAP_HEIGHT } from '../GeoLocatedVehicle.vue'
+import GeoLocatedVehicle from '../GeoLocatedVehicle.vue'
 import { BaseMap, icon as MarkerIcon, MapMarker } from 'components/Map'
 import { ComponentUnderTest } from 'test/support/api'
 import { VueWrapper } from '@vue/test-utils'
@@ -177,16 +177,13 @@ describe('GeoLocatedVehicle', () => {
       })
     })
 
-    it(`should be ${String(MAP_HEIGHT)}px high`, () => {
-      mountGeoLocatedVehicle()
-
-      mapHeightShouldBe(MAP_HEIGHT)
-    })
-
     it('should be 100% wide', () => {
       mountGeoLocatedVehicle()
 
-      mapWidthShouldBe('100%')
+      cy.dataCy('vehicle-card')
+        .invoke('outerWidth')
+        .then(cardWidth => String(cardWidth) + 'px')
+        .then(mapWidthShouldBe)
     })
 
     it('should respect q-card\'s border radius', () => {
@@ -419,13 +416,6 @@ function mapWidthShouldBe (expectedWidth: string) {
     .then(baseMap => cy.wrap(baseMap.element))
     .invoke('css', 'width')
     .should('equal', expectedWidth)
-}
-
-function mapHeightShouldBe (expectedHeight: number) {
-  cy.then(getBaseMap)
-    .then(baseMap => cy.wrap(baseMap.element))
-    .invoke('outerHeight')
-    .should('equal', expectedHeight)
 }
 
 function mapOverflowShouldBe (expectedOverflow: string) {

@@ -1,11 +1,14 @@
 <template>
-  <q-card>
+  <q-card
+    class="column items-stretch"
+    data-cy="vehicle-card"
+  >
     <BaseMap
-      :style="mapCssStyle"
       :interactive="false"
       :center="{ lat: latitude, lng: longitude }"
       :zoom="14"
       :render-p-o-i="false"
+      style="flex: 1; overflow: hidden;"
     >
       <MapMarker
         :latitude="latitude"
@@ -48,8 +51,6 @@ import { computed, defineComponent } from 'vue'
 import { BaseMap, icon as MarkerIcon, MapMarker } from 'components/Map'
 import { colors as StatusColors, createIcon as VehicleMapIcon, size as mapIconSize } from './VehicleMapIcon'
 import { Speed } from 'src/support/measurement-units/speed'
-
-export const MAP_HEIGHT = 200
 
 export default defineComponent({
   name: 'GeoLocatedVehicle',
@@ -104,7 +105,6 @@ export default defineComponent({
   setup (props) {
     const ignitionBasedColor = computed(() => props.ignition ? StatusColors.green.stroke : StatusColors.yellow.fill)
     const icon = computed(() => props.moving ? 'mdi-truck-fast' : 'mdi-truck')
-    const mapCssStyle = { height: `${MAP_HEIGHT}px`, width: '100%', overflow: 'hidden' }
     const ignitionAndMovementAwareIcon = computed(() =>
       new MarkerIcon.SVG(VehicleMapIcon(props.moving, props.ignition, props.course))
         .havingWidth(mapIconSize)
@@ -114,7 +114,6 @@ export default defineComponent({
 
     return {
       icon,
-      mapCssStyle,
       ignitionAndMovementAwareIcon,
       ignitionBasedColor,
       speedInKph

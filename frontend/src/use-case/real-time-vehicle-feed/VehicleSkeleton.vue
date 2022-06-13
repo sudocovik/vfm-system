@@ -2,7 +2,7 @@
   <q-card>
     <q-skeleton
       type="rect"
-      :height="MAP_HEIGHT + 'px'"
+      height="200px"
     />
 
     <q-card-section>
@@ -38,8 +38,4 @@
 export default {
   name: 'VehicleSkeleton'
 }
-</script>
-
-<script lang="ts" setup>
-import { MAP_HEIGHT } from './GeoLocatedVehicle.vue'
 </script>
