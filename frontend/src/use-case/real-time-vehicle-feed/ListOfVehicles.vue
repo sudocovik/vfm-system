@@ -13,7 +13,9 @@
     <template v-if="geoLocatedVehicles.length">
       <div
         class="vehicle-grid"
+        :class="{ 'single-vehicle-view': currentSingleVehicle !== undefined }"
         style="flex: 1"
+        data-cy="vehicle-container"
       >
         <GeoLocatedVehicle
           v-for="vehicle in geoLocatedVehicles"
@@ -27,6 +29,8 @@
           :ignition="vehicle.ignition()"
           :moving="vehicle.moving()"
           :course="vehicle.course()"
+          :class="{ 'vehicle-in-viewport': currentSingleVehicle === vehicle.id() }"
+          @click="currentSingleVehicle = vehicle.id()"
         />
       </div>
     </template>
@@ -55,6 +59,7 @@ export default defineComponent({
 
   setup (props) {
     const geoLocatedVehicles = ref(props.vehicles.filter(vehicle => vehicle instanceof Vehicle) as Vehicle[])
+    const currentSingleVehicle = ref<number | undefined>(undefined)
 
     void shortPoll.do(VehicleList.fetchAll, (result) => {
       if (result.length !== 0) geoLocatedVehicles.value = result
@@ -62,7 +67,8 @@ export default defineComponent({
     }, TWO_SECONDS)
 
     return {
-      geoLocatedVehicles
+      geoLocatedVehicles,
+      currentSingleVehicle
     }
   }
 })
@@ -79,4 +85,7 @@ export default defineComponent({
 @media (min-width: $breakpoint-sm-min)
   .vehicle-grid
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr))
+
+.single-vehicle-view > :not(.vehicle-in-viewport)
+  display: none
 </style>

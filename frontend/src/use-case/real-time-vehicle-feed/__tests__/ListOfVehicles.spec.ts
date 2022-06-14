@@ -62,6 +62,22 @@ describe('ListOfVehicles', () => {
       .should('equal', t('vehicles'))
   })
 
+  describe('when user clicks on vehicle', () => {
+    it('should maximize vehicle card and hide every other card', () => {
+      mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
+
+      getVehicleCardByIndex(0).as('first-vehicle')
+
+      getVehicleContainerHeight()
+        .then(containerHeight => getVehicleHeight('first-vehicle').should('be.lessThan', containerHeight / 2))
+
+      cy.get('@first-vehicle').click()
+
+      getVehicleContainerHeight()
+        .then(containerHeight => getVehicleHeight('first-vehicle').should('equal', containerHeight))
+    })
+  })
+
   describe('Background refresh', () => {
     it('should utilize short poll for fetching new data with 2 seconds delay between fetches', () => {
       mountListOfVehicles()
@@ -158,6 +174,19 @@ function assertGeoLocatedVehicleProps (vehicleComponent: VueWrapper<InstanceType
   expect(vehicleComponent.props('ignition')).to.equal(expectedVehicle.ignition())
   expect(vehicleComponent.props('moving')).to.equal(expectedVehicle.moving())
   expect(vehicleComponent.props('course')).to.equal(expectedVehicle.course())
+}
+
+function getVehicleCardByIndex (index: number) {
+  return cy.then(() => Cypress.vueWrapper.findAllComponents(GeoLocatedVehicle)[index])
+    .then(firstVehicle => cy.wrap(firstVehicle.element))
+}
+
+function getVehicleHeight (alias: string) {
+  return cy.get('@' + alias).invoke('outerHeight').then(vehicleHeight => cy.wrap(vehicleHeight))
+}
+
+function getVehicleContainerHeight () {
+  return cy.dataCy('vehicle-container').invoke('outerHeight').then(height => height as unknown as number)
 }
 
 function stubShortPoll () {
