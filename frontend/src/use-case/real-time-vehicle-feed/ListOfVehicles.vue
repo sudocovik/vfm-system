@@ -66,11 +66,7 @@ export default defineComponent({
   width: 100%
   grid-auto-rows: minmax(350px, auto)
 
-@media (min-width: $breakpoint-sm-max)
+@media (min-width: $breakpoint-sm-min)
   .vehicle-grid
-    grid-template-columns: 1fr 1fr
-
-@media (min-width: $breakpoint-md-max)
-  .vehicle-grid
-    grid-template-columns: 1fr 1fr 1fr
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr))
 </style>
