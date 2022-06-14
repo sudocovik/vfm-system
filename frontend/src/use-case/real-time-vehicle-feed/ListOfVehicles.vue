@@ -1,10 +1,20 @@
 <template>
   <div
     data-cy="root-node"
-    class="full-width flex items-stretch"
+    class="full-width column items-stretch"
   >
+    <div
+      class="text-h4 text-grey-7 text-weight-medium q-mb-md"
+      data-cy="heading"
+    >
+      <span class="vertical-middle">{{ $t('vehicles') }}</span>
+    </div>
+
     <template v-if="geoLocatedVehicles.length">
-      <div class="vehicle-grid">
+      <div
+        class="vehicle-grid"
+        style="flex: 1"
+      >
         <GeoLocatedVehicle
           v-for="vehicle in geoLocatedVehicles"
           :key="vehicle.id()"

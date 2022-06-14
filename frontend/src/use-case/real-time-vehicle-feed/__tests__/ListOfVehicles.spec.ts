@@ -1,4 +1,5 @@
 import { mount } from '@cypress/vue'
+import { inAllLanguages } from 'test/support/api'
 import ListOfVehicles from '../ListOfVehicles.vue'
 import GeoLocatedVehicle from '../GeoLocatedVehicle.vue'
 import {
@@ -49,6 +50,16 @@ describe('ListOfVehicles', () => {
       .then(component => component.element as unknown as JQuery)
       .then(element => element[0].outerHTML)
       .then(html => cy.dataCy('root-node').should('contain.html', html))
+  })
+
+  inAllLanguages.it('should have a heading', (t) => {
+    mountListOfVehicles()
+
+    cy.dataCy('root-node')
+      .dataCy('heading')
+      .then($el => $el.text().trim())
+      .then(text => cy.wrap(text))
+      .should('equal', t('vehicles'))
   })
 
   describe('Background refresh', () => {
