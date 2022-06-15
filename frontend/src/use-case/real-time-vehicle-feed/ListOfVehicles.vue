@@ -8,13 +8,13 @@
       data-cy="heading"
     >
       <q-btn
-        v-show="currentSingleVehicle !== undefined"
+        v-show="singleVehicleView.isActive"
         icon="mdi-chevron-left"
         size="lg"
         dense
         unelevated
         data-cy="back-button"
-        @click="currentSingleVehicle = undefined"
+        @click="singleVehicleView.leave"
       />
 
       <span class="vertical-middle">{{ $t('vehicles') }}</span>
@@ -23,7 +23,7 @@
     <template v-if="geoLocatedVehicles.length">
       <div
         class="vehicle-grid"
-        :class="{ 'single-vehicle-view': currentSingleVehicle !== undefined }"
+        :class="{ 'single-vehicle-view': singleVehicleView.isActive }"
         style="flex: 1"
         data-cy="vehicle-container"
       >
@@ -39,9 +39,9 @@
           :ignition="vehicle.ignition()"
           :moving="vehicle.moving()"
           :course="vehicle.course()"
-          :class="{ 'vehicle-in-viewport': currentSingleVehicle === vehicle.id() }"
+          :class="{ 'vehicle-in-viewport': singleVehicleView.isVehicleInView(vehicle) }"
           :data-cy="`vehicle-${vehicle.id()}`"
-          @click="currentSingleVehicle = vehicle.id()"
+          @click="singleVehicleView.enter(vehicle)"
         />
       </div>
     </template>
@@ -49,7 +49,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import GeoLocatedVehicle from './GeoLocatedVehicle.vue'
 import { GeoLocatedVehicle as Vehicle, VehicleList } from 'src/backend/VehicleService'
 import { shortPoll } from 'src/support/short-poll'
@@ -70,16 +70,24 @@ export default defineComponent({
 
   setup (props) {
     const geoLocatedVehicles = ref(props.vehicles.filter(vehicle => vehicle instanceof Vehicle) as Vehicle[])
-    const currentSingleVehicle = ref<number | undefined>(undefined)
 
     void shortPoll.do(VehicleList.fetchAll, (result) => {
       if (result.length !== 0) geoLocatedVehicles.value = result
       return Promise.resolve()
     }, TWO_SECONDS)
 
+    type VehicleId = ReturnType<Vehicle['id']>
+    const currentSingleVehicle = ref<VehicleId | undefined>(undefined)
+    const singleVehicleView = computed(() => ({
+      isActive: currentSingleVehicle.value !== undefined,
+      isVehicleInView: (vehicle: Vehicle) => currentSingleVehicle.value === vehicle.id(),
+      enter: (vehicle: Vehicle) => (currentSingleVehicle.value = vehicle.id()),
+      leave: () => (currentSingleVehicle.value = undefined)
+    }))
+
     return {
       geoLocatedVehicles,
-      currentSingleVehicle
+      singleVehicleView
     }
   }
 })
