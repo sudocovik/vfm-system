@@ -11,8 +11,10 @@
         v-show="singleVehicleView.isActive"
         icon="mdi-chevron-left"
         size="lg"
+        class="q-mr-xs"
         dense
         unelevated
+        rounded
         data-cy="back-button"
         @click="singleVehicleView.leave"
       />
