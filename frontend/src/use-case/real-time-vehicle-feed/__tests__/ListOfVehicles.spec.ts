@@ -76,6 +76,17 @@ describe('ListOfVehicles', () => {
       getVehicleContainerHeight()
         .then(containerHeight => getVehicleHeight('first-vehicle').should('equal', containerHeight))
     })
+
+    it('should show back button', () => {
+      mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
+
+      cy.dataCy('back-button').as('back-button')
+      cy.get('@back-button').should('not.be.visible')
+
+      openFirstVehicleInSingleVehicleView()
+
+      cy.get('@back-button').should('be.visible')
+    })
   })
 
   describe('Background refresh', () => {
@@ -187,6 +198,11 @@ function getVehicleHeight (alias: string) {
 
 function getVehicleContainerHeight () {
   return cy.dataCy('vehicle-container').invoke('outerHeight').then(height => height as unknown as number)
+}
+
+function openFirstVehicleInSingleVehicleView () {
+  getVehicleCardByIndex(0).as('first-vehicle')
+  cy.get('@first-vehicle').click()
 }
 
 function stubShortPoll () {

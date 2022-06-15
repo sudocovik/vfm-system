@@ -7,6 +7,15 @@
       class="text-h4 text-grey-7 text-weight-medium q-mb-md"
       data-cy="heading"
     >
+      <q-btn
+        v-show="currentSingleVehicle !== undefined"
+        icon="mdi-chevron-left"
+        size="lg"
+        dense
+        unelevated
+        data-cy="back-button"
+      />
+
       <span class="vertical-middle">{{ $t('vehicles') }}</span>
     </div>
 
