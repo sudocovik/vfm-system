@@ -83,9 +83,19 @@ describe('ListOfVehicles', () => {
       cy.dataCy('back-button').as('back-button')
       cy.get('@back-button').should('not.be.visible')
 
-      openFirstVehicleInSingleVehicleView()
+      openInSingleVehicleView(firstGeoLocatedVehicle)
 
       cy.get('@back-button').should('be.visible')
+    })
+
+    specify('when user clicks on back button it should return to all vehicles view', () => {
+      mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
+
+      openInSingleVehicleView(firstGeoLocatedVehicle)
+
+      cy.dataCy('back-button').click()
+
+      assertNotInSingleVehicleView()
     })
   })
 
@@ -200,9 +210,12 @@ function getVehicleContainerHeight () {
   return cy.dataCy('vehicle-container').invoke('outerHeight').then(height => height as unknown as number)
 }
 
-function openFirstVehicleInSingleVehicleView () {
-  getVehicleCardByIndex(0).as('first-vehicle')
-  cy.get('@first-vehicle').click()
+function assertNotInSingleVehicleView () {
+  cy.get('*[data-cy^="vehicle-"]').should('be.visible')
+}
+
+function openInSingleVehicleView (targetVehicle: Vehicle) {
+  cy.dataCy(`vehicle-${targetVehicle.id()}`).click()
 }
 
 function stubShortPoll () {

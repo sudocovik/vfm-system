@@ -14,6 +14,7 @@
         dense
         unelevated
         data-cy="back-button"
+        @click="currentSingleVehicle = undefined"
       />
 
       <span class="vertical-middle">{{ $t('vehicles') }}</span>
@@ -39,6 +40,7 @@
           :moving="vehicle.moving()"
           :course="vehicle.course()"
           :class="{ 'vehicle-in-viewport': currentSingleVehicle === vehicle.id() }"
+          :data-cy="`vehicle-${vehicle.id()}`"
           @click="currentSingleVehicle = vehicle.id()"
         />
       </div>
