@@ -167,6 +167,75 @@ describe('GeoLocatedVehicle', () => {
     })
   })
 
+  describe('(prop): syncCenter', () => {
+    it('should be true by default', () => {
+      mountGeoLocatedVehicle()
+
+      syncCenterShouldBe(true)
+    })
+
+    specify(
+      'given latitude, longitude and syncCenter = false ' +
+      'when latitude and longitude change ' +
+      'then map center should not change',
+      () => {
+        const initialLatitude = 45
+        const initialLongitude = 15
+        mountGeoLocatedVehicle({ latitude: initialLatitude, longitude: initialLongitude, syncCenter: false })
+        baseMapCenterLatitudeShouldBe(initialLatitude)
+        baseMapCenterLongitudeShouldBe(initialLongitude)
+        syncCenterShouldBe(false)
+
+        const newLatitude = 47
+        const newLongitude = 17
+        ComponentUnderTest.changeProperties({ latitude: newLatitude, longitude: newLongitude })
+
+        baseMapCenterLatitudeShouldBe(initialLatitude)
+        baseMapCenterLongitudeShouldBe(initialLongitude)
+      })
+
+    specify(
+      'given latitude, longitude and syncCenter = false ' +
+      'when syncCenter, latitude and longitude change ' +
+      'then map center should equal updated latitude and longitude',
+      () => {
+        const initialLatitude = 45
+        const initialLongitude = 15
+        mountGeoLocatedVehicle({ latitude: initialLatitude, longitude: initialLongitude, syncCenter: false })
+
+        const newLatitude = 47
+        const newLongitude = 17
+        ComponentUnderTest.changeProperties({ latitude: newLatitude, longitude: newLongitude, syncCenter: true })
+
+        syncCenterShouldBe(true)
+        baseMapCenterLatitudeShouldBe(newLatitude)
+        baseMapCenterLongitudeShouldBe(newLongitude)
+      }
+    )
+
+    specify(
+      'given latitude, longitude and syncCenter = true ' +
+      'when latitude and longitude update ' +
+      'then map center should match updated latitude and longitude ' +
+      'when syncCenter goes to false ' +
+      'then map center should match updated latitude and longitude not initial one',
+      () => {
+        const initialLatitude = 45
+        const initialLongitude = 15
+        mountGeoLocatedVehicle({ latitude: initialLatitude, longitude: initialLongitude, syncCenter: true })
+
+        const newLatitude = 47
+        const newLongitude = 17
+        ComponentUnderTest.changeProperties({ latitude: newLatitude, longitude: newLongitude })
+        baseMapCenterLatitudeShouldBe(newLatitude)
+        baseMapCenterLongitudeShouldBe(newLongitude)
+
+        ComponentUnderTest.changeProperties({ syncCenter: false })
+        baseMapCenterLatitudeShouldBe(newLatitude)
+        baseMapCenterLongitudeShouldBe(newLongitude)
+      })
+  })
+
   describe('(component): BaseMap', () => {
     it('should render', () => {
       mountGeoLocatedVehicle()
@@ -452,4 +521,10 @@ function markerIconShouldBe (expectedIcon: MarkerIcon.SVG) {
 
 function speedShouldBe (targetSpeed: Speed) {
   cy.dataCy('speed').should('have.text', `${targetSpeed.toKph()} km/h`)
+}
+
+function syncCenterShouldBe (expectedValue: boolean) {
+  cy.then(() => Cypress.vueWrapper.props('syncCenter') as boolean)
+    .then(syncCenter => cy.wrap(syncCenter))
+    .should('equal', expectedValue)
 }

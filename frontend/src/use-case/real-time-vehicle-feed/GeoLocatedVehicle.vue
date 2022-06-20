@@ -5,7 +5,7 @@
   >
     <BaseMap
       :interactive="false"
-      :center="{ lat: latitude, lng: longitude }"
+      :center="mapCenter"
       :zoom="14"
       :render-p-o-i="false"
       style="flex: 1; overflow: hidden;"
@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, reactive, watch } from 'vue'
 import { BaseMap, icon as MarkerIcon, MapMarker } from 'components/Map'
 import { colors as StatusColors, createIcon as VehicleMapIcon, size as mapIconSize } from './VehicleMapIcon'
 import { Speed } from 'src/support/measurement-units/speed'
@@ -99,6 +99,11 @@ export default defineComponent({
     course: {
       type: Number,
       required: true
+    },
+
+    syncCenter: {
+      type: Boolean,
+      default: true
     }
   },
 
@@ -112,11 +117,21 @@ export default defineComponent({
     )
     const speedInKph = computed(() => Math.round(props.speed.toKph()))
 
+    const mapCenter = reactive({ lat: Number(props.latitude), lng: Number(props.longitude) })
+    const latitudeAndLongitude = computed(() => ({ latitude: props.latitude, longitude: props.longitude }))
+    watch(latitudeAndLongitude, ({ latitude, longitude }) => {
+      if (props.syncCenter) {
+        mapCenter.lat = latitude
+        mapCenter.lng = longitude
+      }
+    })
+
     return {
       icon,
       ignitionAndMovementAwareIcon,
       ignitionBasedColor,
-      speedInKph
+      speedInKph,
+      mapCenter
     }
   }
 })
