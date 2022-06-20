@@ -236,6 +236,22 @@ describe('GeoLocatedVehicle', () => {
       })
   })
 
+  describe('(prop): mapInteractive', () => {
+    it('should be false by default', () => {
+      mountGeoLocatedVehicle()
+
+      mapInteractivityShouldBe(false)
+    })
+
+    it('should be reactive', () => {
+      mountGeoLocatedVehicle({ mapInteractive: true })
+      mapInteractivityShouldBe(true)
+
+      ComponentUnderTest.changeProperties({ mapInteractive: false })
+      mapInteractivityShouldBe(false)
+    })
+  })
+
   describe('(component): BaseMap', () => {
     it('should render', () => {
       mountGeoLocatedVehicle()
@@ -259,12 +275,6 @@ describe('GeoLocatedVehicle', () => {
       mountGeoLocatedVehicle()
 
       mapOverflowShouldBe('hidden')
-    })
-
-    it('should not be interactive', () => {
-      mountGeoLocatedVehicle()
-
-      mapInteractivityShouldBe(false)
     })
 
     it('should have zoom close enough to the ground', () => {

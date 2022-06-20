@@ -4,7 +4,7 @@
     data-cy="vehicle-card"
   >
     <BaseMap
-      :interactive="false"
+      :interactive="mapInteractive"
       :center="mapCenter"
       :zoom="14"
       :render-p-o-i="false"
@@ -104,6 +104,11 @@ export default defineComponent({
     syncCenter: {
       type: Boolean,
       default: true
+    },
+
+    mapInteractive: {
+      type: Boolean,
+      default: false
     }
   },
 
