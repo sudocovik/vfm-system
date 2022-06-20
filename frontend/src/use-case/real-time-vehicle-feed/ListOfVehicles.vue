@@ -41,6 +41,7 @@
           :ignition="vehicle.ignition()"
           :moving="vehicle.moving()"
           :course="vehicle.course()"
+          :map-interactive="singleVehicleView.isVehicleInView(vehicle)"
           :class="{ 'vehicle-in-viewport': singleVehicleView.isVehicleInView(vehicle) }"
           :data-cy="`vehicle-${vehicle.id()}`"
           @click="singleVehicleView.enter(vehicle)"

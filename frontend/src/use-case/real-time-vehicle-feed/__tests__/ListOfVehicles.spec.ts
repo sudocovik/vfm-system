@@ -14,6 +14,7 @@ import { shortPoll } from 'src/support/short-poll'
 import { sleep } from 'src/support/sleep'
 import type { SinonStub } from 'cypress/types/sinon'
 
+type GeoLocatedVehicleWrapper = VueWrapper<InstanceType<typeof GeoLocatedVehicle>>
 let shortPollStub: SinonStub
 
 describe('ListOfVehicles', () => {
@@ -52,6 +53,13 @@ describe('ListOfVehicles', () => {
       .then(html => cy.dataCy('root-node').should('contain.html', html))
   })
 
+  specify('map interactivity should be false on all vehicles', () => {
+    mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
+
+    cy.then(() => Cypress.vueWrapper.findAllComponents(GeoLocatedVehicle))
+      .each((vehicleComponent: GeoLocatedVehicleWrapper) => mapInteractivityShouldBe(vehicleComponent, false))
+  })
+
   inAllLanguages.it('should have a heading', (t) => {
     mountListOfVehicles()
 
@@ -88,14 +96,37 @@ describe('ListOfVehicles', () => {
       cy.get('@back-button').should('be.visible')
     })
 
-    specify('when user clicks on back button it should return to all vehicles view', () => {
+    it('should make the map interactive', () => {
       mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
 
       openInSingleVehicleView(firstGeoLocatedVehicle)
 
-      cy.dataCy('back-button').click()
+      cy.then(() => Cypress.vueWrapper.findAllComponents(GeoLocatedVehicle))
+        .then(components => {
+          mapInteractivityShouldBe(components[0], true)
+          mapInteractivityShouldBe(components[1], false)
+        })
+    })
 
-      assertNotInSingleVehicleView()
+    describe('when user clicks on back button', () => {
+      beforeEach(() => {
+        mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
+        openInSingleVehicleView(firstGeoLocatedVehicle)
+        cy.dataCy('back-button').click()
+      })
+
+      it('should return to all vehicles view', () => {
+        assertNotInSingleVehicleView()
+      })
+
+      it('should hide back button', () => {
+        cy.dataCy('back-button').should('not.be.visible')
+      })
+
+      it('should make map non-interactive for all vehicles', () => {
+        cy.then(() => Cypress.vueWrapper.findAllComponents(GeoLocatedVehicle))
+          .each((vehicleComponent: GeoLocatedVehicleWrapper) => mapInteractivityShouldBe(vehicleComponent, false))
+      })
     })
   })
 
@@ -185,7 +216,7 @@ function assertRenderedVehiclesAre (vehicles: Vehicle[]) {
     })
 }
 
-function assertGeoLocatedVehicleProps (vehicleComponent: VueWrapper<InstanceType<typeof GeoLocatedVehicle>>, expectedVehicle: Vehicle) {
+function assertGeoLocatedVehicleProps (vehicleComponent: GeoLocatedVehicleWrapper, expectedVehicle: Vehicle) {
   expect((vehicleComponent.vm as unknown as { $: { vnode: { key: number }}}).$.vnode.key).to.equal(expectedVehicle.id())
   expect(vehicleComponent.props('licensePlate')).to.equal(expectedVehicle.licensePlate())
   expect(vehicleComponent.props('latitude')).to.equal(expectedVehicle.latitude())
@@ -216,6 +247,12 @@ function assertNotInSingleVehicleView () {
 
 function openInSingleVehicleView (targetVehicle: Vehicle) {
   cy.dataCy(`vehicle-${targetVehicle.id()}`).click()
+}
+
+function mapInteractivityShouldBe (component: GeoLocatedVehicleWrapper, wantedInteractivity: boolean) {
+  cy.then(() => component.props('mapInteractive') as boolean)
+    .then(interactive => cy.wrap(interactive))
+    .should('equal', wantedInteractivity)
 }
 
 function stubShortPoll () {
