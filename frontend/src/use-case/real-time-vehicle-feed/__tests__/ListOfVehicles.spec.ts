@@ -60,6 +60,13 @@ describe('ListOfVehicles', () => {
       .each((vehicleComponent: GeoLocatedVehicleWrapper) => mapInteractivityShouldBe(vehicleComponent, false))
   })
 
+  specify('map syncCenter should be true on all vehicles', () => {
+    mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
+
+    cy.then(() => Cypress.vueWrapper.findAllComponents(GeoLocatedVehicle))
+      .each((vehicleComponent: GeoLocatedVehicleWrapper) => mapSyncCenterShouldBe(vehicleComponent, true))
+  })
+
   inAllLanguages.it('should have a heading', (t) => {
     mountListOfVehicles()
 
@@ -108,6 +115,18 @@ describe('ListOfVehicles', () => {
         })
     })
 
+    it('should not sync map center when latitude and longitude update', () => {
+      mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
+
+      openInSingleVehicleView(firstGeoLocatedVehicle)
+
+      cy.then(() => Cypress.vueWrapper.findAllComponents(GeoLocatedVehicle))
+        .then(components => {
+          mapSyncCenterShouldBe(components[0], false)
+          mapSyncCenterShouldBe(components[1], true)
+        })
+    })
+
     describe('when user clicks on back button', () => {
       beforeEach(() => {
         mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
@@ -126,6 +145,13 @@ describe('ListOfVehicles', () => {
       it('should make map non-interactive for all vehicles', () => {
         cy.then(() => Cypress.vueWrapper.findAllComponents(GeoLocatedVehicle))
           .each((vehicleComponent: GeoLocatedVehicleWrapper) => mapInteractivityShouldBe(vehicleComponent, false))
+      })
+
+      it('should sync map center for all vehicles', () => {
+        mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
+
+        cy.then(() => Cypress.vueWrapper.findAllComponents(GeoLocatedVehicle))
+          .each((vehicleComponent: GeoLocatedVehicleWrapper) => mapSyncCenterShouldBe(vehicleComponent, true))
       })
     })
   })
@@ -253,6 +279,12 @@ function mapInteractivityShouldBe (component: GeoLocatedVehicleWrapper, wantedIn
   cy.then(() => component.props('mapInteractive') as boolean)
     .then(interactive => cy.wrap(interactive))
     .should('equal', wantedInteractivity)
+}
+
+function mapSyncCenterShouldBe (component: GeoLocatedVehicleWrapper, wantedSyncStatus: boolean) {
+  cy.then(() => component.props('syncCenter') as boolean)
+    .then(syncCenter => cy.wrap(syncCenter))
+    .should('equal', wantedSyncStatus)
 }
 
 function stubShortPoll () {
