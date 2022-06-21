@@ -5,7 +5,7 @@
   >
     <BaseMap
       :interactive="mapInteractive"
-      :center="mapCenter"
+      :center="{ lat: mapCenter.lat, lng: mapCenter.lng }"
       :zoom="14"
       :render-p-o-i="false"
       style="flex: 1; overflow: hidden;"

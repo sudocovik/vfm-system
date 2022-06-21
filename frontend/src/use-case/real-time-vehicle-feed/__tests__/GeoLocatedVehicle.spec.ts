@@ -5,6 +5,7 @@ import { ComponentUnderTest } from 'test/support/api'
 import { VueWrapper } from '@vue/test-utils'
 import { colors as StatusColors, createIcon as VehicleMapIcon } from '../VehicleMapIcon'
 import { Speed } from 'src/support/measurement-units/speed'
+import { isProxy } from 'vue'
 
 describe('GeoLocatedVehicle', () => {
   describe('(prop): latitude', () => {
@@ -289,6 +290,16 @@ describe('GeoLocatedVehicle', () => {
       mountGeoLocatedVehicle()
 
       mapPoiShouldBeDisabled()
+    })
+
+    specify('center should not be proxy', () => {
+      /**
+       * For some reason if it's proxy the Google Map never actually pans the map.
+       * Not sure if my abstraction is problem/vue3-google-map library or something to do with vue 3 reactivity system.
+       */
+      mountGeoLocatedVehicle()
+
+      cy.then(getBaseMap).then(map => expect(isProxy(map.props('center'))).to.be.false)
     })
   })
 
