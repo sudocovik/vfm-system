@@ -181,17 +181,7 @@ describe('ListOfVehicles', () => {
 
         openInSingleVehicleView(targetVehicle)
 
-        cy.then(getSingleVehicleModeComponent)
-          .then(targetVehicleComponent => {
-            expect(targetVehicleComponent.props('licensePlate')).to.equal(targetVehicle.licensePlate())
-            expect(targetVehicleComponent.props('latitude')).to.equal(targetVehicle.latitude())
-            expect(targetVehicleComponent.props('longitude')).to.equal(targetVehicle.longitude())
-            expect(targetVehicleComponent.props('address')).to.equal(targetVehicle.address())
-            expect(targetVehicleComponent.props('speed')).to.deep.equal(targetVehicle.speed())
-            expect(targetVehicleComponent.props('ignition')).to.equal(targetVehicle.ignition())
-            expect(targetVehicleComponent.props('moving')).to.equal(targetVehicle.moving())
-            expect(targetVehicleComponent.props('course')).to.equal(targetVehicle.course())
-          })
+        assertVehicleInSingleVehicleModeIs(targetVehicle)
       })
 
       it(`should have component key based on vehicle ID to prevent state drift: ${targetVehicle.licensePlate()}`, () => {
@@ -204,6 +194,23 @@ describe('ListOfVehicles', () => {
           .then(componentKey => cy.wrap(componentKey))
           .should('equal', `single-vehicle-${targetVehicle.id()}`)
       })
+    })
+
+    it('should re-render component when there is data changes from background refresh', () => {
+      const initialVehicles = [firstGeoLocatedVehicle, secondGeoLocatedVehicle]
+      const updatedVehicles = [updatedFirstGeoLocatedVehicle, secondGeoLocatedVehicle]
+
+      const { waitForComponentsRerender } = simulateFetchedVehicles(updatedVehicles, 200)
+      restoreShortPoll()
+
+      mountListOfVehicles({ vehicles: initialVehicles })
+      openInSingleVehicleView(firstGeoLocatedVehicle)
+      assertVehicleInSingleVehicleModeIs(firstGeoLocatedVehicle)
+
+      waitForComponentsRerender()
+      assertVehicleInSingleVehicleModeIs(updatedFirstGeoLocatedVehicle)
+
+      stopShortPoll()
     })
   })
 
@@ -301,8 +308,12 @@ function assertRenderedVehiclesAre (vehicles: Vehicle[]) {
     .each((component: GeoLocatedVehicleWrapper, i) => assertGeoLocatedVehicleProps(component, vehicles[i]))
 }
 
-function assertGeoLocatedVehicleProps (vehicleComponent: GeoLocatedVehicleWrapper, expectedVehicle: Vehicle) {
-  expect(getComponentKey(vehicleComponent)).to.equal(expectedVehicle.id())
+function assertGeoLocatedVehicleProps (
+  vehicleComponent: GeoLocatedVehicleWrapper,
+  expectedVehicle: Vehicle,
+  expectedKey: string | undefined = undefined
+) {
+  expect(getComponentKey(vehicleComponent)).to.equal(expectedKey ?? expectedVehicle.id())
   expect(vehicleComponent.props('licensePlate')).to.equal(expectedVehicle.licensePlate())
   expect(vehicleComponent.props('latitude')).to.equal(expectedVehicle.latitude())
   expect(vehicleComponent.props('longitude')).to.equal(expectedVehicle.longitude())
@@ -366,6 +377,11 @@ function openInSingleVehicleView (targetVehicle: Vehicle) {
   cy.dataCy(`vehicle-${targetVehicle.id()}`).click()
 }
 
+function assertVehicleInSingleVehicleModeIs (targetVehicle: Vehicle) {
+  cy.then(getSingleVehicleModeComponent)
+    .then(targetVehicleComponent => assertGeoLocatedVehicleProps(targetVehicleComponent, targetVehicle, `single-vehicle-${targetVehicle.id()}`))
+}
+
 function stubShortPoll () {
   shortPollStub = cy.stub(shortPoll, 'do').callsFake(() => { /* prevent recursion */ })
 }
@@ -378,8 +394,8 @@ function stopShortPoll () {
   cy.then(stubShortPoll)
 }
 
-function simulateFetchedVehicles (vehicles: Vehicle[]) {
-  const delayNeededForComponentsRerender = 150
+function simulateFetchedVehicles (vehicles: Vehicle[], delay = 150) {
+  const delayNeededForComponentsRerender = delay
 
   const fetchVehiclesStub = cy.stub(VehicleList, 'fetchAll').callsFake(async () => {
     await sleep.now(delayNeededForComponentsRerender)

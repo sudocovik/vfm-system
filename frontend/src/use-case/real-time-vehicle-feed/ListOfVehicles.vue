@@ -97,9 +97,10 @@ export default defineComponent({
       return Promise.resolve()
     }, TWO_SECONDS)
 
-    const currentSingleVehicle = ref<Vehicle | undefined>(undefined)
-    const isSingleVehicleModeActive = computed(() => currentSingleVehicle.value !== undefined)
-    const enterSingleVehicleMode = (vehicle: Vehicle) => (currentSingleVehicle.value = vehicle)
+    const singleVehicleModeVehicleId = ref<number | undefined>(undefined)
+    const currentSingleVehicle = computed(() => geoLocatedVehicles.value.find(vehicle => vehicle.id() === singleVehicleModeVehicleId.value))
+    const isSingleVehicleModeActive = computed(() => singleVehicleModeVehicleId.value !== undefined)
+    const enterSingleVehicleMode = (vehicle: Vehicle) => (singleVehicleModeVehicleId.value = vehicle.id())
 
     return {
       geoLocatedVehicles,
