@@ -162,6 +162,19 @@ describe('ListOfVehicles', () => {
     })
   })
 */
+
+  describe('when user clicks on vehicle', () => {
+    it('should go to single vehicle mode', () => {
+      mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
+
+      assertNotSingleVehicleMode()
+
+      openInSingleVehicleView(firstGeoLocatedVehicle)
+
+      assertIsSingleVehicleMode()
+    })
+  })
+
   describe('Background refresh', () => {
     it('should utilize short poll for fetching new data with 2 seconds delay between fetches', () => {
       mountListOfVehicles()
@@ -301,6 +314,20 @@ function mapSyncCenterShouldBe (component: GeoLocatedVehicleWrapper, wantedSyncS
   cy.then(() => component.props('syncCenter') as boolean)
     .then(syncCenter => cy.wrap(syncCenter))
     .should('equal', wantedSyncStatus)
+}
+
+function assertIsSingleVehicleMode () {
+  cy.get('[data-cy="single-vehicle-mode"]').should('exist')
+  cy.get('[data-cy^="vehicle-"]').should('not.exist')
+}
+
+function assertNotSingleVehicleMode () {
+  cy.get('[data-cy="single-vehicle-mode"]').should('not.exist')
+  cy.get('[data-cy^="vehicle-"]').should('exist')
+}
+
+function openInSingleVehicleView (targetVehicle: Vehicle) {
+  cy.dataCy(`vehicle-${targetVehicle.id()}`).click()
 }
 
 function stubShortPoll () {

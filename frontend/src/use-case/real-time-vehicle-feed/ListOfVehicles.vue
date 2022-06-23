@@ -27,23 +27,30 @@
         class="vehicle-grid"
         style="flex: 1"
       >
-        <GeoLocatedVehicle
-          v-for="vehicle in geoLocatedVehicles"
-          :key="vehicle.id()"
-
-          :license-plate="vehicle.licensePlate()"
-          :latitude="vehicle.latitude()"
-          :longitude="vehicle.longitude()"
-          :address="vehicle.address()"
-          :speed="vehicle.speed()"
-          :ignition="vehicle.ignition()"
-          :moving="vehicle.moving()"
-          :course="vehicle.course()"
-          :map-interactive="false"
-          :sync-center="true"
-          :data-cy="`vehicle-${vehicle.id()}`"
-          class="cursor-pointer"
+        <div
+          v-if="isSingleVehicleModeActive"
+          data-cy="single-vehicle-mode"
         />
+        <template v-else>
+          <GeoLocatedVehicle
+            v-for="vehicle in geoLocatedVehicles"
+            :key="vehicle.id()"
+
+            :license-plate="vehicle.licensePlate()"
+            :latitude="vehicle.latitude()"
+            :longitude="vehicle.longitude()"
+            :address="vehicle.address()"
+            :speed="vehicle.speed()"
+            :ignition="vehicle.ignition()"
+            :moving="vehicle.moving()"
+            :course="vehicle.course()"
+            :map-interactive="false"
+            :sync-center="true"
+            :data-cy="`vehicle-${vehicle.id()}`"
+            class="cursor-pointer"
+            @click="isSingleVehicleModeActive = true"
+          />
+        </template>
       </div>
     </template>
   </div>
@@ -72,6 +79,7 @@ export default defineComponent({
   setup (props) {
     const allVehicles = ref(props.vehicles)
     const geoLocatedVehicles = computed(() => allVehicles.value.filter(vehicle => vehicle instanceof Vehicle) as Vehicle[])
+    const isSingleVehicleModeActive = ref(false)
 
     void shortPoll.do(VehicleList.fetchAll, (result) => {
       if (result.length !== 0) allVehicles.value = result
@@ -79,7 +87,8 @@ export default defineComponent({
     }, TWO_SECONDS)
 
     return {
-      geoLocatedVehicles
+      geoLocatedVehicles,
+      isSingleVehicleModeActive
     }
   }
 })
