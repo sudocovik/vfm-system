@@ -1,5 +1,5 @@
 import { mount } from '@cypress/vue'
-import { inAllLanguages } from 'test/support/api'
+import { getComponentKey, inAllLanguages } from 'test/support/api'
 import ListOfVehicles from '../ListOfVehicles.vue'
 import GeoLocatedVehicle from '../GeoLocatedVehicle.vue'
 import {
@@ -257,7 +257,7 @@ function assertRenderedVehiclesAre (vehicles: Vehicle[]) {
 }
 
 function assertGeoLocatedVehicleProps (vehicleComponent: GeoLocatedVehicleWrapper, expectedVehicle: Vehicle) {
-  expect((vehicleComponent.vm as unknown as { $: { vnode: { key: number }}}).$.vnode.key).to.equal(expectedVehicle.id())
+  expect(getComponentKey(vehicleComponent)).to.equal(expectedVehicle.id())
   expect(vehicleComponent.props('licensePlate')).to.equal(expectedVehicle.licensePlate())
   expect(vehicleComponent.props('latitude')).to.equal(expectedVehicle.latitude())
   expect(vehicleComponent.props('longitude')).to.equal(expectedVehicle.longitude())
