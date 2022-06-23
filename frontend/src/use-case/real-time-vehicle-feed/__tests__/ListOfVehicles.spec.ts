@@ -76,7 +76,7 @@ describe('ListOfVehicles', () => {
       .then(text => cy.wrap(text))
       .should('equal', t('vehicles'))
   })
-
+  /*
   describe.skip('when user clicks on vehicle', () => {
     it('should maximize vehicle card and hide every other card', () => {
       mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
@@ -155,7 +155,7 @@ describe('ListOfVehicles', () => {
       })
     })
   })
-
+*/
   describe('Background refresh', () => {
     it('should utilize short poll for fetching new data with 2 seconds delay between fetches', () => {
       mountListOfVehicles()
@@ -256,6 +256,7 @@ function assertGeoLocatedVehicleProps (vehicleComponent: GeoLocatedVehicleWrappe
   expect(vehicleComponent.props('course')).to.equal(expectedVehicle.course())
 }
 
+/*
 function getVehicleCardByIndex (index: number) {
   return cy.then(() => Cypress.vueWrapper.findAllComponents(GeoLocatedVehicle)[index])
     .then(firstVehicle => cy.wrap(firstVehicle.element))
@@ -276,6 +277,7 @@ function assertNotInSingleVehicleView () {
 function openInSingleVehicleView (targetVehicle: Vehicle) {
   cy.dataCy(`vehicle-${targetVehicle.id()}`).click()
 }
+*/
 
 function mapInteractivityShouldBe (component: GeoLocatedVehicleWrapper, wantedInteractivity: boolean) {
   cy.then(() => component.props('mapInteractive') as boolean)
