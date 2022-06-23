@@ -32,8 +32,8 @@ describe('ListOfVehicles', () => {
     const vehicles = [firstGeoLocatedVehicle]
     mountListOfVehicles({ vehicles })
 
-    cy.then(() => Cypress.vueWrapper.findComponent(GeoLocatedVehicle))
-      .then(component => assertGeoLocatedVehicleProps(component, firstGeoLocatedVehicle))
+    cy.then(getAllGeoLocatedVehicles)
+      .then(component => assertGeoLocatedVehicleProps(component[0], firstGeoLocatedVehicle))
   })
 
   specify('given list of two vehicles it should render both of them', () => {
@@ -47,8 +47,8 @@ describe('ListOfVehicles', () => {
     const vehicles = [firstGeoLocatedVehicle]
     mountListOfVehicles({ vehicles })
 
-    cy.then(() => Cypress.vueWrapper.findComponent(GeoLocatedVehicle))
-      .then(component => component.element as unknown as JQuery)
+    cy.then(getAllGeoLocatedVehicles)
+      .then(component => component[0].element as unknown as JQuery)
       .then(element => element[0].outerHTML)
       .then(html => cy.dataCy('root-node').should('contain.html', html))
   })
@@ -56,14 +56,14 @@ describe('ListOfVehicles', () => {
   specify('map interactivity should be false on all vehicles', () => {
     mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
 
-    cy.then(() => Cypress.vueWrapper.findAllComponents(GeoLocatedVehicle))
+    cy.then(getAllGeoLocatedVehicles)
       .each((vehicleComponent: GeoLocatedVehicleWrapper) => mapInteractivityShouldBe(vehicleComponent, false))
   })
 
   specify('map syncCenter should be true on all vehicles', () => {
     mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
 
-    cy.then(() => Cypress.vueWrapper.findAllComponents(GeoLocatedVehicle))
+    cy.then(getAllGeoLocatedVehicles)
       .each((vehicleComponent: GeoLocatedVehicleWrapper) => mapSyncCenterShouldBe(vehicleComponent, true))
   })
 
@@ -231,15 +231,17 @@ function mountListOfVehicles (props?: Record<string, unknown>) {
   })
 }
 
+function getAllGeoLocatedVehicles () {
+  return Cypress.vueWrapper.findAllComponents('[data-cy^="vehicle-"]') as GeoLocatedVehicleWrapper[]
+}
+
 function assertRenderedVehiclesAre (vehicles: Vehicle[]) {
-  return cy.then(() => Cypress.vueWrapper.findAllComponents(GeoLocatedVehicle))
+  return cy.then(getAllGeoLocatedVehicles)
     .then(allGeoLocatedVehicleComponents => {
       expect(allGeoLocatedVehicleComponents.length).to.equal(vehicles.length)
       return allGeoLocatedVehicleComponents
     })
-    .then(allGeoLocatedVehicleComponents => {
-      allGeoLocatedVehicleComponents.forEach((component, i) => assertGeoLocatedVehicleProps(component, vehicles[i]))
-    })
+    .each((component: GeoLocatedVehicleWrapper, i) => assertGeoLocatedVehicleProps(component, vehicles[i]))
 }
 
 function assertGeoLocatedVehicleProps (vehicleComponent: GeoLocatedVehicleWrapper, expectedVehicle: Vehicle) {
