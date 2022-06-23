@@ -77,7 +77,7 @@ describe('ListOfVehicles', () => {
       .should('equal', t('vehicles'))
   })
 
-  describe('when user clicks on vehicle', () => {
+  describe.skip('when user clicks on vehicle', () => {
     it('should maximize vehicle card and hide every other card', () => {
       mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
 

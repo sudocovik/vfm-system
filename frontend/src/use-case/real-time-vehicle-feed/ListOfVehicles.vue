@@ -7,7 +7,7 @@
       class="text-h4 text-grey-7 text-weight-medium q-mb-md"
       data-cy="heading"
     >
-      <q-btn
+      <!-- <q-btn
         v-show="singleVehicleView.isActive"
         icon="mdi-chevron-left"
         size="lg"
@@ -17,7 +17,7 @@
         rounded
         data-cy="back-button"
         @click="singleVehicleView.leave"
-      />
+      /> -->
 
       <span class="vertical-middle">{{ $t('vehicles') }}</span>
     </div>
@@ -25,9 +25,7 @@
     <template v-if="geoLocatedVehicles.length">
       <div
         class="vehicle-grid"
-        :class="{ 'single-vehicle-view': singleVehicleView.isActive }"
         style="flex: 1"
-        data-cy="vehicle-container"
       >
         <GeoLocatedVehicle
           v-for="vehicle in geoLocatedVehicles"
@@ -41,11 +39,9 @@
           :ignition="vehicle.ignition()"
           :moving="vehicle.moving()"
           :course="vehicle.course()"
-          :map-interactive="singleVehicleView.isVehicleInView(vehicle)"
-          :sync-center="!singleVehicleView.isVehicleInView(vehicle)"
-          :class="{ 'vehicle-in-viewport': singleVehicleView.isVehicleInView(vehicle) }"
+          :map-interactive="false"
+          :sync-center="true"
           :data-cy="`vehicle-${vehicle.id()}`"
-          @click="singleVehicleView.enter(vehicle)"
         />
       </div>
     </template>
@@ -53,7 +49,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue'
+import { defineComponent, ref } from 'vue'
 import GeoLocatedVehicle from './GeoLocatedVehicle.vue'
 import { GeoLocatedVehicle as Vehicle, VehicleList } from 'src/backend/VehicleService'
 import { shortPoll } from 'src/support/short-poll'
@@ -80,18 +76,8 @@ export default defineComponent({
       return Promise.resolve()
     }, TWO_SECONDS)
 
-    type VehicleId = ReturnType<Vehicle['id']>
-    const currentSingleVehicle = ref<VehicleId | undefined>(undefined)
-    const singleVehicleView = computed(() => ({
-      isActive: currentSingleVehicle.value !== undefined,
-      isVehicleInView: (vehicle: Vehicle) => currentSingleVehicle.value === vehicle.id(),
-      enter: (vehicle: Vehicle) => (currentSingleVehicle.value = vehicle.id()),
-      leave: () => (currentSingleVehicle.value = undefined)
-    }))
-
     return {
-      geoLocatedVehicles,
-      singleVehicleView
+      geoLocatedVehicles
     }
   }
 })
@@ -108,7 +94,4 @@ export default defineComponent({
 @media (min-width: $breakpoint-sm-min)
   .vehicle-grid
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr))
-
-.single-vehicle-view > :not(.vehicle-in-viewport)
-  display: none
 </style>
