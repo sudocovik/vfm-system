@@ -53,14 +53,14 @@ describe('ListOfVehicles', () => {
       .then(html => cy.dataCy('root-node').should('contain.html', html))
   })
 
-  specify('map interactivity should be false on all vehicles', () => {
+  specify('user should not be able to pan the map change zoom', () => {
     mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
 
     cy.then(getAllGeoLocatedVehicles)
       .each((vehicleComponent: GeoLocatedVehicleWrapper) => mapInteractivityShouldBe(vehicleComponent, false))
   })
 
-  specify('map syncCenter should be true on all vehicles', () => {
+  specify('map center should follow marker position', () => {
     mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
 
     cy.then(getAllGeoLocatedVehicles)
