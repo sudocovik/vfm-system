@@ -27,8 +27,19 @@
         class="vehicle-grid"
         style="flex: 1"
       >
-        <div
+        <GeoLocatedVehicle
           v-if="isSingleVehicleModeActive"
+          :key="`single-vehicle-${currentSingleVehicle.id()}`"
+
+          :license-plate="currentSingleVehicle.licensePlate()"
+          :latitude="currentSingleVehicle.latitude()"
+          :longitude="currentSingleVehicle.longitude()"
+          :address="currentSingleVehicle.address()"
+          :speed="currentSingleVehicle.speed()"
+          :ignition="currentSingleVehicle.ignition()"
+          :moving="currentSingleVehicle.moving()"
+          :course="currentSingleVehicle.course()"
+
           data-cy="single-vehicle-mode"
         />
         <template v-else>
@@ -48,7 +59,8 @@
             :sync-center="true"
             :data-cy="`vehicle-${vehicle.id()}`"
             class="cursor-pointer"
-            @click="isSingleVehicleModeActive = true"
+
+            @click="enterSingleVehicleMode(vehicle)"
           />
         </template>
       </div>
@@ -79,16 +91,21 @@ export default defineComponent({
   setup (props) {
     const allVehicles = ref(props.vehicles)
     const geoLocatedVehicles = computed(() => allVehicles.value.filter(vehicle => vehicle instanceof Vehicle) as Vehicle[])
-    const isSingleVehicleModeActive = ref(false)
 
     void shortPoll.do(VehicleList.fetchAll, (result) => {
       if (result.length !== 0) allVehicles.value = result
       return Promise.resolve()
     }, TWO_SECONDS)
 
+    const currentSingleVehicle = ref<Vehicle | undefined>(undefined)
+    const isSingleVehicleModeActive = computed(() => currentSingleVehicle.value !== undefined)
+    const enterSingleVehicleMode = (vehicle: Vehicle) => (currentSingleVehicle.value = vehicle)
+
     return {
       geoLocatedVehicles,
-      isSingleVehicleModeActive
+      isSingleVehicleModeActive,
+      currentSingleVehicle,
+      enterSingleVehicleMode
     }
   }
 })

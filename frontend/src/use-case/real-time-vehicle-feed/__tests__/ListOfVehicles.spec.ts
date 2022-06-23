@@ -173,6 +173,38 @@ describe('ListOfVehicles', () => {
 
       assertIsSingleVehicleMode()
     })
+
+    const targetVehicles = [firstGeoLocatedVehicle, secondGeoLocatedVehicle]
+    targetVehicles.forEach(targetVehicle => {
+      it(`should display target vehicle: ${targetVehicle.licensePlate()}`, () => {
+        mountListOfVehicles({ vehicles: targetVehicles })
+
+        openInSingleVehicleView(targetVehicle)
+
+        cy.then(getSingleVehicleModeComponent)
+          .then(targetVehicleComponent => {
+            expect(targetVehicleComponent.props('licensePlate')).to.equal(targetVehicle.licensePlate())
+            expect(targetVehicleComponent.props('latitude')).to.equal(targetVehicle.latitude())
+            expect(targetVehicleComponent.props('longitude')).to.equal(targetVehicle.longitude())
+            expect(targetVehicleComponent.props('address')).to.equal(targetVehicle.address())
+            expect(targetVehicleComponent.props('speed')).to.deep.equal(targetVehicle.speed())
+            expect(targetVehicleComponent.props('ignition')).to.equal(targetVehicle.ignition())
+            expect(targetVehicleComponent.props('moving')).to.equal(targetVehicle.moving())
+            expect(targetVehicleComponent.props('course')).to.equal(targetVehicle.course())
+          })
+      })
+
+      it(`should have component key based on vehicle ID to prevent state drift: ${targetVehicle.licensePlate()}`, () => {
+        mountListOfVehicles({ vehicles: targetVehicles })
+
+        openInSingleVehicleView(targetVehicle)
+
+        cy.then(getSingleVehicleModeComponent)
+          .then(targetVehicleComponent => getComponentKey(targetVehicleComponent))
+          .then(componentKey => cy.wrap(componentKey))
+          .should('equal', `single-vehicle-${targetVehicle.id()}`)
+      })
+    })
   })
 
   describe('Background refresh', () => {
@@ -324,6 +356,10 @@ function assertIsSingleVehicleMode () {
 function assertNotSingleVehicleMode () {
   cy.get('[data-cy="single-vehicle-mode"]').should('not.exist')
   cy.get('[data-cy^="vehicle-"]').should('exist')
+}
+
+function getSingleVehicleModeComponent () {
+  return Cypress.vueWrapper.getComponent('[data-cy="single-vehicle-mode"]') as GeoLocatedVehicleWrapper
 }
 
 function openInSingleVehicleView (targetVehicle: Vehicle) {
