@@ -9,7 +9,7 @@ import {
   updatedSecondGeoLocatedVehicle
 } from '../__fixtures__/geo-located-vehicles'
 import { VueWrapper } from '@vue/test-utils'
-import { GeoLocatedVehicle as Vehicle, VehicleList } from 'src/backend/VehicleService'
+import { GeoLocatedVehicle as Vehicle, VehicleList, VehicleWithoutPosition } from 'src/backend/VehicleService'
 import { shortPoll } from 'src/support/short-poll'
 import { sleep } from 'src/support/sleep'
 import type { SinonStub } from 'cypress/types/sinon'
@@ -192,6 +192,12 @@ describe('ListOfVehicles', () => {
         initial: [firstGeoLocatedVehicle, secondGeoLocatedVehicle],
         update: [firstGeoLocatedVehicle],
         expected: [firstGeoLocatedVehicle]
+      },
+
+      'given n vehicles when non-vehicle(s) get added then only vehicles should be rendered': {
+        initial: [firstGeoLocatedVehicle, secondGeoLocatedVehicle],
+        update: [firstGeoLocatedVehicle, secondGeoLocatedVehicle, null, '', new VehicleWithoutPosition(150, 'LOL', '...', false)],
+        expected: [firstGeoLocatedVehicle, secondGeoLocatedVehicle]
       }
     }
 
@@ -201,7 +207,7 @@ describe('ListOfVehicles', () => {
         const updatedVehicles = data.update
         const expectedVehiclesAfterUpdate = data.expected
 
-        const { fetchVehiclesStub, waitForComponentsRerender } = simulateFetchedVehicles(updatedVehicles)
+        const { fetchVehiclesStub, waitForComponentsRerender } = simulateFetchedVehicles(updatedVehicles as Vehicle[])
         restoreShortPoll()
 
         mountListOfVehicles({ vehicles: initialVehicles })
