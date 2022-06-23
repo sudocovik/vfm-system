@@ -42,6 +42,7 @@
           :map-interactive="false"
           :sync-center="true"
           :data-cy="`vehicle-${vehicle.id()}`"
+          class="cursor-pointer"
         />
       </div>
     </template>

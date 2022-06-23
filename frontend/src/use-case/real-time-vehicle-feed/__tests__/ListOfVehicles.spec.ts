@@ -67,6 +67,12 @@ describe('ListOfVehicles', () => {
       .each((vehicleComponent: GeoLocatedVehicleWrapper) => mapSyncCenterShouldBe(vehicleComponent, true))
   })
 
+  specify('vehicles should have pointer cursor', () => {
+    mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
+
+    cy.get('[data-cy^="vehicle-"]').each($vehicle => expect($vehicle).to.have.css('cursor', 'pointer'))
+  })
+
   inAllLanguages.it('should have a heading', (t) => {
     mountListOfVehicles()
 
