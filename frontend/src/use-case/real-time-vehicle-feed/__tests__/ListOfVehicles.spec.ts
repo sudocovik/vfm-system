@@ -53,7 +53,7 @@ describe('ListOfVehicles', () => {
       .then(html => cy.dataCy('root-node').should('contain.html', html))
   })
 
-  specify('user should not be able to pan the map change zoom', () => {
+  specify('user should not be able to pan the map and change zoom', () => {
     mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
 
     cy.then(getAllGeoLocatedVehicles)
@@ -200,7 +200,7 @@ describe('ListOfVehicles', () => {
       const initialVehicles = [firstGeoLocatedVehicle, secondGeoLocatedVehicle]
       const updatedVehicles = [updatedFirstGeoLocatedVehicle, secondGeoLocatedVehicle]
 
-      const { waitForComponentsRerender } = simulateFetchedVehicles(updatedVehicles, 200)
+      const { waitForComponentsRerender } = simulateFetchedVehicles(updatedVehicles, 250)
       restoreShortPoll()
 
       mountListOfVehicles({ vehicles: initialVehicles })
@@ -211,6 +211,24 @@ describe('ListOfVehicles', () => {
       assertVehicleInSingleVehicleModeIs(updatedFirstGeoLocatedVehicle)
 
       stopShortPoll()
+    })
+
+    specify('user should be able to pan the map and change zoom', () => {
+      mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
+
+      openInSingleVehicleView(firstGeoLocatedVehicle)
+
+      cy.then(getSingleVehicleModeComponent)
+        .then(singleVehicleModeComponent => mapInteractivityShouldBe(singleVehicleModeComponent, true))
+    })
+
+    specify('map center should follow marker position', () => {
+      mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
+
+      openInSingleVehicleView(firstGeoLocatedVehicle)
+
+      cy.then(getSingleVehicleModeComponent)
+        .then(singleVehicleModeComponent => mapSyncCenterShouldBe(singleVehicleModeComponent, false))
     })
   })
 

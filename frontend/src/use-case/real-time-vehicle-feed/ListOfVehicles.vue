@@ -39,6 +39,8 @@
           :ignition="currentSingleVehicle.ignition()"
           :moving="currentSingleVehicle.moving()"
           :course="currentSingleVehicle.course()"
+          :map-interactive="true"
+          :sync-center="false"
 
           data-cy="single-vehicle-mode"
         />
