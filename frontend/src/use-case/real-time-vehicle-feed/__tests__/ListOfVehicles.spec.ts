@@ -163,7 +163,7 @@ describe('ListOfVehicles', () => {
   })
 */
 
-  describe('when user clicks on vehicle', () => {
+  describe.only('when user clicks on vehicle', () => {
     it('should go to single vehicle mode', () => {
       mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
 
@@ -237,6 +237,26 @@ describe('ListOfVehicles', () => {
       openInSingleVehicleView(firstGeoLocatedVehicle)
 
       cy.dataCy('back-button').should('be.visible')
+    })
+
+    describe('when user clicks on back button', () => {
+      it('should return to all vehicles view', () => {
+        mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
+        openInSingleVehicleView(firstGeoLocatedVehicle)
+
+        cy.dataCy('back-button').click()
+
+        assertNotSingleVehicleMode()
+      })
+
+      it('should hide back button', () => {
+        mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
+        openInSingleVehicleView(firstGeoLocatedVehicle)
+
+        cy.dataCy('back-button').click()
+
+        cy.dataCy('back-button').should('not.be.visible')
+      })
     })
   })
 

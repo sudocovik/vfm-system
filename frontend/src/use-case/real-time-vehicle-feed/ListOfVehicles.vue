@@ -16,6 +16,8 @@
         unelevated
         rounded
         data-cy="back-button"
+
+        @click="leaveSingleVehicleMode"
       />
 
       <span class="vertical-middle">{{ $t('vehicles') }}</span>
@@ -102,12 +104,14 @@ export default defineComponent({
     const currentSingleVehicle = computed(() => geoLocatedVehicles.value.find(vehicle => vehicle.id() === singleVehicleModeVehicleId.value))
     const isSingleVehicleModeActive = computed(() => singleVehicleModeVehicleId.value !== undefined)
     const enterSingleVehicleMode = (vehicle: Vehicle) => (singleVehicleModeVehicleId.value = vehicle.id())
+    const leaveSingleVehicleMode = () => (singleVehicleModeVehicleId.value = undefined)
 
     return {
       geoLocatedVehicles,
       isSingleVehicleModeActive,
       currentSingleVehicle,
-      enterSingleVehicleMode
+      enterSingleVehicleMode,
+      leaveSingleVehicleMode
     }
   }
 })
