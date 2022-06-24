@@ -324,12 +324,12 @@ function mapSyncCenterShouldBe (component: GeoLocatedVehicleWrapper, wantedSyncS
 
 function assertIsSingleVehicleMode () {
   cy.get('[data-cy="single-vehicle-mode"]').should('exist')
-  cy.get('[data-cy^="vehicle-"]').should('not.exist')
+  cy.get('[data-cy^="vehicle-"]').should('not.be.visible')
 }
 
 function assertNotSingleVehicleMode () {
   cy.get('[data-cy="single-vehicle-mode"]').should('not.exist')
-  cy.get('[data-cy^="vehicle-"]').should('exist')
+  cy.get('[data-cy^="vehicle-"]').should('be.visible')
 }
 
 function getSingleVehicleModeComponent () {

@@ -45,27 +45,26 @@
 
           data-cy="single-vehicle-mode"
         />
-        <template v-else>
-          <GeoLocatedVehicle
-            v-for="vehicle in geoLocatedVehicles"
-            :key="vehicle.id()"
+        <GeoLocatedVehicle
+          v-for="vehicle in geoLocatedVehicles"
+          v-show="!isSingleVehicleModeActive"
+          :key="vehicle.id()"
 
-            :license-plate="vehicle.licensePlate()"
-            :latitude="vehicle.latitude()"
-            :longitude="vehicle.longitude()"
-            :address="vehicle.address()"
-            :speed="vehicle.speed()"
-            :ignition="vehicle.ignition()"
-            :moving="vehicle.moving()"
-            :course="vehicle.course()"
-            :map-interactive="false"
-            :sync-center="true"
-            :data-cy="`vehicle-${vehicle.id()}`"
-            class="cursor-pointer"
+          :license-plate="vehicle.licensePlate()"
+          :latitude="vehicle.latitude()"
+          :longitude="vehicle.longitude()"
+          :address="vehicle.address()"
+          :speed="vehicle.speed()"
+          :ignition="vehicle.ignition()"
+          :moving="vehicle.moving()"
+          :course="vehicle.course()"
+          :map-interactive="false"
+          :sync-center="true"
+          :data-cy="`vehicle-${vehicle.id()}`"
+          class="cursor-pointer"
 
-            @click="enterSingleVehicleMode(vehicle)"
-          />
-        </template>
+          @click="enterSingleVehicleMode(vehicle)"
+        />
       </div>
     </template>
   </div>
