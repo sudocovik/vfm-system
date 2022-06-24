@@ -5,6 +5,7 @@ import GeoLocatedVehicle from '../GeoLocatedVehicle.vue'
 import {
   firstGeoLocatedVehicle,
   secondGeoLocatedVehicle,
+  thirdGeoLocatedVehicle,
   updatedFirstGeoLocatedVehicle,
   updatedSecondGeoLocatedVehicle
 } from '../__fixtures__/geo-located-vehicles'
@@ -82,94 +83,14 @@ describe('ListOfVehicles', () => {
       .then(text => cy.wrap(text))
       .should('equal', t('vehicles'))
   })
-  /*
-  describe.skip('when user clicks on vehicle', () => {
-    it('should maximize vehicle card and hide every other card', () => {
-      mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
 
-      getVehicleCardByIndex(0).as('first-vehicle')
-
-      getVehicleContainerHeight()
-        .then(containerHeight => getVehicleHeight('first-vehicle').should('be.lessThan', containerHeight / 2))
-
-      cy.get('@first-vehicle').click()
-
-      getVehicleContainerHeight()
-        .then(containerHeight => getVehicleHeight('first-vehicle').should('equal', containerHeight))
-    })
-
-    it('should show back button', () => {
-      mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
-
-      cy.dataCy('back-button').as('back-button')
-      cy.get('@back-button').should('not.be.visible')
-
-      openInSingleVehicleView(firstGeoLocatedVehicle)
-
-      cy.get('@back-button').should('be.visible')
-    })
-
-    it('should make the map interactive', () => {
-      mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
-
-      openInSingleVehicleView(firstGeoLocatedVehicle)
-
-      cy.then(() => Cypress.vueWrapper.findAllComponents(GeoLocatedVehicle))
-        .then(components => {
-          mapInteractivityShouldBe(components[0], true)
-          mapInteractivityShouldBe(components[1], false)
-        })
-    })
-
-    it('should not sync map center when latitude and longitude update', () => {
-      mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
-
-      openInSingleVehicleView(firstGeoLocatedVehicle)
-
-      cy.then(() => Cypress.vueWrapper.findAllComponents(GeoLocatedVehicle))
-        .then(components => {
-          mapSyncCenterShouldBe(components[0], false)
-          mapSyncCenterShouldBe(components[1], true)
-        })
-    })
-
-    describe('when user clicks on back button', () => {
-      beforeEach(() => {
-        mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
-        openInSingleVehicleView(firstGeoLocatedVehicle)
-        cy.dataCy('back-button').click()
-      })
-
-      it('should return to all vehicles view', () => {
-        assertNotInSingleVehicleView()
-      })
-
-      it('should hide back button', () => {
-        cy.dataCy('back-button').should('not.be.visible')
-      })
-
-      it('should make map non-interactive for all vehicles', () => {
-        cy.then(() => Cypress.vueWrapper.findAllComponents(GeoLocatedVehicle))
-          .each((vehicleComponent: GeoLocatedVehicleWrapper) => mapInteractivityShouldBe(vehicleComponent, false))
-      })
-
-      it('should sync map center for all vehicles', () => {
-        mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
-
-        cy.then(() => Cypress.vueWrapper.findAllComponents(GeoLocatedVehicle))
-          .each((vehicleComponent: GeoLocatedVehicleWrapper) => mapSyncCenterShouldBe(vehicleComponent, true))
-      })
-    })
-  })
-*/
-
-  describe.only('when user clicks on vehicle', () => {
+  describe('when user clicks on vehicle', () => {
     it('should go to single vehicle mode', () => {
       mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
 
       assertNotSingleVehicleMode()
 
-      openInSingleVehicleView(firstGeoLocatedVehicle)
+      openInSingleVehicleMode(firstGeoLocatedVehicle)
 
       assertIsSingleVehicleMode()
     })
@@ -179,7 +100,7 @@ describe('ListOfVehicles', () => {
       it(`should display target vehicle: ${targetVehicle.licensePlate()}`, () => {
         mountListOfVehicles({ vehicles: targetVehicles })
 
-        openInSingleVehicleView(targetVehicle)
+        openInSingleVehicleMode(targetVehicle)
 
         assertVehicleInSingleVehicleModeIs(targetVehicle)
       })
@@ -187,7 +108,7 @@ describe('ListOfVehicles', () => {
       it(`should have component key based on vehicle ID to prevent state drift: ${targetVehicle.licensePlate()}`, () => {
         mountListOfVehicles({ vehicles: targetVehicles })
 
-        openInSingleVehicleView(targetVehicle)
+        openInSingleVehicleMode(targetVehicle)
 
         cy.then(getSingleVehicleModeComponent)
           .then(targetVehicleComponent => getComponentKey(targetVehicleComponent))
@@ -204,7 +125,7 @@ describe('ListOfVehicles', () => {
       restoreShortPoll()
 
       mountListOfVehicles({ vehicles: initialVehicles })
-      openInSingleVehicleView(firstGeoLocatedVehicle)
+      openInSingleVehicleMode(firstGeoLocatedVehicle)
       assertVehicleInSingleVehicleModeIs(firstGeoLocatedVehicle)
 
       waitForComponentsRerender()
@@ -216,7 +137,7 @@ describe('ListOfVehicles', () => {
     specify('user should be able to pan the map and change zoom', () => {
       mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
 
-      openInSingleVehicleView(firstGeoLocatedVehicle)
+      openInSingleVehicleMode(firstGeoLocatedVehicle)
 
       cy.then(getSingleVehicleModeComponent)
         .then(singleVehicleModeComponent => mapInteractivityShouldBe(singleVehicleModeComponent, true))
@@ -225,7 +146,7 @@ describe('ListOfVehicles', () => {
     specify('map center should follow marker position', () => {
       mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
 
-      openInSingleVehicleView(firstGeoLocatedVehicle)
+      openInSingleVehicleMode(firstGeoLocatedVehicle)
 
       cy.then(getSingleVehicleModeComponent)
         .then(singleVehicleModeComponent => mapSyncCenterShouldBe(singleVehicleModeComponent, false))
@@ -234,7 +155,7 @@ describe('ListOfVehicles', () => {
     it('should show back button', () => {
       mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
 
-      openInSingleVehicleView(firstGeoLocatedVehicle)
+      openInSingleVehicleMode(firstGeoLocatedVehicle)
 
       cy.dataCy('back-button').should('be.visible')
     })
@@ -242,20 +163,39 @@ describe('ListOfVehicles', () => {
     describe('when user clicks on back button', () => {
       it('should return to all vehicles view', () => {
         mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
-        openInSingleVehicleView(firstGeoLocatedVehicle)
+        openInSingleVehicleMode(firstGeoLocatedVehicle)
 
-        cy.dataCy('back-button').click()
+        leaveSingleVehicleMode()
 
         assertNotSingleVehicleMode()
       })
 
       it('should hide back button', () => {
         mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
-        openInSingleVehicleView(firstGeoLocatedVehicle)
+        openInSingleVehicleMode(firstGeoLocatedVehicle)
 
-        cy.dataCy('back-button').click()
+        leaveSingleVehicleMode()
 
         cy.dataCy('back-button').should('not.be.visible')
+      })
+
+      const targetVehicles = [secondGeoLocatedVehicle, thirdGeoLocatedVehicle]
+      targetVehicles.forEach(targetVehicle => {
+        it(`should return to the same scroll position where it was before single vehicle mode: ${targetVehicle.licensePlate()}`, () => {
+          let scrollPosition = 0
+          mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, ...targetVehicles] })
+
+          cy.dataCy(`vehicle-${targetVehicle.id()}`).scrollIntoView()
+          cy.window().its('scrollY').then(scrollY => (scrollPosition = scrollY))
+
+          openInSingleVehicleMode(targetVehicle)
+          leaveSingleVehicleMode()
+
+          cy.then(() => {
+            cy.wrap(scrollPosition).should('be.greaterThan', 0)
+            cy.window().its('scrollY').should('equal', scrollPosition)
+          })
+        })
       })
     })
   })
@@ -370,29 +310,6 @@ function assertGeoLocatedVehicleProps (
   expect(vehicleComponent.props('course')).to.equal(expectedVehicle.course())
 }
 
-/*
-function getVehicleCardByIndex (index: number) {
-  return cy.then(() => Cypress.vueWrapper.findAllComponents(GeoLocatedVehicle)[index])
-    .then(firstVehicle => cy.wrap(firstVehicle.element))
-}
-
-function getVehicleHeight (alias: string) {
-  return cy.get('@' + alias).invoke('outerHeight').then(vehicleHeight => cy.wrap(vehicleHeight))
-}
-
-function getVehicleContainerHeight () {
-  return cy.dataCy('vehicle-container').invoke('outerHeight').then(height => height as unknown as number)
-}
-
-function assertNotInSingleVehicleView () {
-  cy.get('*[data-cy^="vehicle-"]').should('be.visible')
-}
-
-function openInSingleVehicleView (targetVehicle: Vehicle) {
-  cy.dataCy(`vehicle-${targetVehicle.id()}`).click()
-}
-*/
-
 function mapInteractivityShouldBe (component: GeoLocatedVehicleWrapper, wantedInteractivity: boolean) {
   cy.then(() => component.props('mapInteractive') as boolean)
     .then(interactive => cy.wrap(interactive))
@@ -419,8 +336,12 @@ function getSingleVehicleModeComponent () {
   return Cypress.vueWrapper.getComponent('[data-cy="single-vehicle-mode"]') as GeoLocatedVehicleWrapper
 }
 
-function openInSingleVehicleView (targetVehicle: Vehicle) {
+function openInSingleVehicleMode (targetVehicle: Vehicle) {
   cy.dataCy(`vehicle-${targetVehicle.id()}`).click()
+}
+
+function leaveSingleVehicleMode () {
+  cy.dataCy('back-button').click()
 }
 
 function assertVehicleInSingleVehicleModeIs (targetVehicle: Vehicle) {

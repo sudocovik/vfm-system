@@ -72,7 +72,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref, nextTick } from 'vue'
 import GeoLocatedVehicle from './GeoLocatedVehicle.vue'
 import { GeoLocatedVehicle as Vehicle, VehicleList } from 'src/backend/VehicleService'
 import { shortPoll } from 'src/support/short-poll'
@@ -100,11 +100,19 @@ export default defineComponent({
       return Promise.resolve()
     }, TWO_SECONDS)
 
+    let scrollTopBeforeEnteringSingleVehicleMode = 0
     const singleVehicleModeVehicleId = ref<number | undefined>(undefined)
     const currentSingleVehicle = computed(() => geoLocatedVehicles.value.find(vehicle => vehicle.id() === singleVehicleModeVehicleId.value))
     const isSingleVehicleModeActive = computed(() => singleVehicleModeVehicleId.value !== undefined)
-    const enterSingleVehicleMode = (vehicle: Vehicle) => (singleVehicleModeVehicleId.value = vehicle.id())
-    const leaveSingleVehicleMode = () => (singleVehicleModeVehicleId.value = undefined)
+    const enterSingleVehicleMode = (vehicle: Vehicle) => {
+      scrollTopBeforeEnteringSingleVehicleMode = window.scrollY
+      singleVehicleModeVehicleId.value = vehicle.id()
+    }
+    const leaveSingleVehicleMode = async () => {
+      singleVehicleModeVehicleId.value = undefined
+      await nextTick()
+      window.scrollTo({ top: scrollTopBeforeEnteringSingleVehicleMode })
+    }
 
     return {
       geoLocatedVehicles,
