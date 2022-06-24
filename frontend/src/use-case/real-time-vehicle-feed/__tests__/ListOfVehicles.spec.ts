@@ -230,6 +230,14 @@ describe('ListOfVehicles', () => {
       cy.then(getSingleVehicleModeComponent)
         .then(singleVehicleModeComponent => mapSyncCenterShouldBe(singleVehicleModeComponent, false))
     })
+
+    it('should show back button', () => {
+      mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
+
+      openInSingleVehicleView(firstGeoLocatedVehicle)
+
+      cy.dataCy('back-button').should('be.visible')
+    })
   })
 
   describe('Background refresh', () => {

@@ -7,8 +7,8 @@
       class="text-h4 text-grey-7 text-weight-medium q-mb-md"
       data-cy="heading"
     >
-      <!-- <q-btn
-        v-show="singleVehicleView.isActive"
+      <q-btn
+        v-show="isSingleVehicleModeActive"
         icon="mdi-chevron-left"
         size="lg"
         class="q-mr-xs"
@@ -16,8 +16,7 @@
         unelevated
         rounded
         data-cy="back-button"
-        @click="singleVehicleView.leave"
-      /> -->
+      />
 
       <span class="vertical-middle">{{ $t('vehicles') }}</span>
     </div>
