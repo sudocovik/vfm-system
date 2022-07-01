@@ -1,5 +1,10 @@
 <template>
-  <q-badge data-cy="drawer" />
+  <q-drawer
+    :model-value="true"
+    data-cy="drawer"
+  >
+    <div>Test data</div>
+  </q-drawer>
 </template>
 
 <script>
