@@ -13,5 +13,11 @@ export default {
   'ordering-gps-trackers': 'Naručujemo GPS uređaje',
   'gps-ordering-notification': 'Biti ćete obaviješteni kad stignu i kad ih instaliramo u vozila.',
   'failed-to-fetch-data': 'Učitavanje podataka nije uspjelo',
-  retry: 'Pokušaj ponovo'
+  retry: 'Pokušaj ponovo',
+  trailers: 'Prikolice',
+  drivers: 'Vozači',
+  services: 'Servisi',
+  notifications: 'Obavijesti',
+  settings: 'Postavke',
+  logout: 'Odjava'
 }

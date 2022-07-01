@@ -1,6 +1,7 @@
 import { mount } from '@cypress/vue'
 import TheNavigation from '../TheNavigation.vue'
-import { QDrawer } from 'quasar'
+import { QDrawer, QIcon } from 'quasar'
+import { inAllLanguages } from 'test/support/api'
 
 describe('TheNavigation', () => {
   describe('Desktop version', () => {
@@ -35,6 +36,61 @@ describe('TheNavigation', () => {
         .then(behavior => cy.wrap(behavior))
         .should('equal', 'desktop')
     })
+
+    describe('Items', () => {
+      const drawerItems = [
+        {
+          name: 'vehicles',
+          url: '/',
+          icon: 'mdi-truck'
+        },
+        {
+          name: 'trailers',
+          url: '/trailers',
+          icon: 'mdi-truck-trailer'
+        },
+        {
+          name: 'drivers',
+          url: '/drivers',
+          icon: 'mdi-account-tie-hat'
+        },
+        {
+          name: 'services',
+          url: '/services',
+          icon: 'mdi-hammer-wrench'
+        },
+        {
+          name: 'notifications',
+          url: '/notifications',
+          icon: 'mdi-bell'
+        },
+        {
+          name: 'settings',
+          url: '/settings',
+          icon: 'mdi-cog'
+        },
+        {
+          name: 'logout',
+          url: '/logout',
+          icon: 'mdi-power'
+        }
+      ]
+
+      drawerItems.forEach((item, index) => {
+        inAllLanguages.it(`should render "${item.name}" at position ${index + 1}`, t => {
+          mountDesktopNavigation()
+
+          cy.then(getDrawer)
+            .then(getItem(index))
+            .should(itemWrapper => {
+              cy.wrap(itemWrapper).as('item')
+              cy.get('@item').its('element').should('contain.text', t(item.name))
+              cy.get('@item').its('element').get(`a[href="${item.url}"]`).should('exist')
+              cy.get('@item').invoke('findComponent', QIcon).invoke('props', 'name').should('equal', item.icon)
+            })
+        })
+      })
+    })
   })
 })
 
@@ -51,4 +107,8 @@ function mountDesktopNavigation () {
 
 function getDrawer () {
   return Cypress.vueWrapper.getComponent(QDrawer)
+}
+
+function getItem (index: number) {
+  return (container: ReturnType<typeof Cypress.vueWrapper.getComponent>) => container.find(`[data-cy="item"]:nth-of-type(${index + 1})`)
 }

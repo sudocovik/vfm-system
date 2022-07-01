@@ -13,5 +13,11 @@ export default {
   'ordering-gps-trackers': 'Ordering GPS trackers',
   'gps-ordering-notification': 'You will be notified once they arrive and are installed in vehicles.',
   'failed-to-fetch-data': 'Failed to fetch data',
-  retry: 'Retry'
+  retry: 'Retry',
+  trailers: 'Trailers',
+  drivers: 'Drivers',
+  services: 'Services',
+  notifications: 'Notifications',
+  settings: 'Settings',
+  logout: 'Logout'
 }
