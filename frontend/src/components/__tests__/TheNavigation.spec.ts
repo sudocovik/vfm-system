@@ -26,6 +26,15 @@ describe('TheNavigation', () => {
         .then(mini => cy.wrap(mini))
         .should('equal', true)
     })
+
+    it('should force desktop behavior', () => {
+      mountDesktopNavigation()
+
+      cy.then(getDrawer)
+        .then(drawer => drawer.props('behavior') as string)
+        .then(behavior => cy.wrap(behavior))
+        .should('equal', 'desktop')
+    })
   })
 })
 

@@ -1,6 +1,7 @@
 <template>
   <q-drawer
     :model-value="true"
+    behavior="desktop"
     mini
     data-cy="drawer"
   >
