@@ -17,6 +17,15 @@ describe('TheNavigation', () => {
         .then(drawer => drawer.attributes('data-cy'))
         .should('equal', 'drawer')
     })
+
+    it('should render mini drawer', () => {
+      mountDesktopNavigation()
+
+      cy.then(getDrawer)
+        .then(drawer => drawer.props('mini') as boolean)
+        .then(mini => cy.wrap(mini))
+        .should('equal', true)
+    })
   })
 })
 

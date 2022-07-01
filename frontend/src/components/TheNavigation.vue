@@ -1,6 +1,7 @@
 <template>
   <q-drawer
     :model-value="true"
+    mini
     data-cy="drawer"
   >
     <div>Test data</div>
