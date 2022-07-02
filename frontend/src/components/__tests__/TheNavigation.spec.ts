@@ -34,6 +34,21 @@ describe('TheNavigation', () => {
         .should('equal', 'desktop')
     })
 
+    it('should be scrollable if content is too long', () => {
+      cy.viewport(DESKTOP_SIZE.width, 150)
+      cy.dataCy('scrollable-area').as('scrollable')
+      cy.dataCy('logo').as('logo')
+      cy.dataCy('item-logout').as('logout')
+
+      cy.get('@logo').should('be.visible')
+      cy.get('@logout').should('not.be.visible')
+
+      cy.get('@scrollable').scrollTo('bottom')
+
+      cy.get('@logo').should('be.visible')
+      cy.get('@logout').should('be.visible')
+    })
+
     describe('Logo', () => {
       it('should render official SVG logo', () => {
         cy.then(getDrawer)
