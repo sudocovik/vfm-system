@@ -21,8 +21,8 @@
 
       <q-separator />
 
-      <div
-        style="overflow: hidden auto; flex: 1"
+      <q-scroll-area
+        style="flex: 1"
         data-cy="scrollable-area"
       >
         <q-item
@@ -101,7 +101,7 @@
 
           <q-avatar icon="mdi-power" />
         </q-item>
-      </div>
+      </q-scroll-area>
     </q-list>
   </q-drawer>
 </template>

@@ -1,7 +1,7 @@
 import { mountCallback } from '@cypress/vue'
 import TheNavigation from '../TheNavigation.vue'
-import { QDrawer, QIcon, QItem, QLayout } from 'quasar'
-import { inAllLanguages } from 'test/support/api'
+import { QDrawer, QIcon, QItem, QLayout, QScrollArea } from 'quasar'
+import { inAllLanguages, QuasarComponentPublicApi } from 'test/support/api'
 import { h } from 'vue'
 import logo from 'src/assets/logo.svg'
 
@@ -43,7 +43,11 @@ describe('TheNavigation', () => {
       cy.get('@logo').should('be.visible')
       cy.get('@logout').should('not.be.visible')
 
-      cy.get('@scrollable').scrollTo('bottom')
+      cy.then(getDrawer)
+        .then(drawer => drawer.findComponent(QScrollArea))
+        .then(scrollArea => scrollArea.vm as QuasarComponentPublicApi<QScrollArea>)
+        .then(scrollArea => scrollArea.setScrollPercentage('vertical', 100, 0))
+        .log('scroll to bottom')
 
       cy.get('@logo').should('be.visible')
       cy.get('@logout').should('be.visible')
