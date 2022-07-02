@@ -3,112 +3,87 @@
     :model-value="true"
     behavior="desktop"
     mini
+    class="bg-grey-2 text-grey-7 shadow-3"
     data-cy="drawer"
   >
-    <div data-cy="item">
-      <div data-cy="item-name">
-        {{ $t('vehicles') }}
-      </div>
+    <q-list>
+      <q-item
+        to="/"
+        data-cy="item"
+      >
+        <div class="hidden">
+          {{ $t('vehicles') }}
+        </div>
 
-      <a
-        href="/"
-        data-cy="item-url"
-      />
+        <q-avatar icon="mdi-truck" />
+      </q-item>
 
-      <q-icon
-        name="mdi-truck"
-      />
-    </div>
+      <q-item
+        to="/trailers"
+        data-cy="item"
+      >
+        <div class="hidden">
+          {{ $t('trailers') }}
+        </div>
 
-    <div data-cy="item">
-      <div data-cy="item-name">
-        {{ $t('trailers') }}
-      </div>
+        <q-avatar icon="mdi-truck-trailer" />
+      </q-item>
 
-      <a
-        href="/trailers"
-        data-cy="item-url"
-      />
+      <q-item
+        to="/drivers"
+        data-cy="item"
+      >
+        <div class="hidden">
+          {{ $t('drivers') }}
+        </div>
 
-      <q-icon
-        name="mdi-truck-trailer"
-      />
-    </div>
+        <q-avatar icon="mdi-account-tie-hat" />
+      </q-item>
 
-    <div data-cy="item">
-      <div data-cy="item-name">
-        {{ $t('drivers') }}
-      </div>
+      <q-item
+        to="/services"
+        data-cy="item"
+      >
+        <div class="hidden">
+          {{ $t('services') }}
+        </div>
 
-      <a
-        href="/drivers"
-        data-cy="item-url"
-      />
+        <q-avatar icon="mdi-hammer-wrench" />
+      </q-item>
 
-      <q-icon
-        name="mdi-account-tie-hat"
-      />
-    </div>
+      <q-item
+        to="/notifications"
+        data-cy="item"
+      >
+        <div class="hidden">
+          {{ $t('notifications') }}
+        </div>
 
-    <div data-cy="item">
-      <div data-cy="item-name">
-        {{ $t('services') }}
-      </div>
+        <q-avatar icon="mdi-bell" />
+      </q-item>
 
-      <a
-        href="/services"
-        data-cy="item-url"
-      />
+      <q-item
+        to="/settings"
+        data-cy="item"
+      >
+        <div class="hidden">
+          {{ $t('settings') }}
+        </div>
 
-      <q-icon
-        name="mdi-hammer-wrench"
-      />
-    </div>
+        <q-avatar icon="mdi-cog" />
+      </q-item>
 
-    <div data-cy="item">
-      <div data-cy="item-name">
-        {{ $t('notifications') }}
-      </div>
+      <q-item
+        to="/logout"
+        data-cy="item"
+      >
+        <div class="hidden">
+          {{ $t('logout') }}
+        </div>
 
-      <a
-        href="/notifications"
-        data-cy="item-url"
-      />
-
-      <q-icon
-        name="mdi-bell"
-      />
-    </div>
-
-    <div data-cy="item">
-      <div data-cy="item-name">
-        {{ $t('settings') }}
-      </div>
-
-      <a
-        href="/settings"
-        data-cy="item-url"
-      />
-
-      <q-icon
-        name="mdi-cog"
-      />
-    </div>
-
-    <div data-cy="item">
-      <div data-cy="item-name">
-        {{ $t('logout') }}
-      </div>
-
-      <a
-        href="/logout"
-        data-cy="item-url"
-      />
-
-      <q-icon
-        name="mdi-power"
-      />
-    </div>
+        <q-avatar icon="mdi-power" />
+      </q-item>
+    </q-list>
   </q-drawer>
 </template>
 

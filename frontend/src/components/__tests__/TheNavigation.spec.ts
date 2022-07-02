@@ -1,27 +1,21 @@
-import { mount } from '@cypress/vue'
+import { mountCallback } from '@cypress/vue'
 import TheNavigation from '../TheNavigation.vue'
-import { QDrawer, QIcon } from 'quasar'
+import { QDrawer, QIcon, QItem, QLayout } from 'quasar'
 import { inAllLanguages } from 'test/support/api'
+import { h } from 'vue'
 
 describe('TheNavigation', () => {
   describe('Desktop version', () => {
-    it('should render navigation drawer', () => {
-      mountDesktopNavigation()
+    beforeEach(mountCallback(h(QLayout, () => h(TheNavigation))))
 
-      cy.dataCy('drawer').should('be.visible')
-    })
-
-    it('should be a QDrawer component', () => {
-      mountDesktopNavigation()
-
+    it('should render a QDrawer component', () => {
       cy.then(getDrawer)
-        .then(drawer => drawer.attributes('data-cy'))
-        .should('equal', 'drawer')
+        .then(drawer => cy.wrap(drawer.element))
+        .get('[data-cy="drawer"]')
+        .should('be.visible')
     })
 
     it('should render mini drawer', () => {
-      mountDesktopNavigation()
-
       cy.then(getDrawer)
         .then(drawer => drawer.props('mini') as boolean)
         .then(mini => cy.wrap(mini))
@@ -29,8 +23,6 @@ describe('TheNavigation', () => {
     })
 
     it('should force desktop behavior', () => {
-      mountDesktopNavigation()
-
       cy.then(getDrawer)
         .then(drawer => drawer.props('behavior') as string)
         .then(behavior => cy.wrap(behavior))
@@ -78,32 +70,19 @@ describe('TheNavigation', () => {
 
       drawerItems.forEach((item, index) => {
         inAllLanguages.it(`should render "${item.name}" at position ${index + 1}`, t => {
-          mountDesktopNavigation()
-
           cy.then(getDrawer)
             .then(getItem(index))
             .should(itemWrapper => {
               cy.wrap(itemWrapper).as('item')
               cy.get('@item').its('element').should('contain.text', t(item.name))
-              cy.get('@item').its('element').get(`a[href="${item.url}"]`).should('exist')
-              cy.get('@item').invoke('findComponent', QIcon).invoke('props', 'name').should('equal', item.icon)
+              cy.get('@item').invoke('getComponent', QItem).invoke('props', 'to').should('equal', item.url)
+              cy.get('@item').invoke('getComponent', QIcon).invoke('props', 'name').should('equal', item.icon)
             })
         })
       })
     })
   })
 })
-
-function mountDesktopNavigation () {
-  mount(TheNavigation, {
-    global: {
-      renderStubDefaultSlot: true,
-      stubs: {
-        QDrawer: true
-      }
-    }
-  })
-}
 
 function getDrawer () {
   return Cypress.vueWrapper.getComponent(QDrawer)
