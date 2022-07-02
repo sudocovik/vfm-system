@@ -9,7 +9,7 @@
     <q-list>
       <q-item
         to="/"
-        data-cy="item"
+        data-cy="item-vehicles"
       >
         <div class="hidden">
           {{ $t('vehicles') }}
@@ -20,7 +20,7 @@
 
       <q-item
         to="/trailers"
-        data-cy="item"
+        data-cy="item-trailers"
       >
         <div class="hidden">
           {{ $t('trailers') }}
@@ -31,7 +31,7 @@
 
       <q-item
         to="/drivers"
-        data-cy="item"
+        data-cy="item-drivers"
       >
         <div class="hidden">
           {{ $t('drivers') }}
@@ -42,7 +42,7 @@
 
       <q-item
         to="/services"
-        data-cy="item"
+        data-cy="item-services"
       >
         <div class="hidden">
           {{ $t('services') }}
@@ -53,7 +53,7 @@
 
       <q-item
         to="/notifications"
-        data-cy="item"
+        data-cy="item-notifications"
       >
         <div class="hidden">
           {{ $t('notifications') }}
@@ -64,7 +64,7 @@
 
       <q-item
         to="/settings"
-        data-cy="item"
+        data-cy="item-settings"
       >
         <div class="hidden">
           {{ $t('settings') }}
@@ -75,7 +75,7 @@
 
       <q-item
         to="/logout"
-        data-cy="item"
+        data-cy="item-logout"
       >
         <div class="hidden">
           {{ $t('logout') }}

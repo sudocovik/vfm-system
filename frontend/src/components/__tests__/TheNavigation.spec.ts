@@ -68,10 +68,10 @@ describe('TheNavigation', () => {
         }
       ]
 
-      drawerItems.forEach((item, index) => {
-        inAllLanguages.it(`should render "${item.name}" at position ${index + 1}`, t => {
+      drawerItems.forEach(item => {
+        inAllLanguages.it(`should render "${item.name}"`, t => {
           cy.then(getDrawer)
-            .then(getItem(index))
+            .then(getItem(item.name))
             .should(itemWrapper => {
               cy.wrap(itemWrapper).as('item')
               cy.get('@item').its('element').should('contain.text', t(item.name))
@@ -79,6 +79,19 @@ describe('TheNavigation', () => {
               cy.get('@item').invoke('getComponent', QIcon).invoke('props', 'name').should('equal', item.icon)
             })
         })
+      })
+
+      const expectedOrder = drawerItems.map(item => item.name).join(',')
+      it(`should render in specific order: ${expectedOrder}`, () => {
+        const actualOrder: string[] = []
+        cy.get('[data-cy="drawer"] [data-cy^="item-"]')
+          .each($item => {
+            const dataCy = $item.attr('data-cy') ?? ''
+            const name = dataCy.replace('item-', '')
+            actualOrder.push(name)
+          })
+          .then(() => cy.wrap(actualOrder.join(',')))
+          .should('equal', expectedOrder)
       })
     })
   })
@@ -88,6 +101,6 @@ function getDrawer () {
   return Cypress.vueWrapper.getComponent(QDrawer)
 }
 
-function getItem (index: number) {
-  return (container: ReturnType<typeof Cypress.vueWrapper.getComponent>) => container.find(`[data-cy="item"]:nth-of-type(${index + 1})`)
+function getItem (id: string) {
+  return (container: ReturnType<typeof Cypress.vueWrapper.getComponent>) => container.find(`[data-cy="item-${id}"]`)
 }
