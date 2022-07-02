@@ -8,6 +8,20 @@
   >
     <q-list>
       <q-item
+        class="bg-white"
+        data-cy="logo"
+      >
+        <img
+          :src="require('/src/assets/logo.svg')"
+          alt=""
+          width="32"
+          height="36"
+        >
+      </q-item>
+
+      <q-separator />
+
+      <q-item
         to="/"
         data-cy="item-vehicles"
       >

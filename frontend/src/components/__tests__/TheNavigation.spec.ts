@@ -3,9 +3,14 @@ import TheNavigation from '../TheNavigation.vue'
 import { QDrawer, QIcon, QItem, QLayout } from 'quasar'
 import { inAllLanguages } from 'test/support/api'
 import { h } from 'vue'
+import logo from 'src/assets/logo.svg'
+
+const DESKTOP_SIZE = { width: 601, height: 600 }
+// const MOBILE_SIZE = { width: 600, height: 500 }
 
 describe('TheNavigation', () => {
   describe('Desktop version', () => {
+    beforeEach(() => cy.viewport(DESKTOP_SIZE.width, DESKTOP_SIZE.height))
     beforeEach(mountCallback(h(QLayout, () => h(TheNavigation))))
 
     it('should render a QDrawer component', () => {
@@ -27,6 +32,25 @@ describe('TheNavigation', () => {
         .then(drawer => drawer.props('behavior') as string)
         .then(behavior => cy.wrap(behavior))
         .should('equal', 'desktop')
+    })
+
+    describe('Logo', () => {
+      it('should render official SVG logo', () => {
+        cy.then(getDrawer)
+          .then(getLogo)
+          .get('img')
+          .should('have.attr', 'src', logo)
+      })
+
+      it('should be 32x36 in size', () => {
+        cy.then(getDrawer)
+          .then(getLogo)
+          .get('img')
+          .as('logo')
+
+        cy.get('@logo').should('have.attr', 'width', '32')
+        cy.get('@logo').should('have.attr', 'height', '36')
+      })
     })
 
     describe('Items', () => {
@@ -97,10 +121,16 @@ describe('TheNavigation', () => {
   })
 })
 
+type ComponentWrapper = ReturnType<typeof Cypress.vueWrapper.getComponent>
+
 function getDrawer () {
   return Cypress.vueWrapper.getComponent(QDrawer)
 }
 
 function getItem (id: string) {
-  return (container: ReturnType<typeof Cypress.vueWrapper.getComponent>) => container.find(`[data-cy="item-${id}"]`)
+  return (container: ComponentWrapper) => container.find(`[data-cy="item-${id}"]`)
+}
+
+function getLogo (container: ComponentWrapper) {
+  return container.find('[data-cy="logo"]')
 }
