@@ -49,6 +49,10 @@ describe('TheNavigation', () => {
       cy.get('@logout').should('be.visible')
     })
 
+    specify('QDrawer should have a flex nowrap property to prevent layout issues', () => {
+      cy.dataCy('drawer').should('have.css', 'flex-wrap', 'nowrap')
+    })
+
     describe('Logo', () => {
       it('should render official SVG logo', () => {
         cy.then(getDrawer)
