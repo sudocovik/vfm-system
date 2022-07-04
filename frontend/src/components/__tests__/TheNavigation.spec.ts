@@ -34,7 +34,7 @@ describe('TheNavigation', () => {
         .should('equal', 'desktop')
     })
 
-    it.only('should be scrollable if content is too long', () => {
+    it.skip('should be scrollable if content is too long', () => {
       cy.viewport(DESKTOP_SIZE.width, 150)
       cy.dataCy('scrollable-area').get('.q-scrollarea__container').as('scrollable')
       cy.dataCy('logo').as('logo')
@@ -42,12 +42,6 @@ describe('TheNavigation', () => {
 
       cy.get('@logo').should('be.visible')
       cy.get('@logout').should('not.be.visible')
-      /*
-      cy.then(getDrawer)
-        .then(drawer => drawer.findComponent(QScrollArea))
-        .then(scrollArea => scrollArea.vm as QuasarComponentPublicApi<QScrollArea>)
-        .then(scrollArea => scrollArea.setScrollPercentage('vertical', 100, 0))
-        .log('scroll to bottom') */
 
       cy.get('@scrollable').scrollTo('bottom')
 
