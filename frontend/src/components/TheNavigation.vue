@@ -3,7 +3,7 @@
     :model-value="true"
     behavior="desktop"
     mini
-    class="bg-grey-2 text-grey-7 shadow-3 overflow-hidden column"
+    class="bg-grey-2 text-grey-7 shadow-3 overflow-hidden column no-wrap"
     data-cy="drawer"
   >
     <div
