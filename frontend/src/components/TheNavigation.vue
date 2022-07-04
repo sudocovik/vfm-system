@@ -7,7 +7,7 @@
     data-cy="drawer"
   >
     <div
-      class="bg-white q-pa-sm flex flex-center"
+      class="bg-white q-pa-sm"
       data-cy="logo"
     >
       <img
@@ -15,7 +15,7 @@
         alt=""
         width="32"
         height="36"
-        class="block"
+        class="block q-mx-auto"
       >
     </div>
 
