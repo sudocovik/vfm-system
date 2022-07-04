@@ -22,6 +22,7 @@
     <q-separator />
 
     <q-scroll-area
+      :vertical-thumb-style="{ width: '4px', right: '1px' }"
       style="flex: 1"
       data-cy="scrollable-area"
     >
