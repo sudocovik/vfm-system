@@ -1,7 +1,7 @@
 import { mountCallback } from '@cypress/vue'
 import TheNavigation from '../TheNavigation.vue'
-import { QDrawer, QIcon, QItem, QLayout, QScrollArea } from 'quasar'
-import { inAllLanguages, QuasarComponentPublicApi } from 'test/support/api'
+import { QDrawer, QIcon, QItem, QLayout } from 'quasar'
+import { inAllLanguages } from 'test/support/api'
 import { h } from 'vue'
 import logo from 'src/assets/logo.svg'
 
@@ -34,20 +34,22 @@ describe('TheNavigation', () => {
         .should('equal', 'desktop')
     })
 
-    it('should be scrollable if content is too long', () => {
+    it.only('should be scrollable if content is too long', () => {
       cy.viewport(DESKTOP_SIZE.width, 150)
-      cy.dataCy('scrollable-area').as('scrollable')
+      cy.dataCy('scrollable-area').get('.q-scrollarea__container').as('scrollable')
       cy.dataCy('logo').as('logo')
       cy.dataCy('item-logout').as('logout')
 
       cy.get('@logo').should('be.visible')
       cy.get('@logout').should('not.be.visible')
-
+      /*
       cy.then(getDrawer)
         .then(drawer => drawer.findComponent(QScrollArea))
         .then(scrollArea => scrollArea.vm as QuasarComponentPublicApi<QScrollArea>)
         .then(scrollArea => scrollArea.setScrollPercentage('vertical', 100, 0))
-        .log('scroll to bottom')
+        .log('scroll to bottom') */
+
+      cy.get('@scrollable').scrollTo('bottom')
 
       cy.get('@logo').should('be.visible')
       cy.get('@logout').should('be.visible')

@@ -3,28 +3,29 @@
     :model-value="true"
     behavior="desktop"
     mini
-    class="bg-grey-2 text-grey-7 shadow-3 overflow-hidden"
+    class="bg-grey-2 text-grey-7 shadow-3 overflow-hidden column"
     data-cy="drawer"
   >
-    <q-list class="full-height column">
-      <q-item
-        class="bg-white"
-        data-cy="logo"
+    <div
+      class="bg-white q-pa-sm flex flex-center"
+      data-cy="logo"
+    >
+      <img
+        :src="require('/src/assets/logo.svg')"
+        alt=""
+        width="32"
+        height="36"
+        class="block"
       >
-        <img
-          :src="require('/src/assets/logo.svg')"
-          alt=""
-          width="32"
-          height="36"
-        >
-      </q-item>
+    </div>
 
-      <q-separator />
+    <q-separator />
 
-      <q-scroll-area
-        style="flex: 1"
-        data-cy="scrollable-area"
-      >
+    <q-scroll-area
+      style="flex: 1"
+      data-cy="scrollable-area"
+    >
+      <q-list>
         <q-item
           to="/"
           data-cy="item-vehicles"
@@ -101,8 +102,8 @@
 
           <q-avatar icon="mdi-power" />
         </q-item>
-      </q-scroll-area>
-    </q-list>
+      </q-list>
+    </q-scroll-area>
   </q-drawer>
 </template>
 
