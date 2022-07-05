@@ -1,17 +1,30 @@
 import { mountCallback } from '@cypress/vue'
 import TheNavigation from '../TheNavigation.vue'
 import { QDrawer, QIcon, QItem, QLayout } from 'quasar'
-import { inAllLanguages } from 'test/support/api'
+import { AvailableSlots, inAllLanguages } from 'test/support/api'
 import { h } from 'vue'
 import logo from 'src/assets/logo.svg'
 
 const DESKTOP_SIZE = { width: 601, height: 600 }
 // const MOBILE_SIZE = { width: 600, height: 500 }
 
+const mountingOptions = {
+  global: {
+    stubs: {
+      QTooltip: {
+        render ({ $slots }: AvailableSlots) {
+          return h('div', { style: 'display: none' }, $slots.default())
+        }
+      }
+    },
+    renderStubDefaultSlot: true
+  }
+}
+
 describe('TheNavigation', () => {
   describe('Desktop version', () => {
     beforeEach(() => cy.viewport(DESKTOP_SIZE.width, DESKTOP_SIZE.height))
-    beforeEach(mountCallback(h(QLayout, () => h(TheNavigation))))
+    beforeEach(mountCallback(h(QLayout, () => h(TheNavigation)), mountingOptions))
 
     it('should render a QDrawer component', () => {
       cy.then(getDrawer)

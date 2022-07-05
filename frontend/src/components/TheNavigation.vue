@@ -31,9 +31,15 @@
           to="/"
           data-cy="item-vehicles"
         >
-          <div class="hidden">
-            {{ $t('vehicles') }}
-          </div>
+          <q-tooltip
+            anchor="center right"
+            self="center left"
+            :offset="[10, 0]"
+            transition-show="jump-right"
+            transition-hide="jump-left"
+          >
+            <span class="text-subtitle2 text-weight-regular">{{ $t('vehicles') }}</span>
+          </q-tooltip>
 
           <q-avatar icon="mdi-truck" />
         </q-item>
@@ -42,9 +48,15 @@
           to="/trailers"
           data-cy="item-trailers"
         >
-          <div class="hidden">
-            {{ $t('trailers') }}
-          </div>
+          <q-tooltip
+            anchor="center right"
+            self="center left"
+            :offset="[10, 0]"
+            transition-show="jump-right"
+            transition-hide="jump-left"
+          >
+            <span class="text-subtitle2 text-weight-regular">{{ $t('trailers') }}</span>
+          </q-tooltip>
 
           <q-avatar icon="mdi-truck-trailer" />
         </q-item>
@@ -53,9 +65,15 @@
           to="/drivers"
           data-cy="item-drivers"
         >
-          <div class="hidden">
-            {{ $t('drivers') }}
-          </div>
+          <q-tooltip
+            anchor="center right"
+            self="center left"
+            :offset="[10, 0]"
+            transition-show="jump-right"
+            transition-hide="jump-left"
+          >
+            <span class="text-subtitle2 text-weight-regular">{{ $t('drivers') }}</span>
+          </q-tooltip>
 
           <q-avatar icon="mdi-account-tie-hat" />
         </q-item>
@@ -64,9 +82,15 @@
           to="/services"
           data-cy="item-services"
         >
-          <div class="hidden">
-            {{ $t('services') }}
-          </div>
+          <q-tooltip
+            anchor="center right"
+            self="center left"
+            :offset="[10, 0]"
+            transition-show="jump-right"
+            transition-hide="jump-left"
+          >
+            <span class="text-subtitle2 text-weight-regular">{{ $t('services') }}</span>
+          </q-tooltip>
 
           <q-avatar icon="mdi-hammer-wrench" />
         </q-item>
@@ -75,9 +99,15 @@
           to="/notifications"
           data-cy="item-notifications"
         >
-          <div class="hidden">
-            {{ $t('notifications') }}
-          </div>
+          <q-tooltip
+            anchor="center right"
+            self="center left"
+            :offset="[10, 0]"
+            transition-show="jump-right"
+            transition-hide="jump-left"
+          >
+            <span class="text-subtitle2 text-weight-regular">{{ $t('notifications') }}</span>
+          </q-tooltip>
 
           <q-avatar icon="mdi-bell" />
         </q-item>
@@ -86,9 +116,15 @@
           to="/settings"
           data-cy="item-settings"
         >
-          <div class="hidden">
-            {{ $t('settings') }}
-          </div>
+          <q-tooltip
+            anchor="center right"
+            self="center left"
+            :offset="[10, 0]"
+            transition-show="jump-right"
+            transition-hide="jump-left"
+          >
+            <span class="text-subtitle2 text-weight-regular">{{ $t('settings') }}</span>
+          </q-tooltip>
 
           <q-avatar icon="mdi-cog" />
         </q-item>
@@ -97,9 +133,15 @@
           to="/logout"
           data-cy="item-logout"
         >
-          <div class="hidden">
-            {{ $t('logout') }}
-          </div>
+          <q-tooltip
+            anchor="center right"
+            self="center left"
+            :offset="[10, 0]"
+            transition-show="jump-right"
+            transition-hide="jump-left"
+          >
+            <span class="text-subtitle2 text-weight-regular">{{ $t('logout') }}</span>
+          </q-tooltip>
 
           <q-avatar icon="mdi-power" />
         </q-item>
