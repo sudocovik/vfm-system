@@ -19,5 +19,6 @@ export default {
   services: 'Services',
   notifications: 'Notifications',
   settings: 'Settings',
-  logout: 'Logout'
+  logout: 'Logout',
+  menu: 'Menu'
 }

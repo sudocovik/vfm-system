@@ -19,5 +19,6 @@ export default {
   services: 'Servisi',
   notifications: 'Obavijesti',
   settings: 'Postavke',
-  logout: 'Odjava'
+  logout: 'Odjava',
+  menu: 'Meni'
 }

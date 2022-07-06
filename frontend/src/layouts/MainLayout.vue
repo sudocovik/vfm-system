@@ -4,7 +4,7 @@
       <slot />
     </q-page-container>
 
-    <TheNavigation data-cy="navigation" />
+    <TheNavigation />
   </q-layout>
 </template>
 

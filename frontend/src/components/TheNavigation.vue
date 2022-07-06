@@ -1,6 +1,6 @@
 <template>
   <q-drawer
-    :model-value="true"
+    :model-value="$q.screen.gt.xs"
     behavior="desktop"
     mini
     class="bg-grey-2 text-grey-7 shadow-3 overflow-hidden column no-wrap"
@@ -148,6 +148,40 @@
       </q-list>
     </q-scroll-area>
   </q-drawer>
+
+  <q-footer
+    :model-value="$q.screen.lt.sm"
+    class="bg-grey-2 text-grey-7 shadow-3"
+    data-cy="footer"
+  >
+    <q-tabs
+      no-caps
+      active-color="primary"
+      indicator-color="transparent"
+      data-cy="tabs"
+    >
+      <q-route-tab
+        to="/"
+        icon="mdi-truck"
+        :label="$t('vehicles')"
+        data-cy="tab-vehicles"
+      />
+
+      <q-route-tab
+        to="/notifications"
+        icon="mdi-bell"
+        :label="$t('notifications')"
+        data-cy="tab-notifications"
+      />
+
+      <q-route-tab
+        to="/menu"
+        icon="mdi-menu"
+        :label="$t('menu')"
+        data-cy="tab-menu"
+      />
+    </q-tabs>
+  </q-footer>
 </template>
 
 <script>

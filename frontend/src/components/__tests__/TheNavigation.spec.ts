@@ -1,30 +1,77 @@
-import { mountCallback } from '@cypress/vue'
+import { mount } from '@cypress/vue'
 import TheNavigation from '../TheNavigation.vue'
-import { QDrawer, QIcon, QItem, QLayout } from 'quasar'
+import { QDrawer, QFooter, QIcon, QItem, QLayout, QRouteTab } from 'quasar'
 import { AvailableSlots, inAllLanguages } from 'test/support/api'
 import { h } from 'vue'
 import logo from 'src/assets/logo.svg'
 
-const DESKTOP_SIZE = { width: 601, height: 600 }
-// const MOBILE_SIZE = { width: 600, height: 500 }
+type ComponentWrapper = ReturnType<typeof Cypress.vueWrapper.getComponent>
 
-const mountingOptions = {
-  global: {
-    stubs: {
-      QTooltip: {
-        render ({ $slots }: AvailableSlots) {
-          return h('div', { style: 'display: none' }, $slots.default())
-        }
-      }
-    },
-    renderStubDefaultSlot: true
-  }
-}
+const DESKTOP_SIZE = { width: 600, height: 600 }
+const MOBILE_SIZE = { width: 599, height: 500 }
 
 describe('TheNavigation', () => {
+  describe('Mobile version', () => {
+    beforeEach(useMobileVersion)
+    beforeEach(mountNavigation)
+
+    it('should render a QFooter component', () => {
+      cy.then(getFooter)
+        .then(tabs => cy.wrap(tabs.element))
+        .get('[data-cy="tabs"]')
+        .should('be.visible')
+    })
+
+    describe('Items', () => {
+      const footerItems = [
+        {
+          name: 'vehicles',
+          url: '/',
+          icon: 'mdi-truck'
+        },
+        {
+          name: 'notifications',
+          url: '/notifications',
+          icon: 'mdi-bell'
+        },
+        {
+          name: 'menu',
+          url: '/menu',
+          icon: 'mdi-menu'
+        }
+      ]
+
+      footerItems.forEach(tab => {
+        inAllLanguages.it(`should render "${tab.name}"`, t => {
+          cy.then(getFooter)
+            .then(getTab(tab.name))
+            .should(tabWrapper => {
+              cy.wrap(tabWrapper).as('tab')
+              cy.get('@tab').its('element').should('contain.text', t(tab.name))
+              cy.get('@tab').invoke('getComponent', QRouteTab).invoke('props', 'to').should('equal', tab.url)
+              cy.get('@tab').invoke('getComponent', QIcon).invoke('props', 'name').should('equal', tab.icon)
+            })
+        })
+      })
+
+      const expectedOrder = footerItems.map(item => item.name).join(',')
+      it(`should render in specific order: ${expectedOrder}`, () => {
+        const actualOrder: string[] = []
+        cy.get('[data-cy="footer"] [data-cy^="tab-"]')
+          .each($tab => {
+            const dataCy = $tab.attr('data-cy') ?? ''
+            const name = dataCy.replace('tab-', '')
+            actualOrder.push(name)
+          })
+          .then(() => cy.wrap(actualOrder.join(',')))
+          .should('equal', expectedOrder)
+      })
+    })
+  })
+
   describe('Desktop version', () => {
-    beforeEach(() => cy.viewport(DESKTOP_SIZE.width, DESKTOP_SIZE.height))
-    beforeEach(mountCallback(h(QLayout, () => h(TheNavigation)), mountingOptions))
+    beforeEach(() => useDesktopVersion())
+    beforeEach(mountNavigation)
 
     it('should render a QDrawer component', () => {
       cy.then(getDrawer)
@@ -48,7 +95,7 @@ describe('TheNavigation', () => {
     })
 
     it('should be scrollable if content is too long', () => {
-      cy.viewport(DESKTOP_SIZE.width, 150)
+      useDesktopVersion(150)
       cy.dataCy('scrollable-area').get('.q-scrollarea__container').as('scrollable')
       cy.dataCy('logo').as('logo')
       cy.dataCy('item-logout').as('logout')
@@ -151,18 +198,107 @@ describe('TheNavigation', () => {
       })
     })
   })
+
+  describe('Responsiveness', () => {
+    specify('mobile and desktop screen width difference should be 1px', () => {
+      useDesktopVersion()
+
+      cy.window()
+        .its('innerWidth')
+        .then(desktopWidth => {
+          useMobileVersion()
+
+          cy.window()
+            .its('innerWidth')
+            .then(mobileWidth => cy.wrap(desktopWidth - mobileWidth))
+            .should('equal', 1)
+        })
+    })
+
+    specify('mobile -> desktop', () => {
+      useMobileVersion()
+      mountNavigation()
+
+      footerVisibility().should('equal', true)
+      drawerVisibility().should('equal', false)
+
+      useDesktopVersion()
+
+      footerVisibility().should('equal', false)
+      drawerVisibility().should('equal', true)
+    })
+
+    specify('desktop -> mobile', () => {
+      useDesktopVersion()
+      mountNavigation()
+
+      footerVisibility().should('equal', false)
+      drawerVisibility().should('equal', true)
+
+      useMobileVersion()
+
+      footerVisibility().should('equal', true)
+      drawerVisibility().should('equal', false)
+    })
+  })
 })
 
-type ComponentWrapper = ReturnType<typeof Cypress.vueWrapper.getComponent>
+function mountNavigation () {
+  const mountingOptions = {
+    global: {
+      stubs: {
+        QTooltip: {
+          render ({ $slots }: AvailableSlots) {
+            return h('div', { style: 'display: none' }, $slots.default())
+          }
+        }
+      },
+      renderStubDefaultSlot: true
+    }
+  }
+
+  // Poorly typed API
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  mount(h(QLayout, () => h(TheNavigation)), mountingOptions)
+}
+
+function useMobileVersion () {
+  cy.viewport(MOBILE_SIZE.width, MOBILE_SIZE.height)
+}
+
+function useDesktopVersion (height?: number) {
+  cy.viewport(DESKTOP_SIZE.width, height ?? DESKTOP_SIZE.height)
+}
 
 function getDrawer () {
   return Cypress.vueWrapper.getComponent(QDrawer)
 }
 
 function getItem (id: string) {
-  return (container: ComponentWrapper) => container.find(`[data-cy="item-${id}"]`)
+  return (container: ComponentWrapper) => container.get(`[data-cy="item-${id}"]`)
 }
 
 function getLogo (container: ComponentWrapper) {
   return container.find('[data-cy="logo"]')
+}
+
+function getFooter () {
+  return Cypress.vueWrapper.getComponent(QFooter)
+}
+
+function getTab (id: string) {
+  return (container: ComponentWrapper) => container.get(`[data-cy="tab-${id}"]`)
+}
+
+function footerVisibility () {
+  return cy.then(getFooter)
+    .then(footer => cy.wrap(footer))
+    .invoke('props', 'modelValue')
+}
+
+function drawerVisibility () {
+  return cy.then(getDrawer)
+    .then(drawer => cy.wrap(drawer))
+    .invoke('props', 'modelValue')
 }
