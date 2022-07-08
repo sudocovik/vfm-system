@@ -61,24 +61,12 @@
       data-cy="tabs"
     >
       <q-route-tab
-        to="/"
-        icon="mdi-truck"
-        :label="$t('vehicles')"
-        data-cy="tab-vehicles"
-      />
-
-      <q-route-tab
-        to="/notifications"
-        icon="mdi-bell"
-        :label="$t('notifications')"
-        data-cy="tab-notifications"
-      />
-
-      <q-route-tab
-        to="/menu"
-        icon="mdi-menu"
-        :label="$t('menu')"
-        data-cy="tab-menu"
+        v-for="({ url, icon }, id) in mobileItems"
+        :key="id"
+        :to="url"
+        :icon="icon"
+        :label="$t(id)"
+        :data-cy="`tab-${id}`"
       />
     </q-tabs>
   </q-footer>
@@ -122,8 +110,18 @@ export default defineComponent({
       }
     }
 
+    const mobileItems = {
+      vehicles: desktopItems.vehicles,
+      notifications: desktopItems.notifications,
+      menu: {
+        url: '/menu',
+        icon: 'mdi-menu'
+      }
+    }
+
     return {
-      desktopItems
+      desktopItems,
+      mobileItems
     }
   }
 })

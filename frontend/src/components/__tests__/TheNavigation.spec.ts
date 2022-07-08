@@ -50,6 +50,7 @@ describe('TheNavigation', () => {
               cy.get('@tab').its('element').should('contain.text', t(tab.name))
               cy.get('@tab').invoke('getComponent', QRouteTab).invoke('props', 'to').should('equal', tab.url)
               cy.get('@tab').invoke('getComponent', QIcon).invoke('props', 'name').should('equal', tab.icon)
+              expect(getComponentKey(tabWrapper.findComponent(QRouteTab))).to.equal(tab.name)
             })
         })
       })
