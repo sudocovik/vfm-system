@@ -11,7 +11,7 @@
       data-cy="logo"
     >
       <img
-        :src="require('/src/assets/logo.svg')"
+        :src="logo"
         alt=""
         width="32"
         height="36"
@@ -74,6 +74,7 @@
 
 <script>
 import { defineComponent } from 'vue'
+import logo from 'src/assets/logo.svg'
 
 export default defineComponent({
   name: 'TheNavigation',
@@ -121,7 +122,8 @@ export default defineComponent({
 
     return {
       desktopItems,
-      mobileItems
+      mobileItems,
+      logo
     }
   }
 })
