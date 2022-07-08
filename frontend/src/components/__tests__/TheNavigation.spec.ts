@@ -1,7 +1,7 @@
 import { mount } from '@cypress/vue'
 import TheNavigation from '../TheNavigation.vue'
 import { QDrawer, QFooter, QIcon, QItem, QLayout, QRouteTab } from 'quasar'
-import { AvailableSlots, inAllLanguages } from 'test/support/api'
+import { AvailableSlots, getComponentKey, inAllLanguages } from 'test/support/api'
 import { h } from 'vue'
 import logo from 'src/assets/logo.svg'
 
@@ -180,6 +180,7 @@ describe('TheNavigation', () => {
               cy.get('@item').its('element').should('contain.text', t(item.name))
               cy.get('@item').invoke('getComponent', QItem).invoke('props', 'to').should('equal', item.url)
               cy.get('@item').invoke('getComponent', QIcon).invoke('props', 'name').should('equal', item.icon)
+              expect(getComponentKey(itemWrapper.findComponent(QItem))).to.equal(item.name)
             })
         })
       })

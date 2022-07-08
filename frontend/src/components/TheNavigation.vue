@@ -28,8 +28,10 @@
     >
       <q-list>
         <q-item
-          to="/"
-          data-cy="item-vehicles"
+          v-for="({ url, icon }, id) in desktopItems"
+          :key="id"
+          :to="url"
+          :data-cy="`item-${id}`"
         >
           <q-tooltip
             anchor="center right"
@@ -38,112 +40,10 @@
             transition-show="jump-right"
             transition-hide="jump-left"
           >
-            <span class="text-subtitle2 text-weight-regular">{{ $t('vehicles') }}</span>
+            <span class="text-subtitle2 text-weight-regular">{{ $t(id) }}</span>
           </q-tooltip>
 
-          <q-avatar icon="mdi-truck" />
-        </q-item>
-
-        <q-item
-          to="/trailers"
-          data-cy="item-trailers"
-        >
-          <q-tooltip
-            anchor="center right"
-            self="center left"
-            :offset="[10, 0]"
-            transition-show="jump-right"
-            transition-hide="jump-left"
-          >
-            <span class="text-subtitle2 text-weight-regular">{{ $t('trailers') }}</span>
-          </q-tooltip>
-
-          <q-avatar icon="mdi-truck-trailer" />
-        </q-item>
-
-        <q-item
-          to="/drivers"
-          data-cy="item-drivers"
-        >
-          <q-tooltip
-            anchor="center right"
-            self="center left"
-            :offset="[10, 0]"
-            transition-show="jump-right"
-            transition-hide="jump-left"
-          >
-            <span class="text-subtitle2 text-weight-regular">{{ $t('drivers') }}</span>
-          </q-tooltip>
-
-          <q-avatar icon="mdi-account-tie-hat" />
-        </q-item>
-
-        <q-item
-          to="/services"
-          data-cy="item-services"
-        >
-          <q-tooltip
-            anchor="center right"
-            self="center left"
-            :offset="[10, 0]"
-            transition-show="jump-right"
-            transition-hide="jump-left"
-          >
-            <span class="text-subtitle2 text-weight-regular">{{ $t('services') }}</span>
-          </q-tooltip>
-
-          <q-avatar icon="mdi-hammer-wrench" />
-        </q-item>
-
-        <q-item
-          to="/notifications"
-          data-cy="item-notifications"
-        >
-          <q-tooltip
-            anchor="center right"
-            self="center left"
-            :offset="[10, 0]"
-            transition-show="jump-right"
-            transition-hide="jump-left"
-          >
-            <span class="text-subtitle2 text-weight-regular">{{ $t('notifications') }}</span>
-          </q-tooltip>
-
-          <q-avatar icon="mdi-bell" />
-        </q-item>
-
-        <q-item
-          to="/settings"
-          data-cy="item-settings"
-        >
-          <q-tooltip
-            anchor="center right"
-            self="center left"
-            :offset="[10, 0]"
-            transition-show="jump-right"
-            transition-hide="jump-left"
-          >
-            <span class="text-subtitle2 text-weight-regular">{{ $t('settings') }}</span>
-          </q-tooltip>
-
-          <q-avatar icon="mdi-cog" />
-        </q-item>
-
-        <q-item
-          to="/logout"
-          data-cy="item-logout"
-        >
-          <q-tooltip
-            anchor="center right"
-            self="center left"
-            :offset="[10, 0]"
-            transition-show="jump-right"
-            transition-hide="jump-left"
-          >
-            <span class="text-subtitle2 text-weight-regular">{{ $t('logout') }}</span>
-          </q-tooltip>
-
-          <q-avatar icon="mdi-power" />
+          <q-avatar :icon="icon" />
         </q-item>
       </q-list>
     </q-scroll-area>
@@ -188,6 +88,43 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'TheNavigation'
+  name: 'TheNavigation',
+
+  setup () {
+    const desktopItems = {
+      vehicles: {
+        url: '/',
+        icon: 'mdi-truck'
+      },
+      trailers: {
+        url: '/trailers',
+        icon: 'mdi-truck-trailer'
+      },
+      drivers: {
+        url: '/drivers',
+        icon: 'mdi-account-tie-hat'
+      },
+      services: {
+        url: '/services',
+        icon: 'mdi-hammer-wrench'
+      },
+      notifications: {
+        url: '/notifications',
+        icon: 'mdi-bell'
+      },
+      settings: {
+        url: '/settings',
+        icon: 'mdi-cog'
+      },
+      logout: {
+        url: '/logout',
+        icon: 'mdi-power'
+      }
+    }
+
+    return {
+      desktopItems
+    }
+  }
 })
 </script>
