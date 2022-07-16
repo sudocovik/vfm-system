@@ -1,11 +1,10 @@
 import { register } from 'register-service-worker'
-import { Notify } from 'quasar'
 
 // The ready(), registered(), cached(), updatefound() and updated()
 // events passes a ServiceWorkerRegistration instance in their arguments.
 // ServiceWorkerRegistration: https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration
 
-register(process.env.SERVICE_WORKER_FILE, {
+register(process.env.SERVICE_WORKER_FILE as string, {
   // The registrationOptions object will be passed as the second argument
   // to ServiceWorkerContainer.register()
   // https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/register#Parameter
@@ -28,24 +27,12 @@ register(process.env.SERVICE_WORKER_FILE, {
     // console.log('New content is downloading.')
   },
 
-  updated (/* registration */) {
-    Notify.create({
-      color: 'negative',
-      icon: 'mdi-cached',
-      message: 'Updated content is available. Please refresh the page.',
-      timeout: 0,
-      multiLine: true,
-      position: 'top',
-      actions: [
-        {
-          label: 'Refresh',
-          color: 'yellow',
-          handler: () => {
-            window.location.reload()
-          }
-        }
-      ]
-    })
+  updated (registration) {
+    const activateUpdates = () => registration.waiting?.postMessage({ type: 'SKIP_WAITING' })
+
+    const serviceWorkerUpdated = new CustomEvent('service-worker-updated', { detail: { activateUpdates } })
+
+    document.dispatchEvent(serviceWorkerUpdated)
   },
 
   offline () {
