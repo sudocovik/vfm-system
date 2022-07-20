@@ -1,7 +1,5 @@
 <template>
   <q-page class="q-pa-md flex items-stretch">
-    <div>Just testing service worker update process</div>
-
     <div
       v-if="isLoadingState"
       data-cy="loading-indicator"
