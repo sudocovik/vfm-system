@@ -14,6 +14,8 @@
       <LoginPage v-on="{ [onAuthenticationSuccessful]: setAuthenticated }" />
     </template>
   </AuthenticationManager>
+
+  <TheUpdateActivator />
 </template>
 
 <script lang="ts">
@@ -23,11 +25,13 @@ import MainLayout from 'layouts/MainLayout.vue'
 import LoginPage from './use-case/authenticate-user/LoginPage.vue'
 import { AuthenticationSuccessfulEventName } from './use-case/authenticate-user/AuthenticationSuccessfulEvent'
 import TheUpdateNotification from 'components/TheUpdateNotification.vue'
+import TheUpdateActivator from 'components/TheUpdateActivator.vue'
 
 export default defineComponent({
   name: 'App',
 
   components: {
+    TheUpdateActivator,
     TheUpdateNotification,
     AuthenticationManager,
     MainLayout,
