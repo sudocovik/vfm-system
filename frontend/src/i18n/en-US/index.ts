@@ -20,5 +20,7 @@ export default {
   notifications: 'Notifications',
   settings: 'Settings',
   logout: 'Logout',
-  menu: 'Menu'
+  menu: 'Menu',
+  'update-available': 'New version is ready to be installed',
+  install: 'Install'
 }

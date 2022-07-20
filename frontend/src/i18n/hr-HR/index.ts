@@ -20,5 +20,7 @@ export default {
   notifications: 'Obavijesti',
   settings: 'Postavke',
   logout: 'Odjava',
-  menu: 'Meni'
+  menu: 'Meni',
+  'update-available': 'Nova verzija je spremna za instalaciju',
+  install: 'Instaliraj'
 }

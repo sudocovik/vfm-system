@@ -1,4 +1,5 @@
 import { register } from 'register-service-worker'
+import { ServiceWorkerUpdated } from 'src/dom'
 
 // The ready(), registered(), cached(), updatefound() and updated()
 // events passes a ServiceWorkerRegistration instance in their arguments.
@@ -30,7 +31,7 @@ register(process.env.SERVICE_WORKER_FILE as string, {
   updated (registration) {
     const activateUpdates = () => registration.waiting?.postMessage({ type: 'SKIP_WAITING' })
 
-    const serviceWorkerUpdated = new CustomEvent('service-worker-updated', { detail: { activateUpdates } })
+    const serviceWorkerUpdated = new CustomEvent<ServiceWorkerUpdated>('service-worker-updated', { detail: { activateUpdates } })
 
     document.dispatchEvent(serviceWorkerUpdated)
   },
