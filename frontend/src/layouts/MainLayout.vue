@@ -1,5 +1,12 @@
 <template>
-  <q-layout view="hHh Lpr lFf">
+  <q-layout view="LHh Lpr lFf">
+    <q-header
+      class="bg-transparent text-black"
+      data-cy="header"
+    >
+      <slot name="header" />
+    </q-header>
+
     <q-page-container>
       <slot />
     </q-page-container>
