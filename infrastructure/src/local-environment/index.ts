@@ -5,30 +5,13 @@ import { createKubernetesManifests } from '../pulumi/create-kubernetes-manifests
 import { LocalProgram } from '../pulumi/Program'
 import { Stack } from '../pulumi/Stack'
 import { promises as fs } from 'fs'
-import { spawnSync } from 'child_process'
 
 async function writeKubeconfigToFile (path: string, kubeconfig: string) {
   await fs.writeFile(path, kubeconfig)
 }
 
-function startHotReload () {
-  spawnSync('devspace', [
-    'sync',
-    '--local-path=/frontend',
-    '--container-path=/app',
-    '--namespace=vfm',
-    '--exclude=.idea',
-    '--initial-sync=preferNewest',
-    '-l app=frontend'
-  ], {
-    stdio: 'inherit'
-  })
-}
-
 const cluster = new LocalClusterManager(new K3D())
-const local = new Stack('local', async () => {
-  createKubernetesManifests(await cluster.kubeconfig())
-})
+const local = new Stack('local', async () => createKubernetesManifests(await cluster.kubeconfig()))
 
 export async function start (): Promise<void> {
   try {
@@ -53,9 +36,6 @@ export async function start (): Promise<void> {
     Stdout.writeLine(Stdout.colorize(COLORS.RED, UNICODE.CROSS_MARK) + ' Failed to deploy apps')
     throw e
   }
-
-  Stdout.writeLine(Stdout.colorize(COLORS.YELLOW, UNICODE.FULL_CIRCLE) + ' Starting hot reload...')
-  await startHotReload()
 }
 
 export async function stop (): Promise<void> {

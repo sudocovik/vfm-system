@@ -4,6 +4,8 @@ COPY --from=pulumi/pulumi-base:3.36.0 /pulumi/bin/pulumi /usr/bin/pulumi
 
 COPY --from=alpine/helm:3.9.1 /usr/bin/helm /usr/bin/helm
 
+# Host root is known at runtime
+ENV HOST_PROJECT_ROOT=""
 ENV PROJECT_ROOT="/app"
 ENV PATH="${PROJECT_ROOT}/bin:${PROJECT_ROOT}/node_modules/.bin:${PATH}"
 
@@ -41,8 +43,6 @@ SHELL ["/bin/bash", "-c"]
 COPY --from=docker:20.10.17 /usr/local/bin/docker /usr/local/bin/docker
 
 COPY --from=ghcr.io/k3d-io/k3d:5.4.4 /bin/k3d /usr/local/bin/k3d
-
-COPY --from=devspacesh/devspace:5.18.5 /bin/devspace /usr/local/bin/devspace
 
 COPY --from=dependencies /app/node_modules /app/node_modules
 

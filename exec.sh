@@ -6,6 +6,7 @@ if [[ ! $(docker ps -a | grep "$CONTAINER_NAME") ]] ; then
   docker run -it \
   		--rm \
   		--network host \
+  		-e HOST_PROJECT_ROOT=$(pwd) \
   		-v "$(pwd)/infrastructure:/app" \
   		-v "$(pwd)/frontend:/frontend" \
   		-v /var/run/docker.sock:/var/run/docker.sock \

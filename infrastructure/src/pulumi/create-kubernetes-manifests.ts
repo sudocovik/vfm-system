@@ -11,6 +11,7 @@ function replaceRegistryUrlWithUrlClusterUnderstands (originalImageName: pulumi.
 
 function createFrontendApplication (provider: k8s.Provider, namespace: pulumi.Output<string>, ingressController: k8s.helm.v3.Chart): void {
   const labels = { app: 'frontend' }
+  const volumes = { hotReload: 'hot-reload' }
 
   const image = new docker.Image('frontend', {
     imageName: 'localhost:5000/vfm-frontend',
@@ -47,7 +48,18 @@ function createFrontendApplication (provider: k8s.Provider, namespace: pulumi.Ou
               name: 'http',
               containerPort: 8080,
               protocol: 'TCP'
+            }],
+            volumeMounts: [{
+              name: volumes.hotReload,
+              mountPath: '/app'
             }]
+          }],
+          volumes: [{
+            name: volumes.hotReload,
+            hostPath: {
+              path: '/frontend',
+              type: 'Directory'
+            }
           }]
         }
       }
