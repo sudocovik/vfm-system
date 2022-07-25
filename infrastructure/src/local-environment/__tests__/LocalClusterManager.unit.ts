@@ -1,5 +1,4 @@
-import { LocalCluster } from '../cluster'
-import { LocalClusterManager, LocalClusterIsMissingException } from '../LocalClusterManager'
+import { LocalCluster, LocalClusterIsMissingException, LocalClusterManager } from '../cluster'
 
 class ClusterSpy implements LocalCluster {
     static createdCount = 0

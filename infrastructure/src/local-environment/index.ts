@@ -1,6 +1,5 @@
 import { COLORS, Stdout, UNICODE } from '../utilities/terminal'
-import { LocalClusterManager } from './LocalClusterManager'
-import { K3D } from './cluster'
+import { K3D, LocalClusterManager } from './cluster'
 import { createKubernetesManifests } from '../pulumi/create-kubernetes-manifests'
 import { LocalProgram } from '../pulumi/Program'
 import { Stack } from '../pulumi/Stack'

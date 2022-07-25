@@ -1,4 +1,4 @@
-import { LocalCluster } from './cluster'
+import { LocalCluster } from './'
 
 export class LocalClusterIsMissingException extends Error {}
 
