@@ -8,5 +8,7 @@ module.exports = {
   transform: {
     '^.+\\.(ts|tsx)$': 'ts-jest'
   },
-  collectCoverageFrom: ['src/**/*.{ts,js}']
+  collectCoverageFrom: ['src/**/*.{ts,js}'],
+  resetMocks: true,
+  resetModules: true
 }
