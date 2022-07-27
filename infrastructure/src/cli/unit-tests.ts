@@ -6,8 +6,7 @@ const integrationTestsOnly = '.*(\\/+)__tests__\\/*\\/.+(\\.integration\\.)(ts|t
 export function unitTest (watch = false): number | null {
   const jestArguments: string[] = [
     unitTestsOnly,
-    '--colors',
-    '--verbose'
+    '--colors'
   ]
   if (watch) jestArguments.push('--watchAll')
 
@@ -18,8 +17,7 @@ export function unitTest (watch = false): number | null {
 export function integrationTest (): number | null {
   const jestArguments: string[] = [
     integrationTestsOnly,
-    '--colors',
-    '--verbose'
+    '--colors'
   ]
 
   const { status } = spawnSync('jest', jestArguments, { stdio: 'inherit' })
