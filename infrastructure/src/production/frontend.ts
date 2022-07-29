@@ -3,7 +3,7 @@ import { Output } from '@pulumi/pulumi'
 import * as k8s from '@pulumi/kubernetes'
 import { Stack } from '../pulumi/Stack'
 import { Program } from '../pulumi/Program'
-import { Domain } from '../../config'
+import { Domain, Frontend, GitHubContainerRegistry } from '../../config'
 import { createKubernetesProvider } from '../components/KubernetesProvider'
 
 function describeOldFrontend (
@@ -122,7 +122,7 @@ function describeNewFrontend (
           restartPolicy: 'Always',
           containers: [{
             name: 'webserver',
-            image: 'ghcr.io/covik/vfm-frontend:' + version,
+            image: `${GitHubContainerRegistry.url}/${Frontend.container.image.baseName}:${version}`,
             imagePullPolicy: 'IfNotPresent',
             ports: [{
               name: 'http',

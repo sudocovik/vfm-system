@@ -1,14 +1,9 @@
-import { spawnSync } from 'child_process'
+import { buildLocalImage } from '../local-environment/frontend'
 
 export class FrontendCommands {
   public static build (): void {
-    const { status } = spawnSync('docker', ['build', '/frontend', '--target=development-environment', '--tag=covik/vfm-frontend:local'], {
-      stdio: 'inherit',
-      env: {
-        DOCKER_BUILDKIT: '1'
-      }
-    })
+    const status = buildLocalImage()
 
-    process.exitCode = status || -1
+    process.exitCode = status ?? -1
   }
 }

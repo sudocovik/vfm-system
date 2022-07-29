@@ -4,26 +4,14 @@ import * as docker from '@pulumi/docker'
 import { createTraefikIngressController } from '../components/TraefikIngressController'
 import { createNamespace } from '../components/Namespace'
 import { createKubernetesProvider } from '../components/KubernetesProvider'
-
-function replaceRegistryUrlWithUrlClusterUnderstands (originalImageName: pulumi.Output<string>): pulumi.Output<string> {
-  return originalImageName.apply(imageName => imageName.replace(/^localhost/, 'vfm-registry'))
-}
+import { imageName } from '../local-environment/frontend'
 
 function createFrontendApplication (provider: k8s.Provider, namespace: pulumi.Output<string>, ingressController: k8s.helm.v3.Chart): void {
   const labels = { app: 'frontend' }
   const volumes = { hotReload: 'hot-reload' }
 
-  const image = new docker.Image('frontend', {
-    imageName: 'localhost:5000/vfm-frontend',
-    build: {
-      context: '/frontend',
-      target: 'development-environment',
-      env: {
-        DOCKER_BUILDKIT: '1'
-      }
-    }
-  })
-  const imageName = replaceRegistryUrlWithUrlClusterUnderstands(image.imageName)
+  const image = docker.getRemoteImageOutput({ name: imageName })
+  const fullImageNameWithSha256Tag = image.repoDigest
 
   const deployment = new k8s.apps.v1.Deployment('new-application', {
     metadata: {
@@ -42,7 +30,7 @@ function createFrontendApplication (provider: k8s.Provider, namespace: pulumi.Ou
           restartPolicy: 'Always',
           containers: [{
             name: 'webserver',
-            image: imageName,
+            image: fullImageNameWithSha256Tag,
             imagePullPolicy: 'IfNotPresent',
             ports: [{
               name: 'http',

@@ -1,7 +1,7 @@
 import { promisify } from 'util'
 import { LocalCluster } from './LocalCluster'
 import { exec as callbackBasedExec } from 'child_process'
-import { Directory, Kubernetes } from '../../../config'
+import { Directory, Frontend, Kubernetes } from '../../../config'
 
 const exec = promisify(callbackBasedExec)
 
@@ -15,7 +15,8 @@ export class K3D implements LocalCluster {
       '--api-port 6445',
       '--registry-create=vfm-registry:5000',
       `--image=rancher/k3s:v${Kubernetes.version}-k3s2`,
-      `--volume=${Directory.host.frontend}:/frontend@server:*`
+      `--volume=${Frontend.rootFromHost}:/${Frontend.mountRoot}@server:*`,
+      `--registry-config="${Directory.configRoot}/registry.yaml"`
     ]
 
     await exec('k3d cluster create vfm ' + options.join(' '))
