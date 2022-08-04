@@ -44,8 +44,7 @@ describe('ServiceWorker', () => {
 })
 
 function loadServiceWorkerDefinition () {
-  // Unfortunately alias doesn't work here
-  return import('../../../../src-pwa/register-service-worker')
+  return import('../register-service-worker')
 }
 
 function serviceWorkerHooks () {

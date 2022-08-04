@@ -116,6 +116,11 @@ module.exports = configure(function (ctx) {
     // https://quasar.dev/options/animations
     animations: [],
 
+    sourceFiles: {
+      registerServiceWorker: 'src/support/pwa/register-service-worker.ts',
+      serviceWorker: 'src/support/pwa/custom-service-worker.js'
+    },
+
     // https://quasar.dev/quasar-cli/developing-ssr/configuring-ssr
     ssr: {
       pwa: false,
