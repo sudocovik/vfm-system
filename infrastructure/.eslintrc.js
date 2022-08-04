@@ -7,6 +7,7 @@ module.exports = {
     'eslint:recommended',
     'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
+    'plugin:promise/recommended',
     'standard'
   ],
 
@@ -23,6 +24,8 @@ module.exports = {
 
     'no-empty-function': 'off', // Does not understand types
     '@typescript-eslint/no-empty-function': ['error', { 'allow': ['private-constructors'] }],
+
+    'promise/always-return': 'off',
 
     'no-new': 'off' // Remove once all pulumi objects get created and returned by a function
   },
