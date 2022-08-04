@@ -44,6 +44,8 @@ COPY --from=docker:20.10.17 /usr/local/bin/docker /usr/local/bin/docker
 
 COPY --from=ghcr.io/k3d-io/k3d:5.4.4 /bin/k3d /usr/local/bin/k3d
 
+COPY --from=lachlanevenson/k8s-kubectl:v1.21.12 /usr/local/bin/kubectl /usr/local/bin/kubectl
+
 COPY --from=dependencies /app/node_modules /app/node_modules
 
 USER node
