@@ -158,6 +158,11 @@ module.exports = configure(function (ctx) {
         //
       },
 
+      metaVariables: {
+        appleMobileWebAppCapable: 'yes',
+        appleMobileWebAppStatusBarStyle: 'black-translucent'
+      },
+
       manifest: {
         name: 'Vehicle Fleet Management',
         short_name: 'Vehicle Fleet Management',
