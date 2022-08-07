@@ -1,5 +1,9 @@
 <template>
   <AuthenticationManager>
+    <template #loading>
+      <TheLoadingScreen />
+    </template>
+
     <template #authenticated>
       <MainLayout>
         <template #header>
@@ -26,11 +30,13 @@ import LoginPage from './use-case/authenticate-user/LoginPage.vue'
 import { AuthenticationSuccessfulEventName } from './use-case/authenticate-user/AuthenticationSuccessfulEvent'
 import TheUpdateNotification from 'components/TheUpdateNotification.vue'
 import TheUpdateActivator from 'components/TheUpdateActivator.vue'
+import TheLoadingScreen from 'components/TheLoadingScreen.vue'
 
 export default defineComponent({
   name: 'App',
 
   components: {
+    TheLoadingScreen,
     TheUpdateActivator,
     TheUpdateNotification,
     AuthenticationManager,
