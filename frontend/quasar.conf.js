@@ -170,7 +170,7 @@ module.exports = configure(function (ctx) {
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',
-        theme_color: '#027be3',
+        theme_color: '#ffffff',
         icons: [
           {
             src: 'icons/android-chrome-192x192.png',
