@@ -158,10 +158,33 @@ module.exports = configure(function (ctx) {
         //
       },
 
-      metaVariables: {
-        appleMobileWebAppCapable: 'yes',
-        appleMobileWebAppStatusBarStyle: 'black-translucent'
-      },
+      metaVariablesFn: (manifest) => ([
+        {
+          tagName: 'meta',
+          attributes: {
+            name: 'theme-color',
+            value: manifest.theme_color
+          }
+        }, {
+          tagName: 'meta',
+          attributes: {
+            name: 'apple-mobile-web-app-capable',
+            value: 'yes'
+          }
+        }, {
+          tagName: 'meta',
+          attributes: {
+            name: 'apple-mobile-web-app-status-bar-style',
+            value: 'black-translucent'
+          }
+        }, {
+          tagName: 'meta',
+          attributes: {
+            name: 'apple-mobile-web-app-title',
+            value: manifest.name
+          }
+        }
+      ]),
 
       manifest: {
         name: 'Vehicle Fleet Management',
