@@ -113,11 +113,7 @@ export default defineComponent({
 
     const mobileItems = {
       vehicles: desktopItems.vehicles,
-      notifications: desktopItems.notifications,
-      menu: {
-        url: '/menu',
-        icon: 'mdi-menu'
-      }
+      notifications: desktopItems.notifications
     }
 
     return {

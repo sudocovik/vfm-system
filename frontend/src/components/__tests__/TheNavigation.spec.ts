@@ -33,11 +33,6 @@ describe('TheNavigation', () => {
           name: 'notifications',
           url: '/notifications',
           icon: 'mdi-bell'
-        },
-        {
-          name: 'menu',
-          url: '/menu',
-          icon: 'mdi-menu'
         }
       ]
 
