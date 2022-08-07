@@ -22,5 +22,6 @@ export default {
   logout: 'Logout',
   menu: 'Menu',
   'update-available': 'New version is ready to be installed',
-  install: 'Install'
+  install: 'Install',
+  'no-notifications': 'No notifications'
 }

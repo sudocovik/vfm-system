@@ -22,5 +22,6 @@ export default {
   logout: 'Odjava',
   menu: 'Meni',
   'update-available': 'Nova verzija je spremna za instalaciju',
-  install: 'Instaliraj'
+  install: 'Instaliraj',
+  'no-notifications': 'Nema obavijesti'
 }

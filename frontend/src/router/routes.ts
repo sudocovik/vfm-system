@@ -11,6 +11,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../use-case/authenticate-user/LoginPage.vue')
   },
 
+  {
+    path: '/notifications',
+    component: () => import('../use-case/view-notifications/ViewNotificationsPage.vue')
+  },
+
   // Always leave this as last one,
   // but you can also remove it
   {
