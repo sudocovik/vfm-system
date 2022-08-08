@@ -38,7 +38,7 @@ USER node
 WORKDIR /app
 RUN yarn config set prefix /yarn
 ENV PATH="/yarn/bin:/app/node_modules/.bin:${PATH}"
-RUN yarn global add @vue/cli@4.5.15 @quasar/cli@1.3.2
+RUN yarn global add @quasar/cli@1.3.2
 COPY --from=source --chown=node:node /source /app
 CMD ["quasar", "dev"]
 
