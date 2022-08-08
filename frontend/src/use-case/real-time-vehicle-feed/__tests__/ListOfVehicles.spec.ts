@@ -117,21 +117,21 @@ describe('ListOfVehicles', () => {
       })
     })
 
-    it('should re-render component when there is data changes from background refresh', () => {
+    it('should re-render component when there is data changes from background refresh', function () {
       const initialVehicles = [firstGeoLocatedVehicle, secondGeoLocatedVehicle]
       const updatedVehicles = [updatedFirstGeoLocatedVehicle, secondGeoLocatedVehicle]
 
-      const { waitForComponentsRerender } = simulateFetchedVehicles(updatedVehicles, 250)
-      restoreShortPoll()
+      allowOnlyTwoShortPollCycles()
+      const { simulateVehicles } = stubFetchVehicles()
 
       mountListOfVehicles({ vehicles: initialVehicles })
+      simulateVehicles(initialVehicles)
+
       openInSingleVehicleMode(firstGeoLocatedVehicle)
       assertVehicleInSingleVehicleModeIs(firstGeoLocatedVehicle)
 
-      waitForComponentsRerender()
+      cy.then(() => simulateVehicles(updatedVehicles))
       assertVehicleInSingleVehicleModeIs(updatedFirstGeoLocatedVehicle)
-
-      stopShortPoll()
     })
 
     specify('user should be able to pan the map and change zoom', () => {
@@ -143,7 +143,7 @@ describe('ListOfVehicles', () => {
         .then(singleVehicleModeComponent => mapInteractivityShouldBe(singleVehicleModeComponent, true))
     })
 
-    specify('map center should follow marker position', () => {
+    specify('map center should not follow marker position', () => {
       mountListOfVehicles({ vehicles: [firstGeoLocatedVehicle, secondGeoLocatedVehicle] })
 
       openInSingleVehicleMode(firstGeoLocatedVehicle)
@@ -201,13 +201,10 @@ describe('ListOfVehicles', () => {
   })
 
   describe('Background refresh', () => {
-    it('should utilize short poll for fetching new data with 2 seconds delay between fetches', () => {
+    it('should utilize short poll with 2 seconds delay between fetches', () => {
       mountListOfVehicles()
 
-      cy.then(() => {
-        expect(shortPollStub.args[0][0]).to.equal(VehicleList.fetchAll)
-        expect(shortPollStub.args[0][2]).to.equal(2000)
-      })
+      cy.then(() => expect(shortPollStub.args[0][1]).to.equal(2000))
     })
 
     const scenarios = {
@@ -248,20 +245,18 @@ describe('ListOfVehicles', () => {
     for (const [caseDescription, data] of Object.entries(scenarios)) {
       specify(caseDescription, () => {
         const initialVehicles = data.initial
-        const updatedVehicles = data.update
+        const updatedVehicles = data.update as Vehicle[]
         const expectedVehiclesAfterUpdate = data.expected
 
-        const { fetchVehiclesStub, waitForComponentsRerender } = simulateFetchedVehicles(updatedVehicles as Vehicle[])
-        restoreShortPoll()
+        allowOnlyTwoShortPollCycles()
+        const { simulateVehicles } = stubFetchVehicles()
 
         mountListOfVehicles({ vehicles: initialVehicles })
+        simulateVehicles(initialVehicles)
         assertRenderedVehiclesAre(initialVehicles)
 
-        cy.wrap(fetchVehiclesStub).should('have.been.calledOnce')
-        waitForComponentsRerender()
+        cy.then(() => simulateVehicles(updatedVehicles))
         assertRenderedVehiclesAre(expectedVehiclesAfterUpdate)
-
-        stopShortPoll()
       })
     }
   })
@@ -286,12 +281,11 @@ function getAllGeoLocatedVehicles () {
 }
 
 function assertRenderedVehiclesAre (vehicles: Vehicle[]) {
-  return cy.then(getAllGeoLocatedVehicles)
-    .then(allGeoLocatedVehicleComponents => {
-      expect(allGeoLocatedVehicleComponents.length).to.equal(vehicles.length)
-      return allGeoLocatedVehicleComponents
-    })
-    .each((component: GeoLocatedVehicleWrapper, i) => assertGeoLocatedVehicleProps(component, vehicles[i]))
+  cy.window().should(() => {
+    const vehicleComponents = getAllGeoLocatedVehicles()
+    expect(vehicleComponents.length, 'vehicle count').to.equal(vehicles.length)
+    vehicleComponents.forEach((component, i) => assertGeoLocatedVehicleProps(component, vehicles[i]))
+  })
 }
 
 function assertGeoLocatedVehicleProps (
@@ -299,27 +293,31 @@ function assertGeoLocatedVehicleProps (
   expectedVehicle: Vehicle,
   expectedKey: string | undefined = undefined
 ) {
-  expect(getComponentKey(vehicleComponent)).to.equal(expectedKey ?? expectedVehicle.id())
-  expect(vehicleComponent.props('licensePlate')).to.equal(expectedVehicle.licensePlate())
-  expect(vehicleComponent.props('latitude')).to.equal(expectedVehicle.latitude())
-  expect(vehicleComponent.props('longitude')).to.equal(expectedVehicle.longitude())
-  expect(vehicleComponent.props('address')).to.equal(expectedVehicle.address())
-  expect(vehicleComponent.props('speed')).to.deep.equal(expectedVehicle.speed())
-  expect(vehicleComponent.props('ignition')).to.equal(expectedVehicle.ignition())
-  expect(vehicleComponent.props('moving')).to.equal(expectedVehicle.moving())
-  expect(vehicleComponent.props('course')).to.equal(expectedVehicle.course())
+  expect(getComponentKey(vehicleComponent), 'component key').to.equal(expectedKey ?? expectedVehicle.id())
+  expect(vehicleComponent.props('licensePlate'), 'license plate').to.equal(expectedVehicle.licensePlate())
+  expect(vehicleComponent.props('latitude'), 'latitude').to.equal(expectedVehicle.latitude())
+  expect(vehicleComponent.props('longitude'), 'longitude').to.equal(expectedVehicle.longitude())
+  expect(vehicleComponent.props('address'), 'address').to.equal(expectedVehicle.address())
+  expect(vehicleComponent.props('speed'), 'speed').to.deep.equal(expectedVehicle.speed())
+  expect(vehicleComponent.props('ignition'), 'ignition').to.equal(expectedVehicle.ignition())
+  expect(vehicleComponent.props('moving'), 'moving').to.equal(expectedVehicle.moving())
+  expect(vehicleComponent.props('course'), 'course').to.equal(expectedVehicle.course())
 }
 
 function mapInteractivityShouldBe (component: GeoLocatedVehicleWrapper, wantedInteractivity: boolean) {
   cy.then(() => component.props('mapInteractive') as boolean)
     .then(interactive => cy.wrap(interactive))
-    .should('equal', wantedInteractivity)
+    .should(actual => {
+      expect(actual, 'map interactivity').to.equal(wantedInteractivity)
+    })
 }
 
 function mapSyncCenterShouldBe (component: GeoLocatedVehicleWrapper, wantedSyncStatus: boolean) {
   cy.then(() => component.props('syncCenter') as boolean)
     .then(syncCenter => cy.wrap(syncCenter))
-    .should('equal', wantedSyncStatus)
+    .should(actual => {
+      expect(actual, 'sync center').to.equal(wantedSyncStatus)
+    })
 }
 
 function assertIsSingleVehicleMode () {
@@ -345,32 +343,30 @@ function leaveSingleVehicleMode () {
 }
 
 function assertVehicleInSingleVehicleModeIs (targetVehicle: Vehicle) {
-  cy.then(getSingleVehicleModeComponent)
-    .then(targetVehicleComponent => assertGeoLocatedVehicleProps(targetVehicleComponent, targetVehicle, `single-vehicle-${targetVehicle.id()}`))
+  cy.window().should(() => {
+    const component = getSingleVehicleModeComponent()
+    const targetComponentKey = `single-vehicle-${targetVehicle.id()}`
+    assertGeoLocatedVehicleProps(component, targetVehicle, targetComponentKey)
+  })
 }
 
 function stubShortPoll () {
   shortPollStub = cy.stub(shortPoll, 'do').callsFake(() => { /* prevent recursion */ })
 }
 
-function restoreShortPoll () {
-  shortPollStub.restore()
+function stubFetchVehicles () {
+  const fetchVehiclesStub = cy.stub(VehicleList, 'fetchAll')
+  const simulateVehicles = (vehicles: Vehicle[]) => fetchVehiclesStub.resolves(vehicles)
+
+  return { simulateVehicles }
 }
 
-function stopShortPoll () {
-  cy.then(stubShortPoll)
-}
+function allowOnlyTwoShortPollCycles () {
+  const twoCycles = async (action: () => Promise<unknown>) => {
+    await action()
+    await sleep.now(500)
+    await action()
+  }
 
-function simulateFetchedVehicles (vehicles: Vehicle[], delay = 150) {
-  const delayNeededForComponentsRerender = delay
-
-  const fetchVehiclesStub = cy.stub(VehicleList, 'fetchAll').callsFake(async () => {
-    await sleep.now(delayNeededForComponentsRerender)
-    return vehicles
-  })
-
-  // eslint-disable-next-line cypress/no-unnecessary-waiting
-  const waitForComponentsRerender = () => cy.wait(delayNeededForComponentsRerender)
-
-  return { fetchVehiclesStub, waitForComponentsRerender }
+  shortPollStub.callsFake(twoCycles)
 }

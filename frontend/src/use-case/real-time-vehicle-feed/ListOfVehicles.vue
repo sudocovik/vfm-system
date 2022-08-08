@@ -71,7 +71,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, nextTick } from 'vue'
+import { computed, defineComponent, nextTick, ref } from 'vue'
 import GeoLocatedVehicle from './GeoLocatedVehicle.vue'
 import { GeoLocatedVehicle as Vehicle, VehicleList } from 'src/backend/VehicleService'
 import { shortPoll } from 'src/support/short-poll'
@@ -94,9 +94,9 @@ export default defineComponent({
     const allVehicles = ref(props.vehicles)
     const geoLocatedVehicles = computed(() => allVehicles.value.filter(vehicle => vehicle instanceof Vehicle) as Vehicle[])
 
-    void shortPoll.do(VehicleList.fetchAll, (result) => {
+    shortPoll.do(async () => {
+      const result = await VehicleList.fetchAll()
       if (result.length !== 0) allVehicles.value = result
-      return Promise.resolve()
     }, TWO_SECONDS)
 
     let scrollTopBeforeEnteringSingleVehicleMode = 0
