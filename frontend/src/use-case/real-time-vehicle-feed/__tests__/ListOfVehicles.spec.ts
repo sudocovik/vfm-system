@@ -351,7 +351,9 @@ function assertVehicleInSingleVehicleModeIs (targetVehicle: Vehicle) {
 }
 
 function stubShortPoll () {
-  shortPollStub = cy.stub(shortPoll, 'do').callsFake(() => { /* prevent recursion */ })
+  shortPollStub = cy.stub(shortPoll, 'do').callsFake(() => {
+    return () => { /* make sure onUnmounted does not throw exception */ }
+  })
 }
 
 function stubFetchVehicles () {
