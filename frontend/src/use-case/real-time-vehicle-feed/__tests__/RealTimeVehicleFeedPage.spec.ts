@@ -253,7 +253,9 @@ function stubVehicleFetching () {
 }
 
 function stubShortPoll () {
-  cy.stub(shortPoll, 'do')
+  cy.stub(shortPoll, 'do').callsFake(() => {
+    return () => { /* make sure onUnmounted does not throw exception */ }
+  })
 }
 
 function simulateResultFromBackend (result: GeoLocatedVehicle[]) {
