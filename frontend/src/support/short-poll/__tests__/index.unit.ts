@@ -1,10 +1,10 @@
 import { describe, expect, it, jest } from '@jest/globals'
+import { install as setupFakeTimers } from '@sinonjs/fake-timers'
 import { ActionHandler, shortPoll } from '../'
-import fakeTimers from '@sinonjs/fake-timers'
 
 describe('shortPoll', () => {
   it('should execute action, wait delayInMilliseconds and repeat indefinitely', async () => {
-    const clock = fakeTimers.install()
+    const clock = setupFakeTimers()
     const delay = 2000
     const action = jest.fn()
 
@@ -22,7 +22,7 @@ describe('shortPoll', () => {
   })
 
   it('should be stoppable', async () => {
-    const clock = fakeTimers.install()
+    const clock = setupFakeTimers()
     const delay = 2000
     const action = jest.fn()
 
