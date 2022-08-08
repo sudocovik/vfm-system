@@ -24,7 +24,7 @@ COPY --from=source /source /build
 RUN npx quasar build -m pwa
 
 
-FROM nginx:1.21.3-alpine AS production-server
+FROM nginx:1.23.1-alpine AS production-server
 LABEL org.opencontainers.image.source=https://github.com/Covik/vfm-system
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=production-artifact --chown=root:root /build/dist/pwa /usr/share/nginx/html
