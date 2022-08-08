@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, onUnmounted, ref } from 'vue'
 import { useMeta } from 'quasar'
 import { t } from 'boot/i18n'
 import { StateMachine, STATES } from './StateMachine'
@@ -62,6 +62,7 @@ export default defineComponent({
 
     const state = ref(StateMachine.currentState())
     StateMachine.onTransition = () => (state.value = StateMachine.currentState())
+    onUnmounted(() => StateMachine.reset()) // Untested because Cypress does not support component unmounting
 
     const isLoadingState = computed(() => state.value === STATES.LOADING)
     const isEmptyState = computed(() => state.value === STATES.EMPTY)
