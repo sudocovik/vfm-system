@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.13.5",
+    "@xstate/vue": "^2.0.0",
     "axios": "^0.24.0",
     "core-js": "^3.6.5",
     "date-fns": "^2.28.0",
@@ -28,7 +29,8 @@
     "vue": "^3.2.29",
     "vue-i18n": "^9.0.0",
     "vue-router": "^4.0.12",
-    "vue3-google-map": "^0.10.0"
+    "vue3-google-map": "^0.10.0",
+    "xstate": "^4.33.0"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.13.14",
