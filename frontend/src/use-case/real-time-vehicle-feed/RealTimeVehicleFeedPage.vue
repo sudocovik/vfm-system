@@ -1,5 +1,8 @@
 <template>
-  <q-page class="q-pa-md flex items-stretch">
+  <q-page
+    class="q-pa-md flex items-stretch"
+    data-cy="page"
+  >
     <div
       v-if="isLoadingState"
       data-cy="loading-indicator"
@@ -21,7 +24,7 @@
       data-cy="fetch-failure"
       class="full-width flex items-center justify-center"
     >
-      <FailedToFetchData />
+      <FailedToFetchData @retry="tryFetchingVehiclesAgain" />
     </div>
 
     <div
@@ -29,21 +32,21 @@
       data-cy="vehicle-list"
       class="full-width flex items-stretch"
     >
-      <ListOfVehicles :vehicles="vehicles" />
+      <ListOfVehicles :vehicles="allVehicles" />
     </div>
   </q-page>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onUnmounted, ref } from 'vue'
-import { useMeta } from 'quasar'
+import { defineComponent, ref } from 'vue'
+import { useMeta, useQuasar } from 'quasar'
 import { t } from 'boot/i18n'
-import { StateMachine, STATES } from './StateMachine'
+import { GeoLocatedVehicle, VehicleList } from 'src/backend/VehicleService'
+import { usePageStateMachine } from './usePageStateMachine'
 import FailedToFetchData from 'components/FailedToFetchData.vue'
 import ListOfVehicles from './ListOfVehicles.vue'
 import NoVehiclesFound from './NoVehiclesFound.vue'
 import VehiclesLoadingIndicator from './VehiclesLoadingIndicator.vue'
-import { GeoLocatedVehicle, VehicleList } from 'src/backend/VehicleService'
 
 export default defineComponent({
   name: 'RealTimeVehicleFeedPage',
@@ -60,28 +63,43 @@ export default defineComponent({
 
     useMeta({ title: title + ' | Zara Fleet' })
 
-    const state = ref(StateMachine.currentState())
-    StateMachine.onTransition = () => (state.value = StateMachine.currentState())
-    onUnmounted(() => StateMachine.reset()) // Untested because Cypress does not support component unmounting
+    const $q = useQuasar()
 
-    const isLoadingState = computed(() => state.value === STATES.LOADING)
-    const isEmptyState = computed(() => state.value === STATES.EMPTY)
-    const isErrorState = computed(() => state.value === STATES.ERROR)
-    const isSuccessState = computed(() => state.value === STATES.SUCCESS)
+    const allVehicles = ref<GeoLocatedVehicle[]>([])
+    const areVehiclesEmpty = () => allVehicles.value.length === 0
+    const fetchVehicles = async () => {
+      const result = await VehicleList.fetchAll()
+      if (result.length) {
+        allVehicles.value = result
+      }
+    }
+    const notifyUserProblemsWithBackgroundRefreshOccurred = () => {
+      const hideNotification = $q.notify({
+        attrs: {
+          'data-cy': 'failure-notification'
+        },
+        message: t('failed-to-refresh-vehicles'),
+        timeout: 0
+      })
 
-    const vehicles = ref<GeoLocatedVehicle[]>([])
-    void VehicleList.fetchAll().then(result => {
-      const isSuccess = result.length > 0
-      isSuccess && (vehicles.value = result)
-      StateMachine.transitionTo(isSuccess ? STATES.SUCCESS : STATES.EMPTY)
-    }).catch(() => StateMachine.transitionTo(STATES.ERROR))
+      return () => hideNotification()
+    }
 
-    return {
+    const {
       isLoadingState,
       isEmptyState,
       isErrorState,
       isSuccessState,
-      vehicles
+      tryFetchingVehiclesAgain
+    } = usePageStateMachine({ fetchVehicles, areVehiclesEmpty, notifyUserProblemsWithBackgroundRefreshOccurred })
+
+    return {
+      allVehicles,
+      isLoadingState,
+      isEmptyState,
+      isErrorState,
+      isSuccessState,
+      tryFetchingVehiclesAgain
     }
   }
 })

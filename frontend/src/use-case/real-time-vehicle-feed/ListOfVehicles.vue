@@ -71,12 +71,9 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, nextTick, onUnmounted, ref } from 'vue'
+import { computed, defineComponent, nextTick, ref } from 'vue'
+import { GeoLocatedVehicle as Vehicle } from 'src/backend/VehicleService'
 import GeoLocatedVehicle from './GeoLocatedVehicle.vue'
-import { GeoLocatedVehicle as Vehicle, VehicleList } from 'src/backend/VehicleService'
-import { shortPoll } from 'src/support/short-poll'
-
-const TWO_SECONDS = 2000
 
 export default defineComponent({
   name: 'ListOfVehicles',
@@ -91,15 +88,7 @@ export default defineComponent({
   },
 
   setup (props) {
-    const allVehicles = ref(props.vehicles)
-    const geoLocatedVehicles = computed(() => allVehicles.value.filter(vehicle => vehicle instanceof Vehicle) as Vehicle[])
-
-    const stopPolling = shortPoll.do(async () => {
-      const result = await VehicleList.fetchAll()
-      if (result.length !== 0) allVehicles.value = result
-    }, TWO_SECONDS)
-
-    onUnmounted(stopPolling) // Untested because Cypress does not support component unmounting
+    const geoLocatedVehicles = computed(() => props.vehicles.filter(vehicle => vehicle instanceof Vehicle) as Vehicle[])
 
     let scrollTopBeforeEnteringSingleVehicleMode = 0
     const singleVehicleModeVehicleId = ref<number | undefined>(undefined)

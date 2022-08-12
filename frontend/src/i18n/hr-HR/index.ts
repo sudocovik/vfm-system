@@ -23,5 +23,6 @@ export default {
   menu: 'Meni',
   'update-available': 'Nova verzija je spremna za instalaciju',
   install: 'Instaliraj',
-  'no-notifications': 'Nema obavijesti'
+  'no-notifications': 'Nema obavijesti',
+  'failed-to-refresh-vehicles': 'Nije uspjelo osvježavanje vozila. Pokušavam ponovno za 10 sekundi...'
 }

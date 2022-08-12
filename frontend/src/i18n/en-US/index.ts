@@ -23,5 +23,6 @@ export default {
   menu: 'Menu',
   'update-available': 'New version is ready to be installed',
   install: 'Install',
-  'no-notifications': 'No notifications'
+  'no-notifications': 'No notifications',
+  'failed-to-refresh-vehicles': 'Failed to refresh vehicles. Trying again in 10 seconds...'
 }

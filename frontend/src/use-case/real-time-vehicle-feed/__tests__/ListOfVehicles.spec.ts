@@ -1,7 +1,9 @@
 import { mount } from '@cypress/vue'
-import { getComponentKey, inAllLanguages } from 'test/support/api'
+import { ComponentUnderTest, getComponentKey, inAllLanguages } from 'test/support/api'
 import ListOfVehicles from '../ListOfVehicles.vue'
 import GeoLocatedVehicle from '../GeoLocatedVehicle.vue'
+import { VueWrapper } from '@vue/test-utils'
+import { GeoLocatedVehicle as Vehicle } from 'src/backend/VehicleService'
 import {
   firstGeoLocatedVehicle,
   secondGeoLocatedVehicle,
@@ -9,18 +11,10 @@ import {
   updatedFirstGeoLocatedVehicle,
   updatedSecondGeoLocatedVehicle
 } from '../__fixtures__/geo-located-vehicles'
-import { VueWrapper } from '@vue/test-utils'
-import { GeoLocatedVehicle as Vehicle, VehicleList, VehicleWithoutPosition } from 'src/backend/VehicleService'
-import { shortPoll } from 'src/support/short-poll'
-import { sleep } from 'src/support/sleep'
-import type { SinonStub } from 'cypress/types/sinon'
 
 type GeoLocatedVehicleWrapper = VueWrapper<InstanceType<typeof GeoLocatedVehicle>>
-let shortPollStub: SinonStub
 
 describe('ListOfVehicles', () => {
-  beforeEach(stubShortPoll)
-
   specify('given list of non-vehicles it should render nothing', () => {
     const gibberish = [false, null, undefined, 'lol', -1]
 
@@ -42,6 +36,17 @@ describe('ListOfVehicles', () => {
     mountListOfVehicles({ vehicles })
 
     assertRenderedVehiclesAre(vehicles)
+  })
+
+  specify('given list of two vehicles when they change then re-render', () => {
+    const initialVehicles = [firstGeoLocatedVehicle, secondGeoLocatedVehicle]
+    const updatedVehicles = [updatedFirstGeoLocatedVehicle, updatedSecondGeoLocatedVehicle]
+
+    mountListOfVehicles({ vehicles: initialVehicles })
+    assertRenderedVehiclesAre(initialVehicles)
+
+    cy.then(() => changeVehicles(updatedVehicles))
+    assertRenderedVehiclesAre(updatedVehicles)
   })
 
   it('should render vehicles under root node', () => {
@@ -121,16 +126,12 @@ describe('ListOfVehicles', () => {
       const initialVehicles = [firstGeoLocatedVehicle, secondGeoLocatedVehicle]
       const updatedVehicles = [updatedFirstGeoLocatedVehicle, secondGeoLocatedVehicle]
 
-      allowOnlyTwoShortPollCycles()
-      const { simulateVehicles } = stubFetchVehicles()
-
       mountListOfVehicles({ vehicles: initialVehicles })
-      simulateVehicles(initialVehicles)
 
       openInSingleVehicleMode(firstGeoLocatedVehicle)
       assertVehicleInSingleVehicleModeIs(firstGeoLocatedVehicle)
 
-      cy.then(() => simulateVehicles(updatedVehicles))
+      cy.then(() => changeVehicles(updatedVehicles))
       assertVehicleInSingleVehicleModeIs(updatedFirstGeoLocatedVehicle)
     })
 
@@ -198,67 +199,6 @@ describe('ListOfVehicles', () => {
         })
       })
     })
-  })
-
-  describe('Background refresh', () => {
-    it('should utilize short poll with 2 seconds delay between fetches', () => {
-      mountListOfVehicles()
-
-      cy.then(() => expect(shortPollStub.args[0][1]).to.equal(2000))
-    })
-
-    const scenarios = {
-      'given two vehicles when first one updates it should re-render it': {
-        initial: [firstGeoLocatedVehicle, secondGeoLocatedVehicle],
-        update: [updatedFirstGeoLocatedVehicle, secondGeoLocatedVehicle],
-        expected: [updatedFirstGeoLocatedVehicle, secondGeoLocatedVehicle]
-      },
-
-      'given two vehicles when second one updates it should re-render it': {
-        initial: [firstGeoLocatedVehicle, secondGeoLocatedVehicle],
-        update: [firstGeoLocatedVehicle, updatedSecondGeoLocatedVehicle],
-        expected: [firstGeoLocatedVehicle, updatedSecondGeoLocatedVehicle]
-      },
-
-      // if user has n vehicles and suddenly server says they have none,
-      // assume something went wrong and instead of deleting them from the screen
-      // keep them rendered with the last known state
-      'given n (2) vehicles when they all get deleted assume something went wrong and do not delete vehicles': {
-        initial: [firstGeoLocatedVehicle, secondGeoLocatedVehicle],
-        update: [],
-        expected: [firstGeoLocatedVehicle, secondGeoLocatedVehicle]
-      },
-
-      'given two vehicles when one of them gets deleted then delete it from the screen': {
-        initial: [firstGeoLocatedVehicle, secondGeoLocatedVehicle],
-        update: [firstGeoLocatedVehicle],
-        expected: [firstGeoLocatedVehicle]
-      },
-
-      'given n vehicles when non-vehicle(s) get added then only vehicles should be rendered': {
-        initial: [firstGeoLocatedVehicle, secondGeoLocatedVehicle],
-        update: [firstGeoLocatedVehicle, secondGeoLocatedVehicle, null, '', new VehicleWithoutPosition(150, 'LOL', '...', false)],
-        expected: [firstGeoLocatedVehicle, secondGeoLocatedVehicle]
-      }
-    }
-
-    for (const [caseDescription, data] of Object.entries(scenarios)) {
-      specify(caseDescription, () => {
-        const initialVehicles = data.initial
-        const updatedVehicles = data.update as Vehicle[]
-        const expectedVehiclesAfterUpdate = data.expected
-
-        allowOnlyTwoShortPollCycles()
-        const { simulateVehicles } = stubFetchVehicles()
-
-        mountListOfVehicles({ vehicles: initialVehicles })
-        simulateVehicles(initialVehicles)
-        assertRenderedVehiclesAre(initialVehicles)
-
-        cy.then(() => simulateVehicles(updatedVehicles))
-        assertRenderedVehiclesAre(expectedVehiclesAfterUpdate)
-      })
-    }
   })
 })
 
@@ -350,25 +290,6 @@ function assertVehicleInSingleVehicleModeIs (targetVehicle: Vehicle) {
   })
 }
 
-function stubShortPoll () {
-  shortPollStub = cy.stub(shortPoll, 'do').callsFake(() => {
-    return () => { /* make sure onUnmounted does not throw exception */ }
-  })
-}
-
-function stubFetchVehicles () {
-  const fetchVehiclesStub = cy.stub(VehicleList, 'fetchAll')
-  const simulateVehicles = (vehicles: Vehicle[]) => fetchVehiclesStub.resolves(vehicles)
-
-  return { simulateVehicles }
-}
-
-function allowOnlyTwoShortPollCycles () {
-  const twoCycles = async (action: () => Promise<unknown>) => {
-    await action()
-    await sleep.now(500)
-    await action()
-  }
-
-  shortPollStub.callsFake(twoCycles)
+function changeVehicles (vehicles: unknown[]) {
+  ComponentUnderTest.changeProperties({ vehicles })
 }
