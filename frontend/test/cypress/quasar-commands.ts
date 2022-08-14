@@ -1,4 +1,4 @@
-// eslint-disable
+/* eslint-disable */
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
