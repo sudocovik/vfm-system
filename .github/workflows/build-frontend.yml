@@ -135,6 +135,6 @@ jobs:
       - name: "Execute tests"
         working-directory: "/testing"
         run: |
-          HOME=/home/node cypress run -e2e \
+          HOME=/home/node cypress run --e2e \
             --browser chrome \
             --config baseUrl=http://frontend
