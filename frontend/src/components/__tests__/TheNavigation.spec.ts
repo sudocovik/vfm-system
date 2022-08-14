@@ -1,9 +1,9 @@
-import { mount } from '@cypress/vue'
 import TheNavigation from '../TheNavigation.vue'
 import { QDrawer, QFooter, QIcon, QItem, QLayout, QRouteTab } from 'quasar'
 import { AvailableSlots, getComponentKey, inAllLanguages } from 'test/support/api'
 import { h } from 'vue'
 import logo from 'src/assets/logo.svg'
+import { VueWrapper } from '@vue/test-utils'
 
 type ComponentWrapper = ReturnType<typeof Cypress.vueWrapper.getComponent>
 
@@ -254,10 +254,7 @@ function mountNavigation () {
     }
   }
 
-  // Poorly typed API
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  mount(h(QLayout, () => h(TheNavigation)), mountingOptions)
+  cy.mount(h(QLayout, () => h(TheNavigation)), mountingOptions)
 }
 
 function useMobileVersion () {
@@ -273,7 +270,7 @@ function getDrawer () {
 }
 
 function getItem (id: string) {
-  return (container: ComponentWrapper) => container.get(`[data-cy="item-${id}"]`)
+  return (container: ComponentWrapper) => container.get(`[data-cy="item-${id}"]`) as unknown as VueWrapper<QItem>
 }
 
 function getLogo (container: ComponentWrapper) {
@@ -285,7 +282,7 @@ function getFooter () {
 }
 
 function getTab (id: string) {
-  return (container: ComponentWrapper) => container.get(`[data-cy="tab-${id}"]`)
+  return (container: ComponentWrapper) => container.get(`[data-cy="tab-${id}"]`) as unknown as VueWrapper<QRouteTab>
 }
 
 function footerVisibility () {

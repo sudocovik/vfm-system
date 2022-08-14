@@ -1,5 +1,4 @@
 import LoginPage from '../LoginPage.vue'
-import { mount } from '@cypress/vue'
 import LoginForm from '../LoginForm.vue'
 import { FormState, LoginFormState } from '../LoginFormState'
 import LoginFormPasswordInput from '../LoginFormPasswordInput.vue'
@@ -185,7 +184,7 @@ function submitForm (): void {
 }
 
 function mountLoginPage (): void {
-  mount(LoginPage, {
+  cy.mount(LoginPage, {
     global: {
       renderStubDefaultSlot: true,
       stubs: {

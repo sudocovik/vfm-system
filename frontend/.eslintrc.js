@@ -123,7 +123,7 @@ module.exports = {
       }
     },
     {
-      files: ['**/*.spec.{js,ts}', '**/__tests__/*.spec.{js,ts}', '**/__tests__/helpers/*.{js,ts}', 'test/support/*.{js,ts}'],
+      files: ['**/*.spec.{js,ts}', '**/__tests__/*.spec.{js,ts}', '**/__tests__/helpers/*.{js,ts}', 'test/support/*.{js,ts}', '**/*.cy.{js,ts}'],
       extends: [
         // Add Cypress-specific lint rules, globals and Cypress plugin
         // See https://github.com/cypress-io/eslint-plugin-cypress#rules

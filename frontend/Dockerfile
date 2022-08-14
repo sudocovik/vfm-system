@@ -49,7 +49,7 @@ ENV CYPRESS_CACHE_FOLDER="/cypress"
 USER node
 WORKDIR /testing
 ENV PATH="/testing/node_modules/.bin:${PATH}"
-COPY --from=source /source /testing
+COPY --from=source --chown=node:node /source /testing
 RUN cypress install
 # should not be runnable without explicitly defined command
 CMD ["exit", "-1"]

@@ -1,4 +1,3 @@
-import { mount } from '@cypress/vue'
 import { Attributes, Properties, VueComponent } from './types'
 
 type ModelValue = unknown
@@ -34,15 +33,7 @@ export class ComponentToBeMounted {
       ...(this.modelValue !== undefined ? { modelValue: this.modelValue } : {})
     }
 
-    /*
-      Property 'component' is intentionally set to 'unknown' type because there is no need to handle
-      type abomination and overloading defined by mount() function from @cypress/vue module.
-      If the given component is not an actual component then the runtime should complain.
-      This is the reason why following line is ts-ignored.
-     */
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    mount(this.component, { props: allComponentProperties, attrs: this.attributes })
+    cy.mount(this.component, { props: allComponentProperties, attrs: this.attributes })
     return this
   }
 }

@@ -1,10 +1,13 @@
-import { mount } from '@cypress/vue'
 import MapMarker from '../MapMarker.vue'
 import { Marker as GoogleMapMarker } from 'vue3-google-map'
 import { ComponentUnderTest } from 'test/support/ComponentUnderTest'
 import { SVG } from '../Icon'
 import { VueWrapper } from '@vue/test-utils'
 import { reactive } from 'vue'
+import { ComponentProps } from 'test/support/api'
+
+type GoogleMapMarkerComponent = VueWrapper<InstanceType<typeof GoogleMapMarker>>
+type MapMarkerProps = ComponentProps<typeof MapMarker>
 
 describe('MapMarker', () => {
   it('should render GoogleMapMarker', () => {
@@ -182,10 +185,10 @@ describe('MapMarker', () => {
 })
 
 function getGoogleMapMarker () {
-  return Cypress.vueWrapper.findComponent(GoogleMapMarker)
+  return Cypress.vueWrapper.findComponent(GoogleMapMarker) as unknown as GoogleMapMarkerComponent
 }
 
-function getMarkerOptions (marker: VueWrapper) {
+function getMarkerOptions (marker: GoogleMapMarkerComponent) {
   return <google.maps.MarkerOptions>marker.props('options')
 }
 
@@ -193,18 +196,20 @@ function getMarkerPosition (options: google.maps.MarkerOptions) {
   return <google.maps.LatLngLiteral>options.position
 }
 
-function mountMarker (props?: Record<string, unknown>) {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  mount(MapMarker, {
+function mountMarker (props?: MapMarkerProps) {
+  const defaultProps = {
+    latitude: 0,
+    longitude: 0
+  }
+  const allProps = { ...defaultProps, ...props }
+
+  cy.mount(MapMarker, {
     global: {
       stubs: {
-        GoogleMapMarker: {
-          props: ['options']
-        }
+        GoogleMapMarker: true
       }
     },
-    props
+    props: allProps
   })
 }
 

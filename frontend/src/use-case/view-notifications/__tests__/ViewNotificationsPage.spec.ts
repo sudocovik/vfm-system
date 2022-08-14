@@ -1,6 +1,5 @@
 import { inAllLanguages } from 'test/support/api'
 import ViewNotificationsPage from '../ViewNotificationsPage.vue'
-import { mount } from '@cypress/vue'
 import routes from 'src/router/routes'
 import { QIcon, QPage } from 'quasar'
 
@@ -50,7 +49,7 @@ describe('ViewNotificationsPage', () => {
 })
 
 function mountViewNotificationsPage () {
-  mount(ViewNotificationsPage, {
+  cy.mount(ViewNotificationsPage, {
     global: {
       renderStubDefaultSlot: true,
       stubs: {

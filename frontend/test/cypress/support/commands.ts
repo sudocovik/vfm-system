@@ -26,10 +26,10 @@
 
 // DO NOT REMOVE
 // Imports Quasar Cypress AE predefined commands
-import { registerCommands } from '@quasar/quasar-app-extension-testing-e2e-cypress'
-registerCommands()
-
+import { registerCommands } from '../quasar-commands'
 import './custom-commands'
+
+registerCommands()
 
 declare global {
 // eslint-disable-next-line @typescript-eslint/no-namespace

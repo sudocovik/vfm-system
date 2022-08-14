@@ -8,10 +8,9 @@ import {
   stopIndicatorCenter,
   stopIndicatorSize
 } from '../VehicleMapIcon'
+import { defineComponent, h } from 'vue'
 
 describe('VehicleMapIcon', () => {
-  beforeEach(resetScene)
-
   it('should have only one root SVG node', () => {
     const icon = createIcon()
     mountIcon(icon)
@@ -320,12 +319,21 @@ describe('VehicleMapIcon', () => {
   })
 })
 
-function resetScene () {
-  cy.document({ log: false }).invoke({ log: false }, 'open')
-}
+const MockedIconComponent = defineComponent({
+  name: 'MockedIconComponent',
+  props: {
+    icon: {
+      type: String,
+      required: true
+    }
+  },
+  setup: (props) => () => h('div', { innerHTML: props.icon })
+})
 
 function mountIcon (icon: string) {
-  cy.document({ log: false }).invoke({ log: false }, 'write', icon)
+  cy.mount(MockedIconComponent, {
+    props: { icon }
+  })
 }
 
 function iconRotationShouldBe (rotation: number) {

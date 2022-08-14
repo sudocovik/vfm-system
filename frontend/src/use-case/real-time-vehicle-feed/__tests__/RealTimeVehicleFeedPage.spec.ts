@@ -1,7 +1,6 @@
 import { inAllLanguages } from 'test/support/api'
 import RealTimeVehicleFeedPage from '../RealTimeVehicleFeedPage.vue'
 import routes from 'src/router/routes'
-import { mount } from '@cypress/vue'
 import { QPage } from 'quasar'
 import { VehicleList } from 'src/backend/VehicleService'
 import type { SinonStub } from 'cypress/types/sinon'
@@ -286,7 +285,7 @@ describe('RealTimeVehicleFeedPage', () => {
 })
 
 function mountRealTimeVehicleFeedPage () {
-  mount(RealTimeVehicleFeedPage, {
+  cy.mount(RealTimeVehicleFeedPage, {
     global: {
       renderStubDefaultSlot: true,
       stubs: {

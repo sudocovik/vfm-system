@@ -24,6 +24,6 @@ export class Button {
   }
 
   private static findComponent (this: void): ButtonComponent {
-    return Cypress.vueWrapper.findComponent(QBtn) as ButtonComponent
+    return Cypress.vueWrapper.findComponent(QBtn) as unknown as ButtonComponent
   }
 }

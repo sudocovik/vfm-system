@@ -1,11 +1,12 @@
 /// <reference types="google.maps" />
-import { ComponentUnderTest } from 'test/support/api'
-import { mount } from '@cypress/vue'
+import { ComponentProps, ComponentUnderTest } from 'test/support/api'
 import BaseMap, { DEFAULT_CENTER, DEFAULT_ZOOM, GESTURE_HANDLING, POI_VISIBILITY } from '../BaseMap.vue'
 import { GoogleMap } from 'vue3-google-map'
 import { GoogleMapOptions } from 'src/config/GoogleMapOptions'
-import { SinonStub } from 'cypress/types/sinon'
+import type { SinonStub } from 'cypress/types/sinon'
 import { h, VNode } from 'vue'
+
+type BaseMapProps = ComponentProps<typeof BaseMap>
 
 describe('BaseMap', () => {
   let apiKeyStub: SinonStub
@@ -243,13 +244,11 @@ describe('BaseMap', () => {
   })
 })
 
-function mountMap (props?: Record<string, unknown>) {
-  mount(BaseMap, {
+function mountMap (props?: BaseMapProps) {
+  cy.mount(BaseMap, {
     global: {
       stubs: {
-        GoogleMap: {
-          props: ['center', 'zoom', 'disableDefaultUi', 'gestureHandling', 'styles', 'apiKey', 'clickableIcons']
-        }
+        GoogleMap: true
       }
     },
     props
@@ -257,7 +256,7 @@ function mountMap (props?: Record<string, unknown>) {
 }
 
 function mountMapWithAttributes (attrs?: Record<string, unknown>) {
-  mount(BaseMap, {
+  cy.mount(BaseMap, {
     global: {
       stubs: {
         GoogleMap: true
@@ -268,7 +267,7 @@ function mountMapWithAttributes (attrs?: Record<string, unknown>) {
 }
 
 function mountMapWithDefaultSlot (slotContent: string | VNode) {
-  mount(BaseMap, {
+  cy.mount(BaseMap, {
     global: {
       renderStubDefaultSlot: true,
       stubs: {

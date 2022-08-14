@@ -1,5 +1,4 @@
-import { mount } from '@cypress/vue'
-import { ComponentUnderTest, getComponentKey, inAllLanguages } from 'test/support/api'
+import { ComponentProps, ComponentUnderTest, getComponentKey, inAllLanguages } from 'test/support/api'
 import ListOfVehicles from '../ListOfVehicles.vue'
 import GeoLocatedVehicle from '../GeoLocatedVehicle.vue'
 import { VueWrapper } from '@vue/test-utils'
@@ -13,6 +12,7 @@ import {
 } from '../__fixtures__/geo-located-vehicles'
 
 type GeoLocatedVehicleWrapper = VueWrapper<InstanceType<typeof GeoLocatedVehicle>>
+type ListOfVehiclesProps = ComponentProps<typeof ListOfVehicles>
 
 describe('ListOfVehicles', () => {
   specify('given list of non-vehicles it should render nothing', () => {
@@ -202,11 +202,11 @@ describe('ListOfVehicles', () => {
   })
 })
 
-function mountListOfVehicles (props?: Record<string, unknown>) {
+function mountListOfVehicles (props?: ListOfVehiclesProps) {
   const defaultProps = { vehicles: [] }
   const allProps = { ...defaultProps, ...props }
 
-  mount(ListOfVehicles, {
+  cy.mount(ListOfVehicles, {
     props: allProps,
     global: {
       stubs: {
@@ -217,7 +217,7 @@ function mountListOfVehicles (props?: Record<string, unknown>) {
 }
 
 function getAllGeoLocatedVehicles () {
-  return Cypress.vueWrapper.findAllComponents('[data-cy^="vehicle-"]') as GeoLocatedVehicleWrapper[]
+  return Cypress.vueWrapper.findAllComponents('[data-cy^="vehicle-"]') as unknown as GeoLocatedVehicleWrapper[]
 }
 
 function assertRenderedVehiclesAre (vehicles: Vehicle[]) {
@@ -271,7 +271,7 @@ function assertNotSingleVehicleMode () {
 }
 
 function getSingleVehicleModeComponent () {
-  return Cypress.vueWrapper.getComponent('[data-cy="single-vehicle-mode"]') as GeoLocatedVehicleWrapper
+  return Cypress.vueWrapper.getComponent('[data-cy="single-vehicle-mode"]') as unknown as GeoLocatedVehicleWrapper
 }
 
 function openInSingleVehicleMode (targetVehicle: Vehicle) {

@@ -19,23 +19,7 @@ build-test-environment:
 push-test-environment:
 	docker push $(TEST_ENVIRONMENT_IMAGE_NAME)
 
-e2e-dev:
-	# run "xhost +" if errors with X server authorization occur (ie. Authorization required, but no authorization protocol specified)
-	docker run -it \
-		--rm \
-    -v $$(pwd):/e2e \
-    -v /tmp/.X11-unix:/tmp/.X11-unix \
-    -v /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket \
-    -w /e2e \
-    -e DISPLAY=unix$(DISPLAY) \
-    -e QT_X11_NO_MITSHM=1 \
-    -e _X11_NO_MITSHM=1 \
-    -e _MITSHM=0 \
-    --network host \
-    --entrypoint cypress \
-    cypress/included:9.7.0 open --project .
-
-ct-dev:
+cypress:
 	# run "xhost +" if errors with X server authorization occur (ie. Authorization required, but no authorization protocol specified)
 	docker run -it \
 		--rm \
@@ -43,10 +27,11 @@ ct-dev:
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -v /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket \
     -w /ct \
+    -u $$(id -u):$$(id -g) \
     -e DISPLAY=unix$(DISPLAY) \
     -e QT_X11_NO_MITSHM=1 \
     -e _X11_NO_MITSHM=1 \
     -e _MITSHM=0 \
     --network host \
     --entrypoint cypress \
-    cypress/included:9.7.0 open-ct --project .
+    cypress/included:10.4.0 open --project .

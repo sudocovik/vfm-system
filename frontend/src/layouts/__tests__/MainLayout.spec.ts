@@ -1,7 +1,6 @@
 import { ComponentUnderTest } from 'test/support/api'
 import MainLayout from '../MainLayout.vue'
 import TheNavigation from 'components/TheNavigation.vue'
-import { mount } from '@cypress/vue'
 
 describe('MainLayout', () => {
   it('should render navigation', () => {
@@ -17,7 +16,7 @@ describe('MainLayout', () => {
     it('should render "header" slot\'s content under QHeader', () => {
       const headerContent = 'Render me as a child of QHeader'
 
-      mount(MainLayout, {
+      cy.mount(MainLayout, {
         slots: {
           header: headerContent
         }

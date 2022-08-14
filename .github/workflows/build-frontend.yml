@@ -82,7 +82,7 @@ jobs:
       - name: "Execute tests"
         working-directory: "/testing"
         run: | 
-          HOME=/home/node cypress run-ct \
+          HOME=/home/node cypress run --component \
             --browser chrome
 
   build:
@@ -135,6 +135,6 @@ jobs:
       - name: "Execute tests"
         working-directory: "/testing"
         run: |
-          HOME=/home/node cypress run \
+          HOME=/home/node cypress run -e2e \
             --browser chrome \
             --config baseUrl=http://frontend

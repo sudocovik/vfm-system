@@ -2,6 +2,7 @@ import { ComponentUnderTest, getComponentKey } from 'test/support/api'
 import ListOfNotInstalledVehicles from '../ListOfNotInstalledVehicles.vue'
 import { VehicleWithoutPosition } from 'src/backend/VehicleService'
 import NotInstalledVehicle from '../NotInstalledVehicle.vue'
+import { VueWrapper } from '@vue/test-utils'
 
 const appropriateVehicles = [
   new VehicleWithoutPosition(1, 'ZD000AA', '000000', false),
@@ -27,7 +28,7 @@ describe('ListOfNotInstalledVehicles', () => {
     ComponentUnderTest.is(ListOfNotInstalledVehicles).withProperties({ vehicles }).mount()
 
     cy.then(() => {
-      const renderedVehicles = Cypress.vueWrapper.findAllComponents(NotInstalledVehicle)
+      const renderedVehicles = Cypress.vueWrapper.findAllComponents(NotInstalledVehicle) as unknown as VueWrapper<InstanceType<typeof NotInstalledVehicle>>[]
       expect(renderedVehicles.length).to.equal(appropriateVehicles.length)
 
       appropriateVehicles.forEach((vehicle, i) => {

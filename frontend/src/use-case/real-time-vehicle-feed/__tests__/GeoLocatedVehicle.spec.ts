@@ -1,11 +1,13 @@
-import { mount } from '@cypress/vue'
 import GeoLocatedVehicle from '../GeoLocatedVehicle.vue'
 import { BaseMap, icon as MarkerIcon, MapMarker } from 'components/Map'
-import { ComponentUnderTest } from 'test/support/api'
+import { ComponentProps, ComponentUnderTest } from 'test/support/api'
 import { VueWrapper } from '@vue/test-utils'
 import { colors as StatusColors, createIcon as VehicleMapIcon } from '../VehicleMapIcon'
 import { Speed } from 'src/support/measurement-units/speed'
 import { isProxy } from 'vue'
+
+type BaseMapComponent = VueWrapper<InstanceType<typeof BaseMap>>
+type GeoLocatedVehicleProps = ComponentProps<typeof GeoLocatedVehicle>
 
 describe('GeoLocatedVehicle', () => {
   describe('(prop): latitude', () => {
@@ -438,7 +440,7 @@ describe('GeoLocatedVehicle', () => {
   })
 })
 
-function mountGeoLocatedVehicle (props?: Record<string, unknown>) {
+function mountGeoLocatedVehicle (props?: GeoLocatedVehicleProps) {
   const defaultProps = {
     latitude: 0,
     longitude: 0,
@@ -451,7 +453,7 @@ function mountGeoLocatedVehicle (props?: Record<string, unknown>) {
   }
   const allProps = { ...defaultProps, ...props }
 
-  mount(GeoLocatedVehicle, {
+  cy.mount(GeoLocatedVehicle, {
     global: {
       renderStubDefaultSlot: true,
       stubs: {
@@ -464,10 +466,10 @@ function mountGeoLocatedVehicle (props?: Record<string, unknown>) {
 }
 
 function getBaseMap () {
-  return Cypress.vueWrapper.findComponent(BaseMap)
+  return Cypress.vueWrapper.findComponent(BaseMap) as unknown as BaseMapComponent
 }
 
-function getMapMarker (baseMap: VueWrapper<InstanceType<typeof BaseMap>>) {
+function getMapMarker (baseMap: BaseMapComponent) {
   return baseMap.findComponent(MapMarker)
 }
 
