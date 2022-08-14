@@ -1,5 +1,6 @@
 import { ComponentConstructor } from 'quasar'
-import { VNode } from 'vue'
+import { AllowedComponentProps, ExtractPropTypes, VNode, VNodeProps } from 'vue'
+import { DefinedComponent } from 'cypress/vue/dist/@vue/test-utils/types'
 
 export * from './ComponentUnderTest'
 export * from './InputField'
@@ -16,3 +17,8 @@ export type AvailableSlots = {
     default: () => VNode[]
   }
 }
+
+export type ComponentProps<T extends DefinedComponent> = Omit<
+  ExtractPropTypes<InstanceType<T>['$props']>,
+  keyof VNodeProps | keyof AllowedComponentProps
+>
