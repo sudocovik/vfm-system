@@ -78,12 +78,15 @@ jobs:
       credentials:
         username: ${{ secrets.registry_username }}
         password: ${{ secrets.registry_password }}
+    strategy:
+      matrix:
+        browser: ["chrome", "firefox", "edge"]
     steps:
       - name: "Execute tests"
         working-directory: "/testing"
         run: | 
           HOME=/home/node cypress run --component \
-            --browser chrome
+            --browser ${{ matrix.browser }}
 
   build:
     name: "Build"
