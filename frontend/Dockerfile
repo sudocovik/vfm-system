@@ -43,13 +43,11 @@ COPY --from=source --chown=node:node /source /app
 CMD ["quasar", "dev"]
 
 
-FROM ghcr.io/covik/light-cypress-images:node17.2.0-chrome96.0.4664.110 as test-environment
-RUN mkdir /cypress && chown node:node /cypress
-ENV CYPRESS_CACHE_FOLDER="/cypress"
+FROM cypress/included:10.4.0 as test-environment
 USER node
 WORKDIR /testing
 ENV PATH="/testing/node_modules/.bin:${PATH}"
 COPY --from=source --chown=node:node /source /testing
-RUN cypress install
 # should not be runnable without explicitly defined command
+ENTRYPOINT "bash"
 CMD ["exit", "-1"]
