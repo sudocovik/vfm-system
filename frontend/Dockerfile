@@ -43,7 +43,7 @@ COPY --from=source --chown=node:node /source /app
 CMD ["quasar", "dev"]
 
 
-FROM cypress/included:10.4.0 as test-environment
+FROM cypress/included:10.6.0 as test-environment
 USER node
 WORKDIR /testing
 ENV PATH="/testing/node_modules/.bin:${PATH}"

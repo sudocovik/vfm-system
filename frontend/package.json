@@ -36,7 +36,7 @@
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.13.14",
-    "@cypress/webpack-dev-server": "^2.1.0",
+    "@cypress/webpack-dev-server": "^2.2.0",
     "@quasar/app-webpack": "^3.4.7",
     "@quasar/quasar-app-extension-testing": "^2.0.3",
     "@quasar/quasar-app-extension-testing-unit-jest": "3.0.0-alpha.10",
@@ -46,7 +46,7 @@
     "@typescript-eslint/parser": "^4.16.1",
     "axios-mock-adapter": "^1.20.0",
     "chai-colors": "^1.0.1",
-    "cypress": "^10.4.0",
+    "cypress": "^10.6.0",
     "dotenv": "^16.0.1",
     "eslint": "^7.14.0",
     "eslint-config-standard": "^16.0.2",

@@ -34,4 +34,4 @@ cypress:
     -e _MITSHM=0 \
     --network host \
     --entrypoint cypress \
-    cypress/included:10.4.0 open --project .
+    cypress/included:10.6.0 open --project .
