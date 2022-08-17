@@ -194,7 +194,7 @@ describe('ListOfVehicles', () => {
 
           cy.then(() => {
             cy.wrap(scrollPosition).should('be.greaterThan', 0)
-            cy.window().its('scrollY').should('equal', scrollPosition)
+            cy.window().its('scrollY').should('be.closeTo', scrollPosition, 2)
           })
         })
       })
