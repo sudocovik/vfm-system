@@ -45,7 +45,7 @@ export default defineComponent({
 
     const rememberSessionForOneYear = () => {
       const sessionCookie = $q.cookies.get(SessionCookie.name)
-      $q.cookies.set(SessionCookie.name, String(sessionCookie), { expires: '365d' })
+      $q.cookies.set(SessionCookie.name, String(sessionCookie), { expires: '365d', path: '/' })
     }
 
     const formState = ref<FormState>(LoginFormState.ready())

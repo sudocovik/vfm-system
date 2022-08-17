@@ -52,12 +52,11 @@ describe('LoginPage', () => {
         typePassword('correct-password')
         submitForm()
 
-        cy.getCookie(SessionCookie.name)
-          .should(sessionCookie => {
-            const expectedExpiry = targetExpiry / 1000 // Because cypress converts cookie expiry to seconds
-            expect(sessionCookie).to.have.property('value', value)
-            expect(sessionCookie).to.have.property('expiry', expectedExpiry)
-          })
+        const expectedExpiry = targetExpiry / 1000 // Because cypress converts cookie expiry to seconds
+        cy.getCookie(SessionCookie.name).as('session-cookie')
+        cy.get('@session-cookie').should('have.property', 'value', value)
+        cy.get('@session-cookie').should('have.property', 'path', '/')
+        cy.get('@session-cookie').should('have.property', 'expiry', expectedExpiry)
       })
     })
   })
