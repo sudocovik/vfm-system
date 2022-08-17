@@ -79,6 +79,7 @@ jobs:
         username: ${{ secrets.registry_username }}
         password: ${{ secrets.registry_password }}
     strategy:
+      fail-fast: false
       matrix:
         browser: ["chrome", "firefox", "edge"]
     steps:
