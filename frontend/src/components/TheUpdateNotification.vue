@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { defineComponent, onUnmounted, ref } from 'vue'
-import { ServiceWorkerUpdated } from 'src/dom'
+import { ServiceWorkerUpdated } from 'src/support/pwa/event-detail'
 
 export default defineComponent({
   name: 'TheUpdateNotification',
