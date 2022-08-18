@@ -1,5 +1,5 @@
 import { register } from 'register-service-worker'
-import { ServiceWorkerUpdated } from 'src/dom'
+import { ServiceWorkerUpdated } from './event-detail'
 
 // The ready(), registered(), cached(), updatefound() and updated()
 // events passes a ServiceWorkerRegistration instance in their arguments.

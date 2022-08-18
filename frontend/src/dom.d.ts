@@ -1,6 +1,4 @@
-export interface ServiceWorkerUpdated {
-  activateUpdates: () => void
-}
+import { ServiceWorkerUpdated } from 'src/support/pwa/event-detail'
 
 interface CustomEventMap {
   'service-worker-updated': CustomEvent<ServiceWorkerUpdated>;
